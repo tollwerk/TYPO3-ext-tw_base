@@ -1,0 +1,30 @@
+plugin.tx_twbase = USER
+plugin.tx_twbase {
+    view {
+        templateRootPath = {$plugin.tx_twbase.view.templateRootPath}
+        partialRootPath = {$plugin.tx_twbase.view.partialRootPath}
+        layoutRootPath = {$plugin.tx_twbase.view.layoutRootPath}
+        templateRootPaths {
+            10 = EXT:tw_tollwerk/Resources/Private/Templates/
+            20 = {$plugin.tx_twbase.view.templateRootPath}
+        }
+        partialRootPaths {
+            10 = EXT:tw_tollwerk/Resources/Private/Partials/
+            20 = {$plugin.tx_twbase.view.partialRootPath}
+        }
+        layoutRootPaths {
+            10 = EXT:tw_tollwerk/Resources/Private/Layouts/
+            20 = {$plugin.tx_twbase.view.layoutRootPath}
+        }
+    }
+    settings {
+        enable = {$plugin.tx_twbase.settings.enable}
+    }
+}
+
+# Prefer this extensions Fluid templates for content element rendering
+lib.contentElement {
+    templateRootPaths.10 = EXT:tw_base/Resources/Private/Templates/
+    partialRootPaths.10 = EXT:tw_base/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:tw_base/Resources/Private/Layouts/
+}

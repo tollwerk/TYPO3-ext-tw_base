@@ -1,0 +1,18 @@
+# NEEDED IN CASE OF MORE THAN 1 LANGUAGE
+# mod.SHARED {
+#   defaultLanguageFlag = gb
+#   defaultLanguageLabel = English
+# }
+TCEMAIN.table.tt_content {
+    disablePrependAtCopy = 1
+}
+
+TCEFORM.tt_content.header_layout.altLabels  {
+    0 = Automatic
+    1 = Headline level 1
+    2 = Headline level 2
+    3 = Headline level 3
+    4 = Headline level 4
+    5 = Headline level 5
+    6 = Hidden
+}

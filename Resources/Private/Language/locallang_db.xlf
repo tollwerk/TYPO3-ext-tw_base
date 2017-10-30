@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z"
+          product-name="tw_base">
+        <header/>
+        <body>
+            <trans-unit id="file" xml:space="preserve">
+				<source>Files &amp; directories</source>
+			</trans-unit>
+			<trans-unit id="file.templateRootPath" xml:space="preserve">
+				<source>Path to template files (FE)</source>
+			</trans-unit>
+			<trans-unit id="file.partialRootPath" xml:space="preserve">
+				<source>Path to template partials (FE)</source>
+			</trans-unit>
+			<trans-unit id="file.layoutRootPath" xml:space="preserve">
+				<source>Path to template layouts (FE)</source>
+			</trans-unit>
+            <trans-unit id="common" xml:space="preserve">
+				<source>Common settings</source>
+			</trans-unit>
+			<trans-unit id="common.enable" xml:space="preserve">
+				<source>Enable this extension</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve">
+				<source>Visual type</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.default" xml:space="preserve">
+				<source>Automatic</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.main" xml:space="preserve">
+				<source>Main</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.secondary" xml:space="preserve">
+				<source>Secondary</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.medium" xml:space="preserve">
+				<source>Medium</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.small" xml:space="preserve">
+				<source>Small</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.body" xml:space="preserve">
+				<source>Body</source>
+			</trans-unit>
+        </body>
+    </file>
+</xliff>
