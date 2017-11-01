@@ -22,6 +22,22 @@ $fields = array(
             ]
         ),
     ),
+    'tx_twbase_lazyload' => array(
+        'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_lazyload',
+        'exclude' => 1,
+        'config' => array(
+            'type' => 'check',
+            'default' => 1,
+        ),
+    ),
+    'tx_twbase_responsive' => array(
+        'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_responsive',
+        'exclude' => 1,
+        'config' => array(
+            'type' => 'check',
+            'default' => 1,
+        ),
+    ),
 );
 
 // Add new fields to pages:
@@ -39,3 +55,15 @@ $fields = array(
     'tx_twbase_heading_type',
     'after:header_layout'
 );
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
+    'tt_content',
+    'imagelinks',
+    'tx_twbase_responsive,tx_twbase_lazyload',
+    'after:image_zoom'
+);
+//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+//    'tt_content',
+//    'tx_twbase_lazyload',
+//    '',
+//    'after:image'
+//);

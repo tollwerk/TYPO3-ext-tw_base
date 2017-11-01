@@ -8,17 +8,29 @@ plugin.tx_twbase {
             10 = EXT:tw_tollwerk/Resources/Private/Templates/
             20 = {$plugin.tx_twbase.view.templateRootPath}
         }
+
         partialRootPaths {
             10 = EXT:tw_tollwerk/Resources/Private/Partials/
             20 = {$plugin.tx_twbase.view.partialRootPath}
         }
+
         layoutRootPaths {
             10 = EXT:tw_tollwerk/Resources/Private/Layouts/
             20 = {$plugin.tx_twbase.view.layoutRootPath}
         }
     }
+
     settings {
         enable = {$plugin.tx_twbase.settings.enable}
+        images {
+            srcset = {$plugin.tx_twbase.settings.images.srcset}
+            sizes = {$plugin.tx_twbase.settings.images.sizes}
+            lqip {
+                mode = {$plugin.tx_twbase.settings.images.lqip.mode}
+                num = {$plugin.tx_twbase.settings.images.lqip.num}
+                blur = {$plugin.tx_twbase.settings.images.lqip.blur}
+            }
+        }
     }
 }
 
@@ -27,4 +39,13 @@ lib.contentElement {
     templateRootPaths.10 = EXT:tw_base/Resources/Private/Templates/
     partialRootPaths.10 = EXT:tw_base/Resources/Private/Partials/
     layoutRootPaths.10 = EXT:tw_base/Resources/Private/Layouts/
+
+    # Add responsive image settings to all content elements
+    settings.media {
+        srcset = {$plugin.tx_twbase.settings.images.srcset}
+        sizes = {$plugin.tx_twbase.settings.images.sizes}
+        breakpoints {
+
+        }
+    }
 }

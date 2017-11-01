@@ -107,8 +107,10 @@ class HeadlineContextManager implements SingletonInterface
         }
 
         // Determine the visual headline type
-        $visualType = max(0, min(intval($visualType), count(self::VISUAL_TYPES)));
-        $visualType = self::VISUAL_TYPES[$visualType ?: $level];
+        $visualType = max(1, intval($visualType) ?: $level);
+        if ($visualType <= count(self::VISUAL_TYPES)) {
+            $visualType = self::VISUAL_TYPES[$visualType];
+        }
 
         $this->currentLevel = $level;
         return GeneralUtility::makeInstance(HeadlineContext::class, $level, $visualType, $afterLevel, $error);
