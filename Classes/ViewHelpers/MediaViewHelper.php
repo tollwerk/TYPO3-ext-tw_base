@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
+use Tollwerk\TwBase\Service\AbstractFileCompressorService;
 use Tollwerk\TwBase\Service\AbstractLqipService;
 use Tollwerk\TwBase\Utility\ResponsiveImagesUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
@@ -103,7 +104,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 
         $lqipService = GeneralUtility::makeInstanceService('lqip', strtolower(pathinfo($imageUri, PATHINFO_EXTENSION)));
         $lqipUri = ($lqipService instanceof AbstractLqipService) ? $lqipService->getImageLqip($imageUri,
-            $this->getLqipSettings()) : false;
+            $this->getImageSettings()['lqip']) : false;
 
         $alt = $image->getProperty('alternative');
         $title = $image->getProperty('title');
@@ -236,20 +237,20 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     }
 
     /**
-     * Returns TypoSript settings array
+     * Returns TypoSript settings array for images
      *
      * @param string $extension Name of the extension
      * @param string $plugin Name of the plugin
      * @return array
      */
-    protected function getLqipSettings()
+    protected function getImageSettings()
     {
         $typoScript = $this->configurationManager->getConfiguration(
             \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
             'TwBase'
         );
 
-        return $typoScript['images']['lqip'];
+        return $typoScript['images'];
     }
 
     /**

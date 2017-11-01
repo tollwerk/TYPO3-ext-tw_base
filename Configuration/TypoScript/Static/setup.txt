@@ -30,6 +30,20 @@ plugin.tx_twbase {
                 num = {$plugin.tx_twbase.settings.images.lqip.num}
                 blur = {$plugin.tx_twbase.settings.images.lqip.blur}
             }
+
+            compress {
+                jpg {
+
+                }
+
+                png {
+
+                }
+
+                gif {
+
+                }
+            }
         }
     }
 }
