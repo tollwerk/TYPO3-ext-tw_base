@@ -2,6 +2,8 @@
 
 namespace Tollwerk\TwBase\Utility;
 
+use Tollwerk\TwBase\Service\AbstractLqipService;
+use Tollwerk\TwBase\ViewHelpers\TagSequenceBuilder;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -42,16 +44,16 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Creates an image tag with the provided srcset candidates
      *
-     * @param FileInterface $originalImage
-     * @param FileInterface $fallbackImage
-     * @param array|string $srcset
-     * @param Area $cropArea
-     * @param Area $focusArea
-     * @param string $sizesQuery
-     * @param TagBuilder $tag
-     * @param bool $picturefillMarkup
-     * @param bool $absoluteUri
-     *
+     * @param FileInterface $originalImage Original image
+     * @param FileInterface $fallbackImage Fallback Image
+     * @param array|string $srcset Srcset candidates
+     * @param Area $cropArea Crop area
+     * @param Area $focusArea Focus area
+     * @param string $sizesQuery Sizes query
+     * @param TagBuilder $tag Tag builder
+     * @param bool $picturefillMarkup Add picturefill markup
+     * @param array $lazyloadSettings Lazyload settings
+     * @param bool $absoluteUri Create absolute URI
      * @return TagBuilder
      */
     public function createImageTagWithSrcset(
@@ -60,11 +62,12 @@ class ResponsiveImagesUtility implements SingletonInterface
         $srcset,
         Area $cropArea = null,
         Area $focusArea = null,
-        string $sizesQuery = null,
+        $sizesQuery = null,
         TagBuilder $tag = null,
-        bool $picturefillMarkup = true,
-        bool $absoluteUri = false
-    ): TagBuilder {
+        $picturefillMarkup = true,
+        array $lazyloadSettings = null,
+        $absoluteUri = false
+    ) {
         $tag = $tag ?: $this->objectManager->get(TagBuilder::class, 'img');
 
         // Generate fallback image url
@@ -85,9 +88,6 @@ class ResponsiveImagesUtility implements SingletonInterface
         $fallbackWidthDescriptor = ($srcsetMode == 'x') ? '1x' : $referenceWidth.'w';
         $srcsetImages[$fallbackWidthDescriptor] = $fallbackImageUri;
 
-        // Set srcset attribute for image tag
-        $tag->addAttribute('srcset', $this->generateSrcsetAttribute($srcsetImages));
-
         // Add sizes attribute to image tag
         if ($srcsetMode == 'w' && $sizesQuery) {
             $tag->addAttribute('sizes', sprintf($sizesQuery, $referenceWidth));
@@ -100,21 +100,35 @@ class ResponsiveImagesUtility implements SingletonInterface
         // Add metadata to image tag
         $this->addMetadataToImageTag($tag, $originalImage, $fallbackImage, $focusArea);
 
+        // If this is a lazyloading image
+        if (!empty($lazyloadSettings)) {
+            $tag = $this->addLazyloadingToImageTag(
+                $tag,
+                $fallbackImageUri,
+                $lazyloadSettings,
+                $this->generateSrcsetAttribute($srcsetImages)
+            );
+
+            // Else: Set srcset attribute for image tag
+        } else {
+            $tag->addAttribute('srcset', $this->generateSrcsetAttribute($srcsetImages));
+        }
+
         return $tag;
     }
 
     /**
      * Creates a picture tag with the provided image breakpoints
      *
-     * @param  FileInterface $originalImage
-     * @param  FileInterface $fallbackImage
-     * @param  array $breakpoints
-     * @param  CropVariantCollection $cropVariantCollection
-     * @param  Area $focusArea
-     * @param  TagBuilder $tag
-     * @param  TagBuilder $fallbackTag
-     * @param  bool $picturefillMarkup
-     * @param  bool $absoluteUri
+     * @param FileInterface $originalImage Original image
+     * @param FileInterface $fallbackImage Fallback Image
+     * @param  array $breakpoints Breakpoints
+     * @param  CropVariantCollection $cropVariantCollection Crop variants
+     * @param Area $focusArea Focus area
+     * @param TagBuilder $tag Tag builder
+     * @param TagBuilder $fallbackTag Fallback tag builder
+     * @param bool $picturefillMarkup Add picturefill markup
+     * @param bool $absoluteUri Create absolute URI
      *
      * @return TagBuilder
      */
@@ -126,9 +140,9 @@ class ResponsiveImagesUtility implements SingletonInterface
         Area $focusArea = null,
         TagBuilder $tag = null,
         TagBuilder $fallbackTag = null,
-        bool $picturefillMarkup = true,
-        bool $absoluteUri = false
-    ): TagBuilder {
+        $picturefillMarkup = true,
+        $absoluteUri = false
+    ) {
         $tag = $tag ?: $this->objectManager->get(TagBuilder::class, 'picture');
         $fallbackTag = $fallbackTag ?: $this->objectManager->get(TagBuilder::class, 'img');
 
@@ -219,13 +233,13 @@ class ResponsiveImagesUtility implements SingletonInterface
      */
     public function createPictureSourceTag(
         FileInterface $originalImage,
-        int $defaultWidth,
+        $defaultWidth,
         $srcset,
-        string $mediaQuery = '',
-        string $sizesQuery = '',
+        $mediaQuery = '',
+        $sizesQuery = '',
         Area $cropArea = null,
-        bool $absoluteUri = false
-    ): TagBuilder {
+        $absoluteUri = false
+    ) {
         $cropArea = $cropArea ?: Area::createEmpty();
 
         // Generate different image sizes for srcset attribute
@@ -248,11 +262,10 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Adds metadata to image tag
      *
-     * @param TagBuilder $tag
-     * @param FileInterface $originalImage
-     * @param FileInterface $fallbackImage
-     * @param Area $focusArea
-     *
+     * @param TagBuilder $tag Image tag
+     * @param FileInterface $originalImage Original image
+     * @param FileInterface $fallbackImage Fallback image
+     * @param Area $focusArea Focus area
      * @return void
      */
     public function addMetadataToImageTag(
@@ -292,21 +305,20 @@ class ResponsiveImagesUtility implements SingletonInterface
      *   1+2+4: ['200w' => 'path/to/image@200w.jpg', '400w' => 'path/to/image@200w.jpg']
      *   3: ['1x' => 'path/to/image@1x.jpg', '2x' => 'path/to/image@2x.jpg']
      *
-     * @param  FileInterface $image
-     * @param  int $defaultWidth
-     * @param  array|string $srcset
-     * @param  Area $cropArea
-     * @param  bool $absoluteUri
-     *
+     * @param  FileInterface $image Source image
+     * @param  int $defaultWidth Default width
+     * @param  array|string $srcset Srcset candidates
+     * @param  Area $cropArea Crop area
+     * @param  bool $absoluteUri Create absolute URI
      * @return array
      */
     public function generateSrcsetImages(
         FileInterface $image,
-        int $defaultWidth,
+        $defaultWidth,
         $srcset,
         Area $cropArea = null,
-        bool $absoluteUri = false
-    ): array {
+        $absoluteUri = false
+    ) {
         $cropArea = $cropArea ?: Area::createEmpty();
 
         // Convert srcset input to array
@@ -359,7 +371,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @return string
      */
-    public function generateSrcsetAttribute(array $srcsetImages): string
+    public function generateSrcsetAttribute(array $srcsetImages)
     {
         $srcsetString = [];
         foreach ($srcsetImages as $widthDescriptor => $imageCandidate) {
@@ -383,5 +395,59 @@ class ResponsiveImagesUtility implements SingletonInterface
         ksort($breakpoints);
 
         return $breakpoints;
+    }
+
+    /**
+     * Adds metadata to image tag
+     *
+     * @param TagBuilder $tag Image tag
+     * @param string $imageUri Image URI
+     * @param array $imageSettings Image settings
+     * @param string $srcset Srcset (responsive image)
+     * @return TagBuilder Lazyloading image tag
+     */
+    public function addLazyloadingToImageTag(
+        TagBuilder $tag,
+        $imageUri,
+        array $imageSettings,
+        $srcset = null
+    ) {
+        $lqipService = GeneralUtility::makeInstanceService('lqip', strtolower(pathinfo($imageUri, PATHINFO_EXTENSION)));
+        $lqipUri = ($lqipService instanceof AbstractLqipService) ?
+            $lqipService->getImageLqip($imageUri, $imageSettings['lqip']) : false;
+
+        if ($lqipUri) {
+            $fallbackTag = clone $tag;
+            $fallbackTag->addAttribute('src', $imageUri);
+
+            if (strlen($srcset)) {
+                $tag->addAttribute('data-srcset', $srcset);
+                $fallbackTag->removeAttribute('sizes');
+            } else {
+                $tag->addAttribute('data-src', $imageUri);
+            }
+            $tag->addAttribute('src', $this->getDataUri('image/svg+xml', PATH_site.$lqipUri));
+            $tag->addAttribute('class', 'lazyload');
+
+            $tag = new TagSequenceBuilder([$tag, new TagBuilder('noscript', $fallbackTag->render())]);
+        } elseif (strlen($srcset)) {
+            $tag->addAttribute('srcset', $srcset);
+        } else {
+            $tag->addAttribute('src', $imageUri);
+        }
+
+        return $tag;
+    }
+
+    /**
+     * Return a base64 encoded data URI of a file
+     *
+     * @param string $mimeType MIME type
+     * @param string $path File path
+     * @return string Data URI
+     */
+    protected function getDataUri($mimeType, $path)
+    {
+        return 'data:'.$mimeType.';base64,'.base64_encode(file_get_contents($path));
     }
 }

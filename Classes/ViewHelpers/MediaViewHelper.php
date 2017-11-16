@@ -2,14 +2,11 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
-use Tollwerk\TwBase\Service\AbstractFileCompressorService;
-use Tollwerk\TwBase\Service\AbstractLqipService;
 use Tollwerk\TwBase\Utility\ResponsiveImagesUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 {
@@ -102,10 +99,6 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         $this->tag->addAttribute('width', $processedImage->getProperty('width'));
         $this->tag->addAttribute('height', $processedImage->getProperty('height'));
 
-        $lqipService = GeneralUtility::makeInstanceService('lqip', strtolower(pathinfo($imageUri, PATHINFO_EXTENSION)));
-        $lqipUri = ($lqipService instanceof AbstractLqipService) ? $lqipService->getImageLqip($imageUri,
-            $this->getImageSettings()['lqip']) : false;
-
         $alt = $image->getProperty('alternative');
         $title = $image->getProperty('title');
 
@@ -117,19 +110,14 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
             $this->tag->addAttribute('title', $title);
         }
 
-        if ($lqipUri) {
-            $noScriptTag = clone $this->tag;
-            $noScriptTag->addAttribute('src', $imageUri);
+        // Add the lazyloading attributes
+        $this->tag = $this->getResponsiveImagesUtility()->addLazyloadingToImageTag(
+            $this->tag,
+            $imageUri,
+            $this->getImageSettings()
+        );
 
-            $this->tag->addAttribute('data-src', $imageUri);
-            $this->tag->addAttribute('src', $this->getDataUri('image/svg+xml', PATH_site.$lqipUri));
-            $this->tag->addAttribute('class', 'lazyload');
-
-            return $this->tag->render().'<noscript>'.$noScriptTag->render().'</noscript>';
-        } else {
-            $this->tag->addAttribute('src', $imageUri);
-            return $this->tag->render();
-        }
+        return $this->tag->render();
     }
 
     /**
@@ -198,7 +186,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
             $focusArea,
             $this->arguments['sizes'],
             $this->tag,
-            $this->arguments['picturefill']
+            $this->arguments['picturefill'],
+            $this->arguments['lazyload'] ? $this->getImageSettings() : null
         );
 
         return $this->tag->render();
@@ -251,17 +240,5 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         );
 
         return $typoScript['images'];
-    }
-
-    /**
-     * Return a base64 encoded data URI of a file
-     *
-     * @param string $mimeType MIME type
-     * @param string $path File path
-     * @return string Data URI
-     */
-    protected function getDataUri($mimeType, $path)
-    {
-        return 'data:'.$mimeType.';base64,'.base64_encode(file_get_contents($path));
     }
 }
