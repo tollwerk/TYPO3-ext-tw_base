@@ -67,6 +67,9 @@
 			<trans-unit id="tt_content.tx_twbase_responsive" xml:space="preserve">
 				<source>Responsive</source>
 			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_breakpoints" xml:space="preserve">
+				<source>Breakpoints preset</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

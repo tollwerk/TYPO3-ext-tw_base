@@ -1,3 +1,26 @@
+# Prefer this extensions Fluid templates for content element rendering
+lib.contentElement {
+    templateRootPaths.10 = EXT:tw_base/Resources/Private/Templates/
+    partialRootPaths.10 = EXT:tw_base/Resources/Private/Partials/
+    layoutRootPaths.10 = EXT:tw_base/Resources/Private/Layouts/
+
+    # Add responsive image settings to all content elements
+    settings.media {
+        srcset = {$plugin.tx_twbase.settings.images.srcset}
+        sizes = {$plugin.tx_twbase.settings.images.sizes}
+
+        # Responsive image breakpoint specifications
+        breakpoints {
+            configs {
+
+            }
+            presets {
+
+            }
+        }
+    }
+}
+
 plugin.tx_twbase = USER
 plugin.tx_twbase {
     view {
@@ -31,6 +54,7 @@ plugin.tx_twbase {
                 blur = {$plugin.tx_twbase.settings.images.lqip.blur}
             }
 
+            # Image compression settings
             compress {
                 jpg {
 
@@ -44,22 +68,6 @@ plugin.tx_twbase {
 
                 }
             }
-        }
-    }
-}
-
-# Prefer this extensions Fluid templates for content element rendering
-lib.contentElement {
-    templateRootPaths.10 = EXT:tw_base/Resources/Private/Templates/
-    partialRootPaths.10 = EXT:tw_base/Resources/Private/Partials/
-    layoutRootPaths.10 = EXT:tw_base/Resources/Private/Layouts/
-
-    # Add responsive image settings to all content elements
-    settings.media {
-        srcset = {$plugin.tx_twbase.settings.images.srcset}
-        sizes = {$plugin.tx_twbase.settings.images.sizes}
-        breakpoints {
-
         }
     }
 }

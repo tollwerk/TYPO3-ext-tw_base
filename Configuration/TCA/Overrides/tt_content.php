@@ -38,6 +38,16 @@ $fields = array(
             'default' => 1,
         ),
     ),
+    'tx_twbase_breakpoints' => array(
+        'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_breakpoints',
+        'exclude' => 1,
+        'config' => array(
+            'type' => 'select',
+            'renderType' => 'selectSingle',
+            'items' => [['---', '']],
+            'itemsProcFunc' => 'Tollwerk\\TwBase\\Utility\\TcaUtility->responsiveImagesBreakpointsSpecifications',
+        ),
+    ),
 );
 
 // Add new fields to pages:
@@ -58,12 +68,6 @@ $fields = array(
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'tt_content',
     'imagelinks',
-    'tx_twbase_responsive,tx_twbase_lazyload',
+    'tx_twbase_lazyload,tx_twbase_responsive,tx_twbase_breakpoints',
     'after:image_zoom'
 );
-//\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
-//    'tt_content',
-//    'tx_twbase_lazyload',
-//    '',
-//    'after:image'
-//);

@@ -7,6 +7,8 @@ use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 {
@@ -32,7 +34,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
             false,
             '(min-width: %1$dpx) %1$dpx, 100vw'
         );
-        $this->registerArgument('breakpoints', 'array', 'Image breakpoints from responsive design.', false);
+        $this->registerArgument('breakpoints', 'mixed', 'Image breakpoint specifications or preset key', false);
         $this->registerArgument('picturefill', 'bool', 'Use rendering suggested by picturefill.js', false, true);
         $this->registerArgument('responsive', 'bool', 'Render responsive image', false, true);
         $this->registerArgument('lazyload', 'bool', 'Use lazyloading', false, false);
@@ -50,8 +52,14 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     {
         // If the image should be rendered responsively
         if ($this->arguments['responsive']) {
-            if ($this->arguments['breakpoints']) {
-                return $this->renderPicture($image, $width, $height);
+            // Determine the breakpoint specifications or preset to use
+            $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
+
+            // If there are breakpoint specifications available: Render as <picture> element
+            if (!empty($breakpoints)) {
+                return $this->renderPicture($image, $width, $height, $breakpoints);
+
+                // Else: Render with srcset?
             } elseif ($this->arguments['srcset']) {
                 return $this->renderImageSrcset($image, $width, $height);
             }
@@ -64,6 +72,39 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 
         // Return a regular image
         return parent::renderImage($image, $width, $height);
+    }
+
+    /**
+     * Determine the breakpoint specifications or preset to use
+     *
+     * @param string|array $breakpoints Breakpoint specifications or preset
+     * @return array|string Breakpoint specifications
+     */
+    protected function getBreakpointSpecifications($breakpoints)
+    {
+        if (!is_array($breakpoints)) {
+            $breakpoints = trim($breakpoints);
+            $setup = $this->configurationManager->getConfiguration(
+                \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+            );
+            list(, $configsPresets) = GeneralUtility::makeInstance(TypoScriptParser::class)
+                ->getVal('lib.contentElement.settings.media.breakpoints', $setup);
+            if (!empty($configsPresets['configs.'])
+                && !empty($configsPresets['presets.'])
+                && array_key_exists($breakpoints, $configsPresets['presets.'])
+            ) {
+                $configs = GeneralUtility::trimExplode(',', $configsPresets['presets.'][$breakpoints]);
+                $breakpoints = [];
+                foreach ($configs as $config) {
+                    if (!empty($configsPresets['configs.']["$config."])) {
+                        $breakpoints[] = $configsPresets['configs.']["$config."];
+                    }
+                }
+            } else {
+                $breakpoints = [];
+            }
+        }
+        return $breakpoints;
     }
 
     /**
@@ -123,12 +164,13 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Render <picture> element
      *
-     * @param  FileInterface $image Image reference
-     * @param  string $width Image width
-     * @param  string $height Image height
+     * @param FileInterface $image Image reference
+     * @param string $width Image width
+     * @param string $height Image height
+     * @param array $breakpoints Breakpoint specifications
      * @return string Rendered <picture> element
      */
-    protected function renderPicture(FileInterface $image, $width, $height)
+    protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints)
     {
         // Get crop variants
         $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
@@ -145,7 +187,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         $this->tag = $this->getResponsiveImagesUtility()->createPictureTag(
             $image,
             $fallbackImage,
-            $this->arguments['breakpoints'],
+            $breakpoints,
             $cropVariantCollection,
             $focusArea,
             null,
