@@ -135,6 +135,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param TagBuilder $tag Tag builder
      * @param TagBuilder $fallbackTag Fallback tag builder
      * @param bool $picturefillMarkup Add picturefill markup
+     * @param array $lazyloadSettings Lazyload settings
      * @param bool $absoluteUri Create absolute URI
      *
      * @return TagBuilder
@@ -148,6 +149,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         TagBuilder $tag = null,
         TagBuilder $fallbackTag = null,
         $picturefillMarkup = true,
+        array $lazyloadSettings = null,
         $absoluteUri = false
     ) {
         $tag = $tag ?: $this->objectManager->get(TagBuilder::class, 'picture');
@@ -162,6 +164,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         // Use last breakpoint as fallback image if it doesn't define a media query
         $lastBreakpoint = array_pop($breakpoints);
         if ($lastBreakpoint && !$lastBreakpoint['media'] && $picturefillMarkup) {
+
             // Generate different image sizes for last breakpoint
             $cropArea = $cropVariantCollection->getCropArea($lastBreakpoint['cropVariant']);
             $srcset = $this->generateSrcsetImages(
@@ -173,13 +176,34 @@ class ResponsiveImagesUtility implements SingletonInterface
             );
             $srcsetMode = substr(key($srcset), -1); // x or w
 
-            // Set srcset attribute for fallback image
-            $fallbackTag->addAttribute('srcset', $this->generateSrcsetAttribute($srcset));
-
             // Set sizes query for fallback image
             if ($srcsetMode == 'w' && $lastBreakpoint['sizes']) {
                 $fallbackTag->addAttribute('sizes', sprintf($lastBreakpoint['sizes'], $referenceWidth));
             }
+
+            // Provide image width to be consistent with TYPO3 core behavior
+            $fallbackTag->addAttribute('width', $referenceWidth);
+
+            // Add metadata to fallback image
+            $this->addMetadataToImageTag($fallbackTag, $originalImage, $fallbackImage, $focusArea);
+
+            // Set srcset attribute for fallback image (not src as advised by picturefill)
+            $fallbackImageUri = $this->imageService->getImageUri($fallbackImage, $absoluteUri);
+
+            // If this is a lazyloading image
+            if (!empty($lazyloadSettings)) {
+                $fallbackTag = $this->addLazyloadingToImageTag(
+                    $fallbackTag,
+                    $fallbackImageUri,
+                    $lazyloadSettings,
+                    $this->generateSrcsetAttribute($srcset)
+                );
+
+                // Else Set srcset attribute for fallback image
+            } else {
+                $fallbackTag->addAttribute('srcset', $this->generateSrcsetAttribute($srcset));
+            }
+
         } else {
             // Breakpoint can't be used as fallback
             if ($lastBreakpoint) {
@@ -188,18 +212,32 @@ class ResponsiveImagesUtility implements SingletonInterface
 
             // Set srcset attribute for fallback image (not src as advised by picturefill)
             $fallbackImageUri = $this->imageService->getImageUri($fallbackImage, $absoluteUri);
-            if ($picturefillMarkup) {
+
+            // Provide image width to be consistent with TYPO3 core behavior
+            $fallbackTag->addAttribute('width', $referenceWidth);
+
+            // Add metadata to fallback image
+            $this->addMetadataToImageTag($fallbackTag, $originalImage, $fallbackImage, $focusArea);
+
+            // If this is a lazyloading image
+            if (!empty($lazyloadSettings)) {
+                $fallbackTag = $this->addLazyloadingToImageTag(
+                    $fallbackTag,
+                    $fallbackImageUri,
+                    $lazyloadSettings,
+                    $fallbackImageUri
+                );
+
+                // Else if picturefill markup should be used
+            } if ($picturefillMarkup) {
                 $fallbackTag->addAttribute('srcset', $fallbackImageUri);
+                $fallbackTag->addAttribute('src', $fallbackImageUri);
+
+                // Else: Standard image
             } else {
                 $fallbackTag->addAttribute('src', $fallbackImageUri);
             }
         }
-
-        // Provide image width to be consistent with TYPO3 core behavior
-        $fallbackTag->addAttribute('width', $referenceWidth);
-
-        // Add metadata to fallback image
-        $this->addMetadataToImageTag($fallbackTag, $originalImage, $fallbackImage, $focusArea);
 
         // Generate source tags for image breakpoints
         $sourceTags = [];
@@ -212,6 +250,7 @@ class ResponsiveImagesUtility implements SingletonInterface
                 $breakpoint['media'],
                 $breakpoint['sizes'],
                 $cropArea,
+                $lazyloadSettings,
                 $absoluteUri
             );
             $sourceTags[] = $sourceTag->render();
@@ -234,6 +273,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param  string $mediaQuery
      * @param  string $sizesQuery
      * @param  Area $cropArea
+     * @param array $lazyloadSettings Lazyload settings
      * @param  bool $absoluteUri
      *
      * @return TagBuilder
@@ -245,6 +285,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         $mediaQuery = '',
         $sizesQuery = '',
         Area $cropArea = null,
+        array $lazyloadSettings = null,
         $absoluteUri = false
     ) {
         $cropArea = $cropArea ?: Area::createEmpty();
@@ -255,7 +296,7 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Create source tag for this breakpoint
         $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
-        $sourceTag->addAttribute('srcset', $this->generateSrcsetAttribute($srcsetImages));
+        $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset', $this->generateSrcsetAttribute($srcsetImages));
         if ($mediaQuery) {
             $sourceTag->addAttribute('media', $mediaQuery);
         }

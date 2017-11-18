@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
+use Tollwerk\TwBase\Service\ImageService;
 use Tollwerk\TwBase\Utility\ResponsiveImagesUtility;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
@@ -274,7 +275,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
             $focusArea,
             null,
             $this->tag,
-            $this->arguments['picturefill']
+            $this->arguments['picturefill'],
+            $this->arguments['lazyload'] ? $this->getImageSettings() : null
         );
 
         return $this->tag->render();
@@ -352,17 +354,12 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Returns TypoSript settings array for images
      *
-     * @param string $extension Name of the extension
-     * @param string $plugin Name of the plugin
-     * @return array
+     * @return array Image settings
      */
     protected function getImageSettings()
     {
-        $typoScript = $this->configurationManager->getConfiguration(
-            \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
-            'TwBase'
-        );
-
-        return $typoScript['images'];
+        /** @var ImageService $imageService */
+        $imageService = GeneralUtility::makeInstance(ImageService::class);
+        return $imageService->getImageSettings('images');
     }
 }
