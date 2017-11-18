@@ -1,6 +1,7 @@
 # customsubcategory=common=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:common
 # customsubcategory=file=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:file
 # customsubcategory=images=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images
+# customsubcategory=compressors=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors
 
 plugin.tx_twbase {
     view {
@@ -13,8 +14,12 @@ plugin.tx_twbase {
     }
 
     settings {
-        # cat=plugin.tx_twbase/common/a; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:common.enable
-        enable = 0
+        compressors {
+            # cat=plugin.tx_twbase/compressors/a; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors.mozjpeg
+            mozjpeg = 1
+            # cat=plugin.tx_twbase/compressors/b; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors.svgo
+            svgo = 1
+        }
 
         images {
             # cat=plugin.tx_twbase/images/a; type=string; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.srcset

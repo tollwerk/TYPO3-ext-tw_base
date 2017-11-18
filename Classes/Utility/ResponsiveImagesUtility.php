@@ -42,6 +42,13 @@ class ResponsiveImagesUtility implements SingletonInterface
     ];
 
     /**
+     * Image file extensions eligible for srcset processing
+     *
+     * @var string[]
+     */
+    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+    /**
      * Creates an image tag with the provided srcset candidates
      *
      * @param FileInterface $originalImage Original image
@@ -384,10 +391,9 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Normalizes the provided breakpoints configuration
      *
      * @param  array $breakpoints
-     *
      * @return array
      */
-    public function normalizeImageBreakpoints(array $breakpoints): array
+    public function normalizeImageBreakpoints(array $breakpoints)
     {
         foreach ($breakpoints as &$breakpoint) {
             $breakpoint = array_replace($this->breakpointPrototype, $breakpoint);
@@ -449,5 +455,16 @@ class ResponsiveImagesUtility implements SingletonInterface
     protected function getDataUri($mimeType, $path)
     {
         return 'data:'.$mimeType.';base64,'.base64_encode(file_get_contents($path));
+    }
+
+    /**
+     * Test whether an image is eligible for srcset processing
+     *
+     * @param FileInterface $image Image
+     * @return bool Image can have srcset
+     */
+    public function canSrcset(FileInterface $image)
+    {
+        return in_array(strtolower($image->getExtension()), self::SRCSET_FILE_EXTENSIONS);
     }
 }

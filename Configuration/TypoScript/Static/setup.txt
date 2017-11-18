@@ -44,7 +44,10 @@ plugin.tx_twbase {
     }
 
     settings {
-        enable = {$plugin.tx_twbase.settings.enable}
+        compressors {
+            mozjpeg = {$plugin.tx_twbase.settings.compressors.mozjpeg}
+            svgo = {$plugin.tx_twbase.settings.compressors.svgo}
+        }
         images {
             srcset = {$plugin.tx_twbase.settings.images.srcset}
             sizes = {$plugin.tx_twbase.settings.images.sizes}
@@ -65,6 +68,10 @@ plugin.tx_twbase {
                 }
 
                 gif {
+
+                }
+
+                svg {
 
                 }
             }

@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = [
     'title' => 'tollwerk Base',
-    'description' => 'Essentials and modern building blocks',
+    'description' => 'Essentials and modern build tools and extensions for TYPO3 websites',
     'category' => 'misc',
     'author' => 'Joschi Kuphal',
     'author_email' => 'joschi@tollwerk.de',

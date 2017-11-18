@@ -25,6 +25,15 @@
 			<trans-unit id="images" xml:space="preserve">
 				<source>Images</source>
 			</trans-unit>
+			<trans-unit id="compressors" xml:space="preserve">
+				<source>Compressors</source>
+			</trans-unit>
+			<trans-unit id="compressors.mozjpeg" xml:space="preserve">
+				<source>JPEG compressor: Enable the mozjpeg image compressor</source>
+			</trans-unit>
+			<trans-unit id="compressors.svgo" xml:space="preserve">
+				<source>SVG compressor: Enable the SVGO graphics compressor</source>
+			</trans-unit>
 			<trans-unit id="images.srcset" xml:space="preserve">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			</trans-unit>

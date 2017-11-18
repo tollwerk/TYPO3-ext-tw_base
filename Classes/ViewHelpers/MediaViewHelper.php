@@ -60,7 +60,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
                 return $this->renderPicture($image, $width, $height, $breakpoints);
 
                 // Else: Render with srcset?
-            } elseif ($this->arguments['srcset']) {
+            } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
                 return $this->renderImageSrcset($image, $width, $height);
             }
         }

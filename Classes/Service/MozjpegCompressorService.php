@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\Service;
 
+use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 
 /**
@@ -10,28 +11,34 @@ use TYPO3\CMS\Core\Utility\CommandUtility;
 class MozjpegCompressorService extends AbstractFileCompressorService
 {
     /**
-     * Compress a file
+     * Name of the TypoScript key to enable this service
      *
-     * @param string $fileUri Source file URL
-     * @param array $configuration Service configuration
-     * @return boolean Success
+     * @var bool|string|null
      */
-    public function compressFile($fileUri, array $configuration = [])
+    protected $typoscriptEnableKey = 'compressors.mozjpeg';
+
+    /**
+     * Process a file
+     *
+     * @param TaskInterface $task Image processing task
+     * @param array $processingResult Image processing result
+     * @param array $configuration Service configuration
+     * @return bool Success
+     */
+    public function processFile(TaskInterface $task, array $processingResult, array $configuration = [])
     {
-        $mozjpegCommand = 'mozjpeg -copy none '.CommandUtility::escapeShellArgument(PATH_site.$fileUri);
-        $mozjpegCommand .= ' > '.CommandUtility::escapeShellArgument(PATH_site.$fileUri.'.optimized');
+        $filePath = $processingResult['filePath'];
+        $mozjpegCommand = 'mozjpeg -copy none '.CommandUtility::escapeShellArgument($filePath);
+        $mozjpegCommand .= ' > '.CommandUtility::escapeShellArgument($filePath.'.optimized');
 
         $output = $returnValue = null;
         CommandUtility::exec($mozjpegCommand, $output, $returnValue);
 
-        // If the JPEG could not be optimized: Error
-        if ($returnValue) {
-            return false;
+        // If the JPEG could be optimized: Cleanup
+        if (!$returnValue) {
+            unlink($filePath) && rename($filePath.'.optimized', $filePath) && chmod($filePath, 0664);
         }
 
-        // Cleanup
-        return unlink(PATH_site.$fileUri)
-            && rename(PATH_site.$fileUri.'.optimized', PATH_site.$fileUri)
-            && chmod(PATH_site.$fileUri, 0664);
+        return $filePath;
     }
 }

@@ -39,7 +39,7 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     'tx_twbase_mozjpeg',
     array(
         'title' => 'mozjpeg',
-        'description' => 'Compress images using the mozjpeg encoder (https://github.com/mozilla/mozjpeg)',
+        'description' => 'Compress JPEG images using the mozjpeg encoder (https://github.com/mozilla/mozjpeg)',
 
         'subtype' => 'jpg',
 
@@ -54,16 +54,34 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     )
 );
 
-// Connect to the file processing signals
-\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
-    \TYPO3\CMS\Core\Resource\ResourceStorage::class,
-    'preFileProcess',
-    \Tollwerk\TwBase\Utility\FileCompressorUtility::class,
-    'registerCompressFile'
+// Register the SVGO image compressor service
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+    $_EXTKEY,
+    // Service type
+    'filecompress',
+    // Service key
+    'tx_twbase_svgo',
+    array(
+        'title' => 'svgo',
+        'description' => 'Compress SVG vector graphics using the SVGO optimizer (https://github.com/svg/svgo)',
+
+        'subtype' => 'svg',
+
+        'available' => true,
+        'priority' => 60,
+        'quality' => 80,
+
+        'os' => '',
+        'exec' => 'svgo',
+
+        'className' => \Tollwerk\TwBase\Service\SvgoCompressorService::class
+    )
 );
-\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\SignalSlot\Dispatcher::class)->connect(
-    \TYPO3\CMS\Core\Resource\ResourceStorage::class,
-    'postFileProcess',
-    \Tollwerk\TwBase\Utility\FileCompressorUtility::class,
-    'compressFile'
-);
+
+// Register the extended image compressing task
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.CropScaleMaskCompress'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageCropScaleMaskCompressTask::class;
+
+// Extend the local image processor
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Resource\\Processing\\LocalImageProcessor'] = [
+    'className' => 'Tollwerk\\TwBase\\Service\\Resource\\Processing\\LocalImageProcessor',
+];
