@@ -46,6 +46,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         $this->registerArgument('responsive', 'bool', 'Render responsive image', false, true);
         $this->registerArgument('lazyload', 'bool', 'Use lazyloading', false, false);
         $this->registerArgument('inline', 'bool', 'Inline the image using a data URI', false, false);
+        $this->registerArgument('skipConverter', 'mixed', 'File converters that should be skipped', false, []);
     }
 
     /**
@@ -60,15 +61,24 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     {
         // If the image shouldn't be inlined
         if (!$this->arguments['inline']) {
+            $skipConverter = array_filter(
+                is_array($this->arguments['skipConverter']) ?
+                    $this->arguments['skipConverter'] :
+                    GeneralUtility::trimExplode(',', $this->arguments['skipConverter'], true)
+            );
+            $availableConverters = [];
+//            foreach (array_keys($this->getResponsiveImagesUtility()->getAvailableConverters($skipConverter)) as $converter) {
+//                $availableConverters[$converter] = $this->getImageSettings('converters.'.$converter);
+//            }
 
             // If the image should be rendered responsively
-            if ($this->arguments['responsive']) {
+            if ($this->arguments['responsive'] || count($availableConverters)) {
                 // Determine the breakpoint specifications or preset to use
                 $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
                 // If there are breakpoint specifications available: Render as <picture> element
-                if (!empty($breakpoints)) {
-                    return $this->renderPicture($image, $width, $height, $breakpoints);
+                if (!empty($breakpoints) || count($availableConverters)) {
+                    return $this->renderPicture($image, $width, $height, $breakpoints, $availableConverters);
 
                     // Else: Render with srcset?
                 } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
@@ -251,9 +261,10 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      * @param string $width Image width
      * @param string $height Image height
      * @param array $breakpoints Breakpoint specifications
+     * @param array $converters File converters to apply
      * @return string Rendered <picture> element
      */
-    protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints)
+    protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
     {
         // Get crop variants
         $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
@@ -276,7 +287,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
             null,
             $this->tag,
             $this->arguments['picturefill'],
-            $this->arguments['lazyload'] ? $this->getImageSettings() : null
+            $this->arguments['lazyload'] ? $this->getImageSettings() : null,
+            $converters
         );
 
         return $this->tag->render();
@@ -354,12 +366,13 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Returns TypoSript settings array for images
      *
+     * @param string $key Sub key
      * @return array Image settings
      */
-    protected function getImageSettings()
+    protected function getImageSettings($key = 'images')
     {
         /** @var ImageService $imageService */
         $imageService = GeneralUtility::makeInstance(ImageService::class);
-        return $imageService->getImageSettings('images');
+        return $imageService->getImageSettings($key);
     }
 }

@@ -56,6 +56,19 @@ $fields = array(
             'itemsProcFunc' => 'Tollwerk\\TwBase\\Utility\\TcaUtility->responsiveImagesBreakpointsSpecifications',
         ),
     ),
+    'tx_twbase_skipconverter' => array(
+        'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_skipconverter',
+        'exclude' => 1,
+        'config' => array(
+            'type' => 'select',
+            'renderType' => 'selectSingleBox',
+            'size' => 2,
+            'maxitems' => 99,
+            'items' => [
+                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_skipconverter.I.webp', 'webp']
+            ],
+        ),
+    ),
 );
 
 // Add new fields to pages:
@@ -76,6 +89,6 @@ $fields = array(
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'tt_content',
     'imagelinks',
-    'tx_twbase_inline,tx_twbase_lazyload,tx_twbase_responsive,tx_twbase_breakpoints',
-    'after:image_zoom'
+    'tx_twbase_skipconverter,tx_twbase_lazyload,tx_twbase_responsive,tx_twbase_breakpoints,tx_twbase_inline',
+    'before:image_zoom'
 );

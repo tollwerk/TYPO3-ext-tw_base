@@ -9,9 +9,9 @@ use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
- * Abstract file compressor service
+ * Abstract file converter service
  */
-abstract class AbstractFileCompressorService extends AbstractService
+abstract class AbstractFileConverterService extends AbstractService
 {
     /**
      * Name of the TypoScript key to enable this service
@@ -43,12 +43,11 @@ abstract class AbstractFileCompressorService extends AbstractService
     /**
      * Process a file
      *
-     * @param TaskInterface $task Image processing task
-     * @param array $processingResult Image processing result
+     * @param string $filePath File Path
      * @param array $configuration Service configuration
      * @return bool Success
      */
-    public function processFile(TaskInterface $task, array $processingResult, array $configuration = [])
+    public function processFile($filePath, array $configuration = [])
     {
         return false;
     }

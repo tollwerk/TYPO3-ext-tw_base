@@ -47,3 +47,9 @@ You can `configure SVGO <https://github.com/svg/svgo/blob/master/docs/how-it-wor
             }
         }
     }
+
+File converters
+---------------
+
+WebP images
+^^^^^^^^^^^

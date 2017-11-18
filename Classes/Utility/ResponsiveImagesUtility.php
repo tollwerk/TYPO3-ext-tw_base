@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\Utility;
 
+use Tollwerk\TwBase\Service\AbstractFileConverterService;
 use Tollwerk\TwBase\Service\AbstractLqipService;
 use Tollwerk\TwBase\ViewHelpers\TagSequenceBuilder;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
@@ -40,6 +41,13 @@ class ResponsiveImagesUtility implements SingletonInterface
         'sizes' => '(min-width: %1$dpx) %1$dpx, 100vw',
         'srcset' => []
     ];
+
+    /**
+     * List of all available image converters
+     *
+     * @var array
+     */
+    protected $availableImageConverters = null;
 
     /**
      * Image file extensions eligible for srcset processing
@@ -136,6 +144,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param TagBuilder $fallbackTag Fallback tag builder
      * @param bool $picturefillMarkup Add picturefill markup
      * @param array $lazyloadSettings Lazyload settings
+     * @param array $converters File converters to apply
      * @param bool $absoluteUri Create absolute URI
      *
      * @return TagBuilder
@@ -150,6 +159,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         TagBuilder $fallbackTag = null,
         $picturefillMarkup = true,
         array $lazyloadSettings = null,
+        array $converters = [],
         $absoluteUri = false
     ) {
         $tag = $tag ?: $this->objectManager->get(TagBuilder::class, 'picture');
@@ -160,6 +170,9 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Use width of fallback image as reference for relative sizes (1x, 2x...)
         $referenceWidth = $fallbackImage->getProperty('width');
+
+        // Get the fallback image URI
+        $fallbackImageUri = $this->imageService->getImageUri($fallbackImage, $absoluteUri);
 
         // Use last breakpoint as fallback image if it doesn't define a media query
         $lastBreakpoint = array_pop($breakpoints);
@@ -187,9 +200,6 @@ class ResponsiveImagesUtility implements SingletonInterface
             // Add metadata to fallback image
             $this->addMetadataToImageTag($fallbackTag, $originalImage, $fallbackImage, $focusArea);
 
-            // Set srcset attribute for fallback image (not src as advised by picturefill)
-            $fallbackImageUri = $this->imageService->getImageUri($fallbackImage, $absoluteUri);
-
             // If this is a lazyloading image
             if (!empty($lazyloadSettings)) {
                 $fallbackTag = $this->addLazyloadingToImageTag(
@@ -210,9 +220,6 @@ class ResponsiveImagesUtility implements SingletonInterface
                 array_push($breakpoints, $lastBreakpoint);
             }
 
-            // Set srcset attribute for fallback image (not src as advised by picturefill)
-            $fallbackImageUri = $this->imageService->getImageUri($fallbackImage, $absoluteUri);
-
             // Provide image width to be consistent with TYPO3 core behavior
             $fallbackTag->addAttribute('width', $referenceWidth);
 
@@ -229,7 +236,8 @@ class ResponsiveImagesUtility implements SingletonInterface
                 );
 
                 // Else if picturefill markup should be used
-            } if ($picturefillMarkup) {
+            }
+            if ($picturefillMarkup) {
                 $fallbackTag->addAttribute('srcset', $fallbackImageUri);
                 $fallbackTag->addAttribute('src', $fallbackImageUri);
 
@@ -254,6 +262,36 @@ class ResponsiveImagesUtility implements SingletonInterface
                 $absoluteUri
             );
             $sourceTags[] = $sourceTag->render();
+        }
+
+        /**
+         * If converters should be applied
+         *
+         * @var string $converterKey
+         * @var AbstractFileConverterService $converterService
+         */
+        foreach ($converters as $converterKey => $converterConfig) {
+            $convertedFile = $this->availableImageConverters[$converterKey]
+                ->processFile($fallbackImage->getForLocalProcessing(), $converterConfig);
+            if ($convertedFile) {
+                echo $convertedFile;
+//
+//                // Create source tag for this breakpoint
+//                $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
+//                $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset',
+//
+//                $sourceTag = $this->createPictureSourceTag(
+//                    $originalImage,
+//                    $referenceWidth,
+//                    $breakpoint['srcset'],
+//                    $breakpoint['media'],
+//                    $breakpoint['sizes'],
+//                    $cropArea,
+//                    $lazyloadSettings,
+//                    $absoluteUri
+//                );
+//                $sourceTags[] = $sourceTag->render();
+            }
         }
 
         // Fill picture tag
@@ -296,7 +334,8 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Create source tag for this breakpoint
         $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
-        $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset', $this->generateSrcsetAttribute($srcsetImages));
+        $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset',
+            $this->generateSrcsetAttribute($srcsetImages));
         if ($mediaQuery) {
             $sourceTag->addAttribute('media', $mediaQuery);
         }
@@ -507,5 +546,26 @@ class ResponsiveImagesUtility implements SingletonInterface
     public function canSrcset(FileInterface $image)
     {
         return in_array(strtolower($image->getExtension()), self::SRCSET_FILE_EXTENSIONS);
+    }
+
+    /**
+     * Return all available image converters
+     *
+     * @param array $skip Skip converters
+     * @return array Available image converters
+     */
+    public function getAvailableConverters(array $skip = [])
+    {
+        if ($this->availableImageConverters === null) {
+            $this->availableImageConverters = [];
+
+            // Test if the WebP converter is available
+            $webPConverterService = GeneralUtility::makeInstanceService('fileconvert', 'webp');
+            if ($webPConverterService instanceof AbstractFileConverterService) {
+                $this->availableImageConverters['webp'] = $webPConverterService;
+            }
+        }
+
+        return array_diff_key($this->availableImageConverters, array_flip(array_filter($skip)));
     }
 }

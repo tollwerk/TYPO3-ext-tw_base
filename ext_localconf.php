@@ -78,6 +78,30 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     )
 );
 
+// Register the WebP image converter service
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+    $_EXTKEY,
+    // Service type
+    'fileconvert',
+    // Service key
+    'tx_twbase_webp',
+    array(
+        'title' => 'webp',
+        'description' => 'Convert images using the Google WebP converter (https://developers.google.com/speed/webp)',
+
+        'subtype' => 'webp',
+
+        'available' => true,
+        'priority' => 60,
+        'quality' => 80,
+
+        'os' => '',
+        'exec' => 'cwebp',
+
+        'className' => \Tollwerk\TwBase\Service\WebpConverterService::class
+    )
+);
+
 // Register the extended image compressing task
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.CropScaleMaskCompress'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageCropScaleMaskCompressTask::class;
 

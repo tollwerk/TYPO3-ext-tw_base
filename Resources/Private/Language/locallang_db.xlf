@@ -34,6 +34,15 @@
 			<trans-unit id="compressors.svgo" xml:space="preserve">
 				<source>SVG compressor: Enable the SVGO graphics compressor</source>
 			</trans-unit>
+			<trans-unit id="converters" xml:space="preserve">
+				<source>Converters</source>
+			</trans-unit>
+			<trans-unit id="converters.webp" xml:space="preserve">
+				<source>WebP converter: Enable automatic encoding of WebP image variants</source>
+			</trans-unit>
+			<trans-unit id="converters.webp.quality" xml:space="preserve">
+				<source>WebP quality (0-100)</source>
+			</trans-unit>
 			<trans-unit id="images.srcset" xml:space="preserve">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			</trans-unit>
@@ -81,6 +90,12 @@
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_breakpoints" xml:space="preserve">
 				<source>Breakpoints preset</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_skipconverter" xml:space="preserve">
+				<source>Skip converter</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
+				<source>WebP</source>
 			</trans-unit>
         </body>
     </file>

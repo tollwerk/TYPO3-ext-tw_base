@@ -50,6 +50,11 @@ plugin.tx_twbase {
             svgo = {$plugin.tx_twbase.settings.compressors.svgo}
         }
 
+        converters {
+            webp = {$plugin.tx_twbase.settings.converters.webp}
+            webp.quality = {$plugin.tx_twbase.settings.converters.webp.quality}
+        }
+
         images {
             srcset = {$plugin.tx_twbase.settings.images.srcset}
             sizes = {$plugin.tx_twbase.settings.images.sizes}

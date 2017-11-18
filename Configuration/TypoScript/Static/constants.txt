@@ -2,6 +2,7 @@
 # customsubcategory=file=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:file
 # customsubcategory=images=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images
 # customsubcategory=compressors=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors
+# customsubcategory=converters=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters
 
 plugin.tx_twbase {
     view {
@@ -19,6 +20,14 @@ plugin.tx_twbase {
             mozjpeg = 1
             # cat=plugin.tx_twbase/compressors/b; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors.svgo
             svgo = 1
+        }
+
+        converters {
+            # cat=plugin.tx_twbase/converters/a; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.webp
+            webp = 1
+
+            # cat=plugin.tx_twbase/converters/b; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.webp.quality
+            webp.quality = 80
         }
 
         images {
