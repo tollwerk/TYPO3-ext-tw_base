@@ -30,7 +30,7 @@ class SvgoCompressorService extends AbstractFileCompressorService
         $filePath = $task->getSourceFile()->getForLocalProcessing();
         $this->registerTempFile($filePath);
 
-        $svgoConfig = json_encode($configuration, JSON_FORCE_OBJECT);
+        $svgoConfig = json_encode($configuration, JSON_NUMERIC_CHECK);
         $svgoCommand = 'svgo --quiet --multipass --input '.CommandUtility::escapeShellArgument($filePath);
         $svgoCommand .= ' --config '.CommandUtility::escapeShellArgument($svgoConfig);
 

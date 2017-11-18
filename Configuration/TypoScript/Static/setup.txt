@@ -14,6 +14,7 @@ lib.contentElement {
             configs {
 
             }
+
             presets {
 
             }
@@ -48,6 +49,7 @@ plugin.tx_twbase {
             mozjpeg = {$plugin.tx_twbase.settings.compressors.mozjpeg}
             svgo = {$plugin.tx_twbase.settings.compressors.svgo}
         }
+
         images {
             srcset = {$plugin.tx_twbase.settings.images.srcset}
             sizes = {$plugin.tx_twbase.settings.images.sizes}
@@ -72,7 +74,11 @@ plugin.tx_twbase {
                 }
 
                 svg {
-
+                    plugins {
+                        0 {
+                            removeViewBox = 1
+                        }
+                    }
                 }
             }
         }

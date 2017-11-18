@@ -19,6 +19,12 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      * @inject
      */
     protected $configurationManager;
+    /**
+     * SVG attributes to append (instead of overwrite)
+     *
+     * @var array
+     */
+    protected $appendAttributes = ['class'];
 
     /**
      * Initialize arguments
@@ -38,6 +44,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         $this->registerArgument('picturefill', 'bool', 'Use rendering suggested by picturefill.js', false, true);
         $this->registerArgument('responsive', 'bool', 'Render responsive image', false, true);
         $this->registerArgument('lazyload', 'bool', 'Use lazyloading', false, false);
+        $this->registerArgument('inline', 'bool', 'Inline the image using a data URI', false, false);
     }
 
     /**
@@ -50,28 +57,103 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      */
     protected function renderImage(FileInterface $image, $width, $height)
     {
-        // If the image should be rendered responsively
-        if ($this->arguments['responsive']) {
-            // Determine the breakpoint specifications or preset to use
-            $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
+        // If the image shouldn't be inlined
+        if (!$this->arguments['inline']) {
 
-            // If there are breakpoint specifications available: Render as <picture> element
-            if (!empty($breakpoints)) {
-                return $this->renderPicture($image, $width, $height, $breakpoints);
+            // If the image should be rendered responsively
+            if ($this->arguments['responsive']) {
+                // Determine the breakpoint specifications or preset to use
+                $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
-                // Else: Render with srcset?
-            } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
-                return $this->renderImageSrcset($image, $width, $height);
+                // If there are breakpoint specifications available: Render as <picture> element
+                if (!empty($breakpoints)) {
+                    return $this->renderPicture($image, $width, $height, $breakpoints);
+
+                    // Else: Render with srcset?
+                } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
+                    return $this->renderImageSrcset($image, $width, $height);
+                }
+            }
+
+            // If the image should be lazyloaded
+            if ($this->arguments['lazyload']) {
+                return $this->renderLazyloadImage($image, $width, $height);
             }
         }
 
-        // If the image should be lazyloaded
-        if ($this->arguments['lazyload']) {
-            return $this->renderLazyloadImage($image, $width, $height);
+        // Return a regular image
+        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
+        $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
+        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
+        $processingInstructions = [
+            'width' => $width,
+            'height' => $height,
+            'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
+        ];
+        $imageService = $this->getImageService();
+        $processedImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
+
+        // If this image should be inlined
+        if ($this->arguments['inline']) {
+            // SVG: Return as Inline SVG
+            if ($processedImage->getExtension() == 'svg') {
+                return $this->renderInlineSvg($processedImage);
+            }
+
+            $imageUri = $this->getResponsiveImagesUtility()->getDataUri(
+                $processedImage->getMimeType(),
+                $processedImage->getForLocalProcessing()
+            );
+        } else {
+            $imageUri = $imageService->getImageUri($processedImage);
         }
 
-        // Return a regular image
-        return parent::renderImage($image, $width, $height);
+        if (!$this->tag->hasAttribute('data-focus-area')) {
+            $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
+            if (!$focusArea->isEmpty()) {
+                $this->tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($image));
+            }
+        }
+        $this->tag->addAttribute('src', $imageUri);
+        $this->tag->addAttribute('width', $processedImage->getProperty('width'));
+        $this->tag->addAttribute('height', $processedImage->getProperty('height'));
+
+        $alt = $image->getProperty('alternative');
+        $title = $image->getProperty('title');
+
+        // The alt-attribute is mandatory to have valid html-code, therefore add it even if it is empty
+        if (empty($this->arguments['alt'])) {
+            $this->tag->addAttribute('alt', $alt);
+        }
+        if (empty($this->arguments['title']) && $title) {
+            $this->tag->addAttribute('title', $title);
+        }
+
+        return $this->tag->render();
+    }
+
+    /**
+     * Render an inline SVG graphic
+     *
+     * @param FileInterface $processedFile Processed file
+     * @return string Inline SVG
+     */
+    protected function renderInlineSvg(FileInterface $processedFile)
+    {
+        $svgDom = new \DOMDocument();
+        $svgDom->loadXML($processedFile->getContents());
+        foreach ($this->tag->getAttributes() as $name => $value) {
+            if ($svgDom->documentElement->hasAttribute($name) && in_array($name, $this->appendAttributes)) {
+                $svgDom->documentElement->setAttribute(
+                    $name,
+                    trim($svgDom->documentElement->getAttribute($name).' '.$value)
+                );
+            } else {
+                $svgDom->documentElement->setAttribute($name, $value);
+            }
+        }
+        return $svgDom->saveXML();
     }
 
     /**

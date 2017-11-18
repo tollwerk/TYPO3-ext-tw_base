@@ -22,6 +22,14 @@ $fields = array(
             ]
         ),
     ),
+    'tx_twbase_inline' => array(
+        'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_inline',
+        'exclude' => 1,
+        'config' => array(
+            'type' => 'check',
+            'default' => 0,
+        ),
+    ),
     'tx_twbase_lazyload' => array(
         'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_lazyload',
         'exclude' => 1,
@@ -68,6 +76,6 @@ $fields = array(
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'tt_content',
     'imagelinks',
-    'tx_twbase_lazyload,tx_twbase_responsive,tx_twbase_breakpoints',
+    'tx_twbase_inline,tx_twbase_lazyload,tx_twbase_responsive,tx_twbase_breakpoints',
     'after:image_zoom'
 );

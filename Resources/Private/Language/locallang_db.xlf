@@ -70,6 +70,9 @@
 			<trans-unit id="tt_content.tx_twbase_heading_type.body" xml:space="preserve">
 				<source>Body</source>
 			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_inline" xml:space="preserve">
+				<source>Inline image</source>
+			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_lazyload" xml:space="preserve">
 				<source>Lazy loading</source>
 			</trans-unit>

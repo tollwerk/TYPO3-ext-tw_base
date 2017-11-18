@@ -452,7 +452,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param string $path File path
      * @return string Data URI
      */
-    protected function getDataUri($mimeType, $path)
+    public function getDataUri($mimeType, $path)
     {
         return 'data:'.$mimeType.';base64,'.base64_encode(file_get_contents($path));
     }

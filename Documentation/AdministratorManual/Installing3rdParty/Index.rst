@@ -36,4 +36,14 @@ Please read at https://github.com/svg/svgo for instructions on how to install **
 
 The **svgo** compressor hooks itself into the TYPO3 image manipulation process. As soon as you enable the compressor via the TypoScript constant ``compressors.svgo``, every SVG vector graphic processed by TYPO3 will be compressed by SVGO.
 
-Feel free to `configure SVGO <https://github.com/svg/svgo/blob/master/docs/how-it-works/en.md#1-config>`_ using the TypoScript key ``plugin.tx_twbase.settings.images.compress.svg``.
+You can `configure SVGO <https://github.com/svg/svgo/blob/master/docs/how-it-works/en.md#1-config>`_ using the TypoScript key ``plugin.tx_twbase.settings.images.compress.svg`` like so:
+
+.. code-block:: typoscript
+
+    plugin.tx_twbase.settings.images.svg {
+        plugins {
+            0 {
+                removeViewBox = 0
+            }
+        }
+    }

@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\Service;
 
+use Tollwerk\TwBase\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -75,7 +76,8 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
         }
 
         // Enable file compression
-        $processingInstructions['compress'] = $this->hasCompressorEnabled($image) * 1;
+        $processingInstructions['compress'] = $this->hasCompressorEnabled($image) ?
+            ArrayUtility::recursivelyFalsify($this->getImageSettings('images.compress.'.$image->getExtension())) : false;
 
         // Process the image
         $processedImage = $image->process(self::CONTEXT_IMAGECROPSCALEMASKCOMPRESS, $processingInstructions);
