@@ -61,24 +61,16 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     {
         // If the image shouldn't be inlined
         if (!$this->arguments['inline']) {
-            $skipConverter = array_filter(
-                is_array($this->arguments['skipConverter']) ?
-                    $this->arguments['skipConverter'] :
-                    GeneralUtility::trimExplode(',', $this->arguments['skipConverter'], true)
-            );
-            $availableConverters = [];
-//            foreach (array_keys($this->getResponsiveImagesUtility()->getAvailableConverters($skipConverter)) as $converter) {
-//                $availableConverters[$converter] = $this->getImageSettings('converters.'.$converter);
-//            }
+            $activeConverters = $this->getActiveConverters();
 
             // If the image should be rendered responsively
-            if ($this->arguments['responsive'] || count($availableConverters)) {
+            if ($this->arguments['responsive'] || count($activeConverters)) {
                 // Determine the breakpoint specifications or preset to use
                 $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
                 // If there are breakpoint specifications available: Render as <picture> element
-                if (!empty($breakpoints) || count($availableConverters)) {
-                    return $this->renderPicture($image, $width, $height, $breakpoints, $availableConverters);
+                if (!empty($breakpoints) || count($activeConverters)) {
+                    return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
 
                     // Else: Render with srcset?
                 } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
@@ -145,26 +137,48 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     }
 
     /**
-     * Render an inline SVG graphic
+     * Return a list of active converters
      *
-     * @param FileInterface $processedFile Processed file
-     * @return string Inline SVG
+     * @return array Active converters
      */
-    protected function renderInlineSvg(FileInterface $processedFile)
+    protected function getActiveConverters()
     {
-        $svgDom = new \DOMDocument();
-        $svgDom->loadXML($processedFile->getContents());
-        foreach ($this->tag->getAttributes() as $name => $value) {
-            if ($svgDom->documentElement->hasAttribute($name) && in_array($name, $this->appendAttributes)) {
-                $svgDom->documentElement->setAttribute(
-                    $name,
-                    trim($svgDom->documentElement->getAttribute($name).' '.$value)
-                );
-            } else {
-                $svgDom->documentElement->setAttribute($name, $value);
-            }
+        $skipConverter = array_filter(
+            is_array($this->arguments['skipConverter']) ?
+                $this->arguments['skipConverter'] :
+                GeneralUtility::trimExplode(',', $this->arguments['skipConverter'], true)
+        );
+        $activeConverters = [];
+        foreach (array_keys(
+                     $this->getResponsiveImagesUtility()->getAvailableConverters($skipConverter)
+                 ) as $converter) {
+            $activeConverters[$converter] = $this->getImageSettings('converters.'.$converter);
         }
-        return $svgDom->saveXML();
+        return $activeConverters;
+    }
+
+    /**
+     * Returns an instance of the responsive images utility
+     * This fixes an issue with DI after clearing the cache
+     *
+     * @return ResponsiveImagesUtility
+     */
+    protected function getResponsiveImagesUtility()
+    {
+        return $this->objectManager->get(ResponsiveImagesUtility::class);
+    }
+
+    /**
+     * Returns TypoSript settings array for images
+     *
+     * @param string $key Sub key
+     * @return array Image settings
+     */
+    protected function getImageSettings($key = 'images')
+    {
+        /** @var ImageService $imageService */
+        $imageService = GeneralUtility::makeInstance(ImageService::class);
+        return $imageService->getImageSettings($key);
     }
 
     /**
@@ -198,6 +212,104 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
             }
         }
         return $breakpoints;
+    }
+
+    /**
+     * Render <picture> element
+     *
+     * @param FileInterface $image Image reference
+     * @param string $width Image width
+     * @param string $height Image height
+     * @param array $breakpoints Breakpoint specifications
+     * @param array $converters File converters to apply
+     * @return string Rendered <picture> element
+     */
+    protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
+    {
+        // Get crop variants
+        $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
+        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+
+        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
+        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
+        $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
+
+        // Generate fallback image
+        $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);
+
+        // Generate picture tag
+        $this->tag = $this->getResponsiveImagesUtility()->createPictureTag(
+            $image,
+            $fallbackImage,
+            $breakpoints,
+            $cropVariantCollection,
+            $focusArea,
+            null,
+            $this->tag,
+            $this->arguments['picturefill'],
+            $this->arguments['lazyload'] ? $this->getImageSettings() : null,
+            $converters
+        );
+
+        return $this->tag->render();
+    }
+
+    /**
+     * Generates a fallback image for picture and srcset markup
+     *
+     * @param  FileInterface $image
+     * @param  string $width
+     * @param  Area $cropArea
+     *
+     * @return FileInterface
+     */
+    protected function generateFallbackImage(FileInterface $image, $width, Area $cropArea)
+    {
+        $processingInstructions = [
+            'width' => $width,
+            'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
+        ];
+        $imageService = $this->getImageService();
+        $fallbackImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
+
+        return $fallbackImage;
+    }
+
+    /**
+     * Render <img> element with srcset/sizes attributes
+     *
+     * @param  FileInterface $image Image reference
+     * @param  string $width Image width
+     * @param  string $height Image height
+     * @return string Rendered <img> element
+     */
+    protected function renderImageSrcset(FileInterface $image, $width, $height)
+    {
+        // Get crop variants
+        $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
+        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+
+        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
+        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
+        $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
+
+        // Generate fallback image
+        $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);
+
+        // Generate image tag
+        $this->tag = $this->getResponsiveImagesUtility()->createImageTagWithSrcset(
+            $image,
+            $fallbackImage,
+            $this->arguments['srcset'],
+            $cropArea,
+            $focusArea,
+            $this->arguments['sizes'],
+            $this->tag,
+            $this->arguments['picturefill'],
+            $this->arguments['lazyload'] ? $this->getImageSettings() : null
+        );
+
+        return $this->tag->render();
     }
 
     /**
@@ -255,124 +367,25 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     }
 
     /**
-     * Render <picture> element
+     * Render an inline SVG graphic
      *
-     * @param FileInterface $image Image reference
-     * @param string $width Image width
-     * @param string $height Image height
-     * @param array $breakpoints Breakpoint specifications
-     * @param array $converters File converters to apply
-     * @return string Rendered <picture> element
+     * @param FileInterface $processedFile Processed file
+     * @return string Inline SVG
      */
-    protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
+    protected function renderInlineSvg(FileInterface $processedFile)
     {
-        // Get crop variants
-        $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
-        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-
-        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
-        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
-        $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
-
-        // Generate fallback image
-        $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);
-
-        // Generate picture tag
-        $this->tag = $this->getResponsiveImagesUtility()->createPictureTag(
-            $image,
-            $fallbackImage,
-            $breakpoints,
-            $cropVariantCollection,
-            $focusArea,
-            null,
-            $this->tag,
-            $this->arguments['picturefill'],
-            $this->arguments['lazyload'] ? $this->getImageSettings() : null,
-            $converters
-        );
-
-        return $this->tag->render();
-    }
-
-    /**
-     * Render <img> element with srcset/sizes attributes
-     *
-     * @param  FileInterface $image Image reference
-     * @param  string $width Image width
-     * @param  string $height Image height
-     * @return string Rendered <img> element
-     */
-    protected function renderImageSrcset(FileInterface $image, $width, $height)
-    {
-        // Get crop variants
-        $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
-        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-
-        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
-        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
-        $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
-
-        // Generate fallback image
-        $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);
-
-        // Generate image tag
-        $this->tag = $this->getResponsiveImagesUtility()->createImageTagWithSrcset(
-            $image,
-            $fallbackImage,
-            $this->arguments['srcset'],
-            $cropArea,
-            $focusArea,
-            $this->arguments['sizes'],
-            $this->tag,
-            $this->arguments['picturefill'],
-            $this->arguments['lazyload'] ? $this->getImageSettings() : null
-        );
-
-        return $this->tag->render();
-    }
-
-    /**
-     * Generates a fallback image for picture and srcset markup
-     *
-     * @param  FileInterface $image
-     * @param  string $width
-     * @param  Area $cropArea
-     *
-     * @return FileInterface
-     */
-    protected function generateFallbackImage(FileInterface $image, $width, Area $cropArea)
-    {
-        $processingInstructions = [
-            'width' => $width,
-            'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
-        ];
-        $imageService = $this->getImageService();
-        $fallbackImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
-
-        return $fallbackImage;
-    }
-
-    /**
-     * Returns an instance of the responsive images utility
-     * This fixes an issue with DI after clearing the cache
-     *
-     * @return ResponsiveImagesUtility
-     */
-    protected function getResponsiveImagesUtility()
-    {
-        return $this->objectManager->get(ResponsiveImagesUtility::class);
-    }
-
-    /**
-     * Returns TypoSript settings array for images
-     *
-     * @param string $key Sub key
-     * @return array Image settings
-     */
-    protected function getImageSettings($key = 'images')
-    {
-        /** @var ImageService $imageService */
-        $imageService = GeneralUtility::makeInstance(ImageService::class);
-        return $imageService->getImageSettings($key);
+        $svgDom = new \DOMDocument();
+        $svgDom->loadXML($processedFile->getContents());
+        foreach ($this->tag->getAttributes() as $name => $value) {
+            if ($svgDom->documentElement->hasAttribute($name) && in_array($name, $this->appendAttributes)) {
+                $svgDom->documentElement->setAttribute(
+                    $name,
+                    trim($svgDom->documentElement->getAttribute($name).' '.$value)
+                );
+            } else {
+                $svgDom->documentElement->setAttribute($name, $value);
+            }
+        }
+        return $svgDom->saveXML();
     }
 }

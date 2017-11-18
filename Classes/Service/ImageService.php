@@ -50,15 +50,23 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
 {
     /**
+     * Extended processing context for the frontend including file compression
+     *
+     * @var string
+     */
+    const CONTEXT_IMAGECROPSCALEMASKCOMPRESS = 'Image.CropScaleMaskCompress';
+    /**
+     * Conversion context
+     *
+     * @var string
+     */
+    const CONTEXT_CONVERT = 'Image.Convert';
+    /**
      * Image settings
      *
      * @var array
      */
     protected $imageSettings = null;
-    /**
-     * Extended processing context for the frontend including file compression
-     */
-    const CONTEXT_IMAGECROPSCALEMASKCOMPRESS = 'Image.CropScaleMaskCompress';
 
     /**
      * Create a processed file
@@ -77,7 +85,9 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
 
         // Enable file compression
         $processingInstructions['compress'] = $this->hasCompressorEnabled($image) ?
-            ArrayUtility::recursivelyFalsify($this->getImageSettings('images.compress.'.$image->getExtension())) : false;
+            ArrayUtility::recursivelyFalsify(
+                $this->getImageSettings('images.compress.'.$image->getExtension())
+            ) : false;
 
         // Process the image
         $processedImage = $image->process(self::CONTEXT_IMAGECROPSCALEMASKCOMPRESS, $processingInstructions);
@@ -128,5 +138,31 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
             $imageSettings = $imageSettings[$step];
         }
         return $imageSettings;
+    }
+
+    /**
+     * Convert a file
+     *
+     * @param FileInterface|FileReference $image
+     * @param string $converter Converter key
+     * @param array $config Converter configuration
+     * @return ProcessedFile Processed file
+     * @api
+     */
+    public function convert($image, $converter, array $config = [])
+    {
+        if (is_callable([$image, 'getOriginalFile'])) {
+            // Get the original file from the file reference
+            $image = $image->getOriginalFile();
+        }
+
+        unset($config['_typoScriptNodeValue']);
+        $config['converter'] = $converter;
+
+        // Convert the image
+        $processedImage = $image->process(self::CONTEXT_CONVERT, $config);
+        $this->setCompatibilityValues($processedImage);
+
+        return $processedImage;
     }
 }

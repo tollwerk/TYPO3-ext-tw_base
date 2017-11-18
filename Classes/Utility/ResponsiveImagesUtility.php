@@ -8,6 +8,7 @@ use Tollwerk\TwBase\ViewHelpers\TagSequenceBuilder;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
@@ -15,21 +16,25 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
 class ResponsiveImagesUtility implements SingletonInterface
 {
     /**
+     * Image file extensions eligible for srcset processing
+     *
+     * @var string[]
+     */
+    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    /**
      * Object Manager
      *
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @inject
      */
     protected $objectManager;
-
     /**
      * Image Service
      *
-     * @var \TYPO3\CMS\Extbase\Service\ImageService
+     * @var \Tollwerk\TwBase\Service\ImageService
      * @inject
      */
     protected $imageService;
-
     /**
      * Default media breakpoint configuration
      *
@@ -41,20 +46,12 @@ class ResponsiveImagesUtility implements SingletonInterface
         'sizes' => '(min-width: %1$dpx) %1$dpx, 100vw',
         'srcset' => []
     ];
-
     /**
      * List of all available image converters
      *
      * @var array
      */
     protected $availableImageConverters = null;
-
-    /**
-     * Image file extensions eligible for srcset processing
-     *
-     * @var string[]
-     */
-    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
 
     /**
      * Creates an image tag with the provided srcset candidates
@@ -130,6 +127,181 @@ class ResponsiveImagesUtility implements SingletonInterface
         }
 
         return $tag;
+    }
+
+    /**
+     * Renders different image sizes for use in a srcset attribute
+     *
+     * Input:
+     *   1: $srcset = [200, 400]
+     *   2: $srcset = ['200w', '400w']
+     *   3: $srcset = ['1x', '2x']
+     *   4: $srcset = '200, 400'
+     *
+     * Output:
+     *   1+2+4: ['200w' => 'path/to/image@200w.jpg', '400w' => 'path/to/image@200w.jpg']
+     *   3: ['1x' => 'path/to/image@1x.jpg', '2x' => 'path/to/image@2x.jpg']
+     *
+     * @param  FileInterface $image Source image
+     * @param  int $defaultWidth Default width
+     * @param  array|string $srcset Srcset candidates
+     * @param  Area $cropArea Crop area
+     * @param  bool $absoluteUri Create absolute URI
+     * @return array
+     */
+    public function generateSrcsetImages(
+        FileInterface $image,
+        $defaultWidth,
+        $srcset,
+        Area $cropArea = null,
+        $absoluteUri = false
+    ) {
+        $cropArea = $cropArea ?: Area::createEmpty();
+
+        // Convert srcset input to array
+        if (!is_array($srcset)) {
+            $srcset = GeneralUtility::trimExplode(',', $srcset);
+        }
+
+        $images = [];
+        foreach ($srcset as $widthDescriptor) {
+            // Determine image width
+            switch (substr($widthDescriptor, -1)) {
+                case 'x':
+                    $candidateWidth = (int)($defaultWidth * (float)substr($widthDescriptor, 0, -1));
+                    break;
+
+                case 'w':
+                    $candidateWidth = (int)substr($widthDescriptor, 0, -1);
+                    break;
+
+                default:
+                    $candidateWidth = (int)$widthDescriptor;
+                    $widthDescriptor = $candidateWidth.'w';
+            }
+
+            // Generate image
+            $processingInstructions = [
+                'width' => $candidateWidth,
+                'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
+            ];
+            $processedImage = $this->imageService->applyProcessingInstructions($image, $processingInstructions);
+            $images[$widthDescriptor] = $this->imageService->getImageUri($processedImage, $absoluteUri);
+        }
+
+        return $images;
+    }
+
+    /**
+     * Adds metadata to image tag
+     *
+     * @param TagBuilder $tag Image tag
+     * @param FileInterface $originalImage Original image
+     * @param FileInterface $fallbackImage Fallback image
+     * @param Area $focusArea Focus area
+     * @return void
+     */
+    public function addMetadataToImageTag(
+        TagBuilder $tag,
+        FileInterface $originalImage,
+        FileInterface $fallbackImage,
+        Area $focusArea = null
+    ) {
+        $focusArea = $focusArea ?: Area::createEmpty();
+
+        // Add focus area to image tag
+        if (!$tag->hasAttribute('data-focus-area') && !$focusArea->isEmpty()) {
+            $tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($fallbackImage));
+        }
+
+        // The alt-attribute is mandatory to have valid html-code, therefore add it even if it is empty
+        $alt = $originalImage->getProperty('alternative');
+        if (!$tag->getAttribute('alt')) {
+            $tag->addAttribute('alt', $alt);
+        }
+        $title = $originalImage->getProperty('title');
+        if (!$tag->getAttribute('title') && $title) {
+            $tag->addAttribute('title', $title);
+        }
+    }
+
+    /**
+     * Adds metadata to image tag
+     *
+     * @param TagBuilder $tag Image tag
+     * @param string $imageUri Image URI
+     * @param array $imageSettings Image settings
+     * @param string $srcset Srcset (responsive image)
+     * @return TagBuilder Lazyloading image tag
+     */
+    public function addLazyloadingToImageTag(
+        TagBuilder $tag,
+        $imageUri,
+        array $imageSettings,
+        $srcset = null
+    ) {
+        $lqipService = GeneralUtility::makeInstanceService('lqip', strtolower(pathinfo($imageUri, PATHINFO_EXTENSION)));
+        $lqipUri = ($lqipService instanceof AbstractLqipService) ?
+            $lqipService->getImageLqip($imageUri, $imageSettings['lqip']) : false;
+
+        if ($lqipUri) {
+            $fallbackTag = clone $tag;
+            $fallbackTag->addAttribute('src', $imageUri);
+
+            if (strlen($srcset)) {
+                $tag->addAttribute('data-srcset', $srcset);
+                $fallbackTag->removeAttribute('sizes');
+            } else {
+                $tag->addAttribute('data-src', $imageUri);
+            }
+            $tag->addAttribute('src', $this->getDataUri('image/svg+xml', PATH_site.$lqipUri));
+            $tag->addAttribute('class', 'lazyload');
+
+            $tag = new TagSequenceBuilder([$tag, new TagBuilder('noscript', $fallbackTag->render())]);
+        } elseif (strlen($srcset)) {
+            $tag->addAttribute('srcset', $srcset);
+        } else {
+            $tag->addAttribute('src', $imageUri);
+        }
+
+        return $tag;
+    }
+
+    /**
+     * Return a base64 encoded data URI of a file
+     *
+     * @param string $mimeType MIME type
+     * @param string $path File path
+     * @return string Data URI
+     */
+    public function getDataUri($mimeType, $path)
+    {
+        return 'data:'.$mimeType.';base64,'.base64_encode(file_get_contents($path));
+    }
+
+    /**
+     * Generates the content for a srcset attribute from an array of image urls
+     *
+     * Input:
+     * [
+     *   '200w' => 'path/to/image@200w.jpg',
+     *   '400w' => 'path/to/image@400w.jpg'
+     * ]
+     *
+     * Output:
+     * 'path/to/image@200w.jpg 200w, path/to/image@400w.jpg 400w'
+     *
+     * @param  array $srcsetImages
+     *
+     * @return string
+     */
+    public function generateSrcsetAttribute(array $srcsetImages)
+    {
+        $srcsetString = [];
+        foreach ($srcsetImages as $widthDescriptor => $imageCandidate) {
+            $srcsetString[] = $imageCandidate.' '.$widthDescriptor;
+        }
+        return implode(', ', $srcsetString);
     }
 
     /**
@@ -271,26 +443,16 @@ class ResponsiveImagesUtility implements SingletonInterface
          * @var AbstractFileConverterService $converterService
          */
         foreach ($converters as $converterKey => $converterConfig) {
-            $convertedFile = $this->availableImageConverters[$converterKey]
-                ->processFile($fallbackImage->getForLocalProcessing(), $converterConfig);
-            if ($convertedFile) {
-                echo $convertedFile;
-//
-//                // Create source tag for this breakpoint
-//                $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
-//                $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset',
-//
-//                $sourceTag = $this->createPictureSourceTag(
-//                    $originalImage,
-//                    $referenceWidth,
-//                    $breakpoint['srcset'],
-//                    $breakpoint['media'],
-//                    $breakpoint['sizes'],
-//                    $cropArea,
-//                    $lazyloadSettings,
-//                    $absoluteUri
-//                );
-//                $sourceTags[] = $sourceTag->render();
+            /** @var ProcessedFile $processedImage */
+            $processedImage = $this->imageService->convert($fallbackImage, $converterKey, $converterConfig);
+            if (!$processedImage->usesOriginalFile()) {
+                $convertedImageUri = $this->imageService->getImageUri($processedImage, $absoluteUri);
+
+                // Create source tag for this breakpoint
+                $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
+                $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset', $convertedImageUri);
+                $sourceTag->addAttribute('type', $processedImage->getMimeType());
+                $sourceTags[] = $sourceTag->render();
             }
         }
 
@@ -300,6 +462,22 @@ class ResponsiveImagesUtility implements SingletonInterface
         );
 
         return $tag;
+    }
+
+    /**
+     * Normalizes the provided breakpoints configuration
+     *
+     * @param  array $breakpoints
+     * @return array
+     */
+    public function normalizeImageBreakpoints(array $breakpoints)
+    {
+        foreach ($breakpoints as &$breakpoint) {
+            $breakpoint = array_replace($this->breakpointPrototype, $breakpoint);
+        }
+        ksort($breakpoints);
+
+        return $breakpoints;
     }
 
     /**
@@ -334,8 +512,10 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Create source tag for this breakpoint
         $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
-        $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset',
-            $this->generateSrcsetAttribute($srcsetImages));
+        $sourceTag->addAttribute(
+            empty($lazyloadSettings) ? 'srcset' : 'data-srcset',
+            $this->generateSrcsetAttribute($srcsetImages)
+        );
         if ($mediaQuery) {
             $sourceTag->addAttribute('media', $mediaQuery);
         }
@@ -344,197 +524,6 @@ class ResponsiveImagesUtility implements SingletonInterface
         }
 
         return $sourceTag;
-    }
-
-    /**
-     * Adds metadata to image tag
-     *
-     * @param TagBuilder $tag Image tag
-     * @param FileInterface $originalImage Original image
-     * @param FileInterface $fallbackImage Fallback image
-     * @param Area $focusArea Focus area
-     * @return void
-     */
-    public function addMetadataToImageTag(
-        TagBuilder $tag,
-        FileInterface $originalImage,
-        FileInterface $fallbackImage,
-        Area $focusArea = null
-    ) {
-        $focusArea = $focusArea ?: Area::createEmpty();
-
-        // Add focus area to image tag
-        if (!$tag->hasAttribute('data-focus-area') && !$focusArea->isEmpty()) {
-            $tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($fallbackImage));
-        }
-
-        // The alt-attribute is mandatory to have valid html-code, therefore add it even if it is empty
-        $alt = $originalImage->getProperty('alternative');
-        if (!$tag->getAttribute('alt')) {
-            $tag->addAttribute('alt', $alt);
-        }
-        $title = $originalImage->getProperty('title');
-        if (!$tag->getAttribute('title') && $title) {
-            $tag->addAttribute('title', $title);
-        }
-    }
-
-    /**
-     * Renders different image sizes for use in a srcset attribute
-     *
-     * Input:
-     *   1: $srcset = [200, 400]
-     *   2: $srcset = ['200w', '400w']
-     *   3: $srcset = ['1x', '2x']
-     *   4: $srcset = '200, 400'
-     *
-     * Output:
-     *   1+2+4: ['200w' => 'path/to/image@200w.jpg', '400w' => 'path/to/image@200w.jpg']
-     *   3: ['1x' => 'path/to/image@1x.jpg', '2x' => 'path/to/image@2x.jpg']
-     *
-     * @param  FileInterface $image Source image
-     * @param  int $defaultWidth Default width
-     * @param  array|string $srcset Srcset candidates
-     * @param  Area $cropArea Crop area
-     * @param  bool $absoluteUri Create absolute URI
-     * @return array
-     */
-    public function generateSrcsetImages(
-        FileInterface $image,
-        $defaultWidth,
-        $srcset,
-        Area $cropArea = null,
-        $absoluteUri = false
-    ) {
-        $cropArea = $cropArea ?: Area::createEmpty();
-
-        // Convert srcset input to array
-        if (!is_array($srcset)) {
-            $srcset = GeneralUtility::trimExplode(',', $srcset);
-        }
-
-        $images = [];
-        foreach ($srcset as $widthDescriptor) {
-            // Determine image width
-            switch (substr($widthDescriptor, -1)) {
-                case 'x':
-                    $candidateWidth = (int)($defaultWidth * (float)substr($widthDescriptor, 0, -1));
-                    break;
-
-                case 'w':
-                    $candidateWidth = (int)substr($widthDescriptor, 0, -1);
-                    break;
-
-                default:
-                    $candidateWidth = (int)$widthDescriptor;
-                    $widthDescriptor = $candidateWidth.'w';
-            }
-
-            // Generate image
-            $processingInstructions = [
-                'width' => $candidateWidth,
-                'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
-            ];
-            $processedImage = $this->imageService->applyProcessingInstructions($image, $processingInstructions);
-            $images[$widthDescriptor] = $this->imageService->getImageUri($processedImage, $absoluteUri);
-        }
-
-        return $images;
-    }
-
-    /**
-     * Generates the content for a srcset attribute from an array of image urls
-     *
-     * Input:
-     * [
-     *   '200w' => 'path/to/image@200w.jpg',
-     *   '400w' => 'path/to/image@400w.jpg'
-     * ]
-     *
-     * Output:
-     * 'path/to/image@200w.jpg 200w, path/to/image@400w.jpg 400w'
-     *
-     * @param  array $srcsetImages
-     *
-     * @return string
-     */
-    public function generateSrcsetAttribute(array $srcsetImages)
-    {
-        $srcsetString = [];
-        foreach ($srcsetImages as $widthDescriptor => $imageCandidate) {
-            $srcsetString[] = $imageCandidate.' '.$widthDescriptor;
-        }
-        return implode(', ', $srcsetString);
-    }
-
-    /**
-     * Normalizes the provided breakpoints configuration
-     *
-     * @param  array $breakpoints
-     * @return array
-     */
-    public function normalizeImageBreakpoints(array $breakpoints)
-    {
-        foreach ($breakpoints as &$breakpoint) {
-            $breakpoint = array_replace($this->breakpointPrototype, $breakpoint);
-        }
-        ksort($breakpoints);
-
-        return $breakpoints;
-    }
-
-    /**
-     * Adds metadata to image tag
-     *
-     * @param TagBuilder $tag Image tag
-     * @param string $imageUri Image URI
-     * @param array $imageSettings Image settings
-     * @param string $srcset Srcset (responsive image)
-     * @return TagBuilder Lazyloading image tag
-     */
-    public function addLazyloadingToImageTag(
-        TagBuilder $tag,
-        $imageUri,
-        array $imageSettings,
-        $srcset = null
-    ) {
-        $lqipService = GeneralUtility::makeInstanceService('lqip', strtolower(pathinfo($imageUri, PATHINFO_EXTENSION)));
-        $lqipUri = ($lqipService instanceof AbstractLqipService) ?
-            $lqipService->getImageLqip($imageUri, $imageSettings['lqip']) : false;
-
-        if ($lqipUri) {
-            $fallbackTag = clone $tag;
-            $fallbackTag->addAttribute('src', $imageUri);
-
-            if (strlen($srcset)) {
-                $tag->addAttribute('data-srcset', $srcset);
-                $fallbackTag->removeAttribute('sizes');
-            } else {
-                $tag->addAttribute('data-src', $imageUri);
-            }
-            $tag->addAttribute('src', $this->getDataUri('image/svg+xml', PATH_site.$lqipUri));
-            $tag->addAttribute('class', 'lazyload');
-
-            $tag = new TagSequenceBuilder([$tag, new TagBuilder('noscript', $fallbackTag->render())]);
-        } elseif (strlen($srcset)) {
-            $tag->addAttribute('srcset', $srcset);
-        } else {
-            $tag->addAttribute('src', $imageUri);
-        }
-
-        return $tag;
-    }
-
-    /**
-     * Return a base64 encoded data URI of a file
-     *
-     * @param string $mimeType MIME type
-     * @param string $path File path
-     * @return string Data URI
-     */
-    public function getDataUri($mimeType, $path)
-    {
-        return 'data:'.$mimeType.';base64,'.base64_encode(file_get_contents($path));
     }
 
     /**

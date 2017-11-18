@@ -23,7 +23,7 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
         $canProcessTask = $task->getType() === 'Image';
         $canProcessTask = $canProcessTask & in_array(
                 $task->getName(),
-                ['Preview', 'CropScaleMask', 'CropScaleMaskCompress']
+                ['Preview', 'CropScaleMask', 'CropScaleMaskCompress', 'Convert']
             );
         return $canProcessTask;
     }
@@ -31,10 +31,10 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
     /**
      * Return the appropriate processing helper
      *
-     * This method adds a new helper type for image compression
+     * This method adds new helper type for image compression & conversion
      *
      * @param string $taskName
-     * @return LocalCropScaleMaskCompressHelper|LocalCropScaleMaskHelper|LocalPreviewHelper
+     * @return LocalCropScaleMaskCompressHelper|LocalConvertHelper|LocalCropScaleMaskHelper|LocalPreviewHelper
      * @throws \InvalidArgumentException
      */
     protected function getHelperByTaskName($taskName)
@@ -42,10 +42,14 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
         try {
             return parent::getHelperByTaskName($taskName);
         } catch (\InvalidArgumentException $e) {
-            if ($taskName == 'CropScaleMaskCompress') {
-                return GeneralUtility::makeInstance(LocalCropScaleMaskCompressHelper::class, $this);
+            switch ($taskName) {
+                case 'CropScaleMaskCompress':
+                    return GeneralUtility::makeInstance(LocalCropScaleMaskCompressHelper::class, $this);
+                case 'Convert':
+                    return GeneralUtility::makeInstance(LocalConvertHelper::class, $this);
+                default:
+                    throw $e;
             }
-            throw $e;
         }
     }
 }

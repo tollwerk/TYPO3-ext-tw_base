@@ -5,8 +5,6 @@ namespace Tollwerk\TwBase\Service;
 use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Abstract file converter service
@@ -43,11 +41,11 @@ abstract class AbstractFileConverterService extends AbstractService
     /**
      * Process a file
      *
-     * @param string $filePath File Path
+     * @param TaskInterface $task Image processing task
      * @param array $configuration Service configuration
-     * @return bool Success
+     * @return array Result
      */
-    public function processFile($filePath, array $configuration = [])
+    public function processFile(TaskInterface $task, array $configuration = [])
     {
         return false;
     }

@@ -36,6 +36,8 @@
 
 namespace Tollwerk\TwBase\Service;
 
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 
 /**
@@ -53,21 +55,39 @@ class WebpConverterService extends AbstractFileConverterService
     /**
      * Process a file
      *
-     * @param string $filePath File Path
+     * @param TaskInterface $task Image processing task
      * @param array $configuration Service configuration
-     * @return bool Success
+     * @return array Result
      */
-    public function processFile($filePath, array $configuration = [])
+    public function processFile(TaskInterface $task, array $configuration = [])
     {
-        $targetFilePath = dirname($filePath).DIRECTORY_SEPARATOR.pathinfo($filePath, PATHINFO_FILENAME).'.webp';
+        /** @var File $sourceFile */
+        $sourceFile = $task->getSourceFile();
+        $sourceFilePath = $sourceFile->getForLocalProcessing();
+        $this->registerTempFile($sourceFilePath);
+
+        $targetFilePath = dirname($sourceFilePath).DIRECTORY_SEPARATOR.pathinfo(
+                $sourceFilePath, PATHINFO_FILENAME
+            ).'.webp';
+        $this->registerTempFile($targetFilePath);
 
         $cwebpCommand = 'cwebp -q '.CommandUtility::escapeShellArgument($configuration['quality']);
-        $cwebpCommand .= ' '.CommandUtility::escapeShellArgument($filePath);
+        $cwebpCommand .= ' '.CommandUtility::escapeShellArgument($sourceFilePath);
         $cwebpCommand .= ' -o '.CommandUtility::escapeShellArgument($targetFilePath);
 
         $output = $returnValue = null;
         CommandUtility::exec($cwebpCommand, $output, $returnValue);
 
-        return $returnValue ? '' : $targetFilePath;
+        if ($returnValue) {
+            return null;
+        }
+
+        // The dimensions aren't really needed as they get determined afterwards anyway
+//        $metaData = $sourceFile->_getMetaData();
+        return [
+//            'width' => $metaData['width'],
+//            'height' => $metaData['height'],
+            'filePath' => $targetFilePath,
+        ];
     }
 }
