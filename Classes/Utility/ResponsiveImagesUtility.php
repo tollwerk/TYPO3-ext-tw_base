@@ -310,6 +310,23 @@ class ResponsiveImagesUtility implements SingletonInterface
     }
 
     /**
+     * Move attributes from one tag to anoterh
+     *
+     * @param TagBuilder $from Source tag
+     * @param TagBuilder $to Target tag
+     * @param string[] $attributes Attribute names to move
+     */
+    protected function moveAttributes(TagBuilder $from, TagBuilder $to, array $attributes = [])
+    {
+        foreach ($attributes as $attribute) {
+            if ($from->hasAttribute($attribute)) {
+                $to->addAttribute($attribute, $from->getAttribute($attribute));
+                $from->removeAttribute($attribute);
+            }
+        }
+    }
+
+    /**
      * Creates a picture tag with the provided image breakpoints
      *
      * @param FileInterface $originalImage Original image
@@ -340,6 +357,7 @@ class ResponsiveImagesUtility implements SingletonInterface
     ) {
         $tag = $tag ?: $this->objectManager->get(TagBuilder::class, 'picture');
         $fallbackTag = $fallbackTag ?: $this->objectManager->get(TagBuilder::class, 'img');
+        $this->moveAttributes($fallbackTag, $tag, ['id', 'class']);
 
         // Normalize breakpoint configuration
         $breakpoints = $this->normalizeImageBreakpoints($breakpoints);
