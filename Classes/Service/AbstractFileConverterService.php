@@ -35,7 +35,7 @@ abstract class AbstractFileConverterService extends AbstractService
 
         /** @var ImageService $imageService */
         $imageService = GeneralUtility::makeInstance(ImageService::class);
-        return (boolean)$imageService->getImageSettings($this->typoscriptEnableKey);
+        return (boolean)$imageService->getImageSettings($this->typoscriptEnableKey.'._typoScriptNodeValue');
     }
 
     /**

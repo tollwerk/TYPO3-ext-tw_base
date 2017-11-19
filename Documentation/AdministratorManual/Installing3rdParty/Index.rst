@@ -53,3 +53,11 @@ File converters
 
 WebP images
 ^^^^^^^^^^^
+
+Please read at https://developers.google.com/speed/webp for instructions on how to install the **WebP Converter** on your system. After the installation, please make sure that the ``cwebp`` binary is globally executable on your system.
+
+The **webp** converter hooks itself into the ``media`` viewhelper provided by this extension. As soon as you enable the converter via the TypoScript constant ``converters.webp``, WebP variants of all images will be created. In consequence, all standard ``<img>`` elements of your frontend output will be turned into ``<picture>`` elements with at least one ``<source>`` element (the *webp* version of your image) and the fallback image (your original one).
+
+.. note::
+
+   For browsers that don't support the ``<picture>`` element natively (e.g. IE/Edge <12, IE Mobile, Opera Mini, Blackberry browser) you might have to use `picturefill <https://github.com/scottjehl/picturefill>`_ or similar for polyfilling.

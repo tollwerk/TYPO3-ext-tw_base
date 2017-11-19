@@ -221,7 +221,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      * @param string $width Image width
      * @param string $height Image height
      * @param array $breakpoints Breakpoint specifications
-     * @param array $converters File converters to apply
+     * @param array $converters File converters
      * @return string Rendered <picture> element
      */
     protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
@@ -257,22 +257,17 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Generates a fallback image for picture and srcset markup
      *
-     * @param  FileInterface $image
-     * @param  string $width
-     * @param  Area $cropArea
-     *
-     * @return FileInterface
+     * @param FileInterface $image Original image
+     * @param string $width Width
+     * @param Area $cropArea Crop area
+     * @return FileInterface Fallback image
      */
     protected function generateFallbackImage(FileInterface $image, $width, Area $cropArea)
     {
-        $processingInstructions = [
+        return $this->getImageService()->applyProcessingInstructions($image, [
             'width' => $width,
             'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
-        ];
-        $imageService = $this->getImageService();
-        $fallbackImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
-
-        return $fallbackImage;
+        ]);
     }
 
     /**
