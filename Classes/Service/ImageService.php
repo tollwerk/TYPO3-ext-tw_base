@@ -37,6 +37,7 @@
 namespace Tollwerk\TwBase\Service;
 
 use Tollwerk\TwBase\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -151,9 +152,9 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      */
     public function convert($image, $converter, array $config = [])
     {
+        // If a processed file should be converted: Reconstitute as regular file
         if (is_callable([$image, 'getOriginalFile'])) {
-            // Get the original file from the file reference
-            $image = $image->getOriginalFile();
+            $image = new File($image->toArray(), $image->getStorage());
         }
 
         unset($config['_typoScriptNodeValue']);

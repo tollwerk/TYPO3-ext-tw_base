@@ -16,13 +16,18 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
 class ResponsiveImagesUtility implements SingletonInterface
 {
     /**
+     * Image file extensions eligible for srcset processing
+     *
+     * @var string[]
+     */
+    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    /**
      * Object Manager
      *
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
      * @inject
      */
     protected $objectManager;
-
     /**
      * Image Service
      *
@@ -30,7 +35,6 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @inject
      */
     protected $imageService;
-
     /**
      * Default media breakpoint configuration
      *
@@ -42,20 +46,12 @@ class ResponsiveImagesUtility implements SingletonInterface
         'sizes' => '(min-width: %1$dpx) %1$dpx, 100vw',
         'srcset' => []
     ];
-
     /**
      * List of all available image converters
      *
      * @var array
      */
     protected $availableImageConverters = null;
-
-    /**
-     * Image file extensions eligible for srcset processing
-     *
-     * @var string[]
-     */
-    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
 
     /**
      * Creates an image tag with the provided srcset candidates
@@ -310,23 +306,6 @@ class ResponsiveImagesUtility implements SingletonInterface
     }
 
     /**
-     * Move attributes from one tag to anoterh
-     *
-     * @param TagBuilder $from Source tag
-     * @param TagBuilder $to Target tag
-     * @param string[] $attributes Attribute names to move
-     */
-    protected function moveAttributes(TagBuilder $from, TagBuilder $to, array $attributes = [])
-    {
-        foreach ($attributes as $attribute) {
-            if ($from->hasAttribute($attribute)) {
-                $to->addAttribute($attribute, $from->getAttribute($attribute));
-                $from->removeAttribute($attribute);
-            }
-        }
-    }
-
-    /**
      * Creates a picture tag with the provided image breakpoints
      *
      * @param FileInterface $originalImage Original image
@@ -401,12 +380,14 @@ class ResponsiveImagesUtility implements SingletonInterface
         );
 
         // Add converted fallback alternatives
-        $convertedSourceTags = array_merge($convertedSourceTags, $this->createConvertedFallbackAlternatives(
+        $convertedSourceTags = array_merge(
+            $convertedSourceTags, $this->createConvertedFallbackAlternatives(
             $fallbackImage,
             $lazyloadSettings,
             $converters,
             $absoluteUri
-        ));
+        )
+        );
 
         // Finalize the fallback tag
         $fallbackTag = $this->createPictureFallbackTag(
@@ -427,55 +408,20 @@ class ResponsiveImagesUtility implements SingletonInterface
     }
 
     /**
-     * Create converted fallback image alternatives
+     * Move attributes from one tag to anoterh
      *
-     * @param FileInterface $fallbackImage Fallback image
-     * @param array $lazyloadSettings Lazyload settings
-     * @param array[] $converters File converters to apply
-     * @param bool $absoluteUri Create absolute URI
-     * @return string[] Alternative fallback image tags
+     * @param TagBuilder $from Source tag
+     * @param TagBuilder $to Target tag
+     * @param string[] $attributes Attribute names to move
      */
-    public function createConvertedFallbackAlternatives(
-        FileInterface $fallbackImage,
-        array $lazyloadSettings = null,
-        array $converters = [],
-        $absoluteUri = false
-    ) {
-        $fallbackAlternativeTags = [];
-        foreach ($converters as $converterKey => $converterConfig) {
-            /** @var ProcessedFile $processedImage */
-            $processedImage = $this->imageService->convert($fallbackImage, $converterKey, $converterConfig);
-            if (!$processedImage->usesOriginalFile()) {
-                $convertedImageUri = $this->imageService->getImageUri($processedImage, $absoluteUri);
-
-                // Create source tag for this breakpoint
-                $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
-                $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset', $convertedImageUri);
-                $sourceTag->addAttribute('type', $processedImage->getMimeType());
-                $fallbackAlternativeTags[] = $sourceTag->render();
+    protected function moveAttributes(TagBuilder $from, TagBuilder $to, array $attributes = [])
+    {
+        foreach ($attributes as $attribute) {
+            if ($from->hasAttribute($attribute)) {
+                $to->addAttribute($attribute, $from->getAttribute($attribute));
+                $from->removeAttribute($attribute);
             }
         }
-        return $fallbackAlternativeTags;
-    }
-
-    /**
-     * Convert a list of images using a particular converter
-     *
-     * @param array|ProcessedFile $images Images
-     * @param string $converter Converter key
-     * @param array $converterConfig Converter configuration
-     * @return ProcessedFile[] Converted images
-     */
-    protected function convertImages(
-        array $images,
-        $converterKey,
-        array $converterConfig = []
-    ) {
-        $imageService =& $this->imageService;
-        return array_filter(array_map(function ($image) use ($imageService, $converterKey, $converterConfig) {
-            $convertedImage = $imageService->convert($image, $converterKey, $converterConfig);
-            return $convertedImage->usesOriginalFile() ? null : $convertedImage;
-        }, $images));
     }
 
     /**
@@ -542,6 +488,7 @@ class ResponsiveImagesUtility implements SingletonInterface
                             empty($lazyloadSettings) ? 'srcset' : 'data-srcset',
                             $this->generateSrcsetAttribute($convertedSrcsetImages, $absoluteUri)
                         );
+                        $convertedSourceTag->addAttribute('type', current($convertedSrcsetImages)->getMimeType());
                         $convertedSourceTags[] = $convertedSourceTag->render();
                     }
                 }
@@ -596,6 +543,62 @@ class ResponsiveImagesUtility implements SingletonInterface
         }
 
         return $sourceTag;
+    }
+
+    /**
+     * Convert a list of images using a particular converter
+     *
+     * @param array|ProcessedFile $images Images
+     * @param string $converter Converter key
+     * @param array $converterConfig Converter configuration
+     * @return ProcessedFile[] Converted images
+     */
+    protected function convertImages(
+        array $images,
+        $converterKey,
+        array $converterConfig = []
+    ) {
+        $imageService =& $this->imageService;
+        return array_filter(
+            array_map(
+                function (ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
+                    $convertedImage = $imageService->convert($image, $converterKey, $converterConfig);
+                    return $convertedImage->usesOriginalFile() ? null : $convertedImage;
+                }, $images
+            )
+        );
+    }
+
+    /**
+     * Create converted fallback image alternatives
+     *
+     * @param FileInterface $fallbackImage Fallback image
+     * @param array $lazyloadSettings Lazyload settings
+     * @param array[] $converters File converters to apply
+     * @param bool $absoluteUri Create absolute URI
+     * @return string[] Alternative fallback image tags
+     */
+    public function createConvertedFallbackAlternatives(
+        FileInterface $fallbackImage,
+        array $lazyloadSettings = null,
+        array $converters = [],
+        $absoluteUri = false
+    ) {
+        $fallbackAlternativeTags = [];
+        foreach ($converters as $converterKey => $converterConfig) {
+            /** @var ProcessedFile $processedImage */
+            $processedImage = $this->imageService->convert($fallbackImage, $converterKey, $converterConfig);
+            if (!$processedImage->usesOriginalFile()) {
+                $convertedImageUri = $this->imageService->getImageUri($processedImage, $absoluteUri);
+
+                // Create source tag for this breakpoint
+                $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
+                $sourceTag->addAttribute(empty($lazyloadSettings) ? 'srcset' : 'data-srcset', $convertedImageUri);
+                $sourceTag->addAttribute('type', $processedImage->getMimeType());
+                $fallbackAlternativeTags[] = $sourceTag->render();
+            }
+        }
+        return $fallbackAlternativeTags;
     }
 
     /**
