@@ -21,9 +21,9 @@ class LocalConvertHelper
     {
         $result = null;
         $config = $task->getConfiguration();
-        $fileConverter = GeneralUtility::makeInstanceService('fileconvert', $config['converter']);
+        $fileConverter = GeneralUtility::makeInstanceService('fileconvert', $config['converter']['type']);
         if ($fileConverter instanceof AbstractFileConverterService) {
-            $result = $fileConverter->processFile($task, $config);
+            $result = $fileConverter->processFile($task, $config['converter']);
         }
         return $result;
     }

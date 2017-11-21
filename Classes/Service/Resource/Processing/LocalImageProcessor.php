@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\Service\Resource\Processing;
 
+use TYPO3\CMS\Core\Imaging\GraphicalFunctions;
 use TYPO3\CMS\Core\Resource\Processing\LocalCropScaleMaskHelper;
 use TYPO3\CMS\Core\Resource\Processing\LocalPreviewHelper;
 use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
@@ -51,5 +52,20 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
                     throw $e;
             }
         }
+    }
+
+    /**
+     * @return GraphicalFunctions
+     */
+    protected function getGraphicalFunctionsObject()
+    {
+        static $graphicalFunctionsObject = null;
+
+        if ($graphicalFunctionsObject === null) {
+            $graphicalFunctionsObject = GeneralUtility::makeInstance(GraphicalFunctions::class);
+            $graphicalFunctionsObject->init();
+        }
+
+        return $graphicalFunctionsObject;
     }
 }

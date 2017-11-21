@@ -70,6 +70,24 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
     protected $imageSettings = null;
 
     /**
+     * Processed file repository
+     *
+     * @var \TYPO3\CMS\Core\Resource\ProcessedFileRepository
+     */
+    protected $processedFileRepository;
+
+    /**
+     * Inject the processed file repository
+     *
+     * @param \TYPO3\CMS\Core\Resource\ProcessedFileRepository $processedFileRepository
+     */
+    public function injectProcessedFileRepository(
+        \TYPO3\CMS\Core\Resource\ProcessedFileRepository $processedFileRepository
+    ) {
+        $this->processedFileRepository = $processedFileRepository;
+    }
+
+    /**
      * Create a processed file
      *
      * @param FileInterface|FileReference $image
@@ -152,13 +170,31 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      */
     public function convert($image, $converter, array $config = [])
     {
+        unset($config['_typoScriptNodeValue']);
+        $config = [
+            'converter' => array_merge($config, [
+                'type' => $converter,
+            ])
+        ];
+
         // If a processed file should be converted: Reconstitute as regular file
         if (is_callable([$image, 'getOriginalFile'])) {
-            $image = new File($image->toArray(), $image->getStorage());
+            $config = array_replace($image->getProcessingConfiguration(), $config);
+            $image = new File([
+                'uid' => $image->getOriginalFile()->getUid(),
+                'name' => $image->getName(),
+                'extension' => $image->getExtension(),
+                'identifier' => $image->getIdentifier(),
+                'identifier_hash' => $image->getHashedIdentifier(),
+                'mime_type' => $image->getMimeType(),
+                'url' => $image->getPublicUrl(),
+                'sha1' => $image->getSha1(),
+                'modification_date' => $image->getProperty('crdate'),
+            ], $image->getOriginalFile()->getStorage(), [
+                'width' => $image->getProperty('width'),
+                'height' => $image->getProperty('height'),
+            ]);
         }
-
-        unset($config['_typoScriptNodeValue']);
-        $config['converter'] = $converter;
 
         // Convert the image
         $processedImage = $image->process(self::CONTEXT_CONVERT, $config);

@@ -18,6 +18,21 @@ class ImageConvertTask extends AbstractGraphicalTask
      */
     protected $name = 'Convert';
 
+    /**
+     * Returns the name the processed file should have in the filesystem.
+     *
+     * @return string
+     */
+    public function getTargetFileName()
+    {
+        return 'conv_'.parent::getTargetFilename();
+    }
+
+    /**
+     * Returns TRUE if the file has to be processed at all, such as e.g. the original file does.
+     *
+     * @return bool
+     */
     public function fileNeedsProcessing()
     {
         // @todo Implement fileNeedsProcessing() method.
@@ -33,7 +48,7 @@ class ImageConvertTask extends AbstractGraphicalTask
     protected function determineTargetFileExtension()
     {
         if (empty($this->configuration['fileExtension'])) {
-            switch ($this->configuration['converter']) {
+            switch ($this->configuration['converter']['type']) {
                 case 'webp':
                     return 'webp';
             }
