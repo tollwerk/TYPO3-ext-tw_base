@@ -52,16 +52,16 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Render <img> element
      *
-     * @param  FileInterface $image Image reference
-     * @param  string $width Image width
-     * @param  string $height Image height
+     * @param FileInterface $image Image reference
+     * @param string $width Image width
+     * @param string $height Image height
      * @return string Rendered <img> element
      */
     protected function renderImage(FileInterface $image, $width, $height)
     {
         // If the image shouldn't be inlined
         if (!$this->arguments['inline']) {
-            $activeConverters = $this->getActiveConverters();
+            $activeConverters = $this->getActiveConverters($image);
 
             // If the image should be rendered responsively
             if ($this->arguments['responsive'] || count($activeConverters)) {
@@ -139,9 +139,10 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Return a list of active converters
      *
+     * @param FileInterface $image Image reference
      * @return array Active converters
      */
-    protected function getActiveConverters()
+    protected function getActiveConverters(FileInterface $image)
     {
         $skipConverter = array_filter(
             is_array($this->arguments['skipConverter']) ?
@@ -149,9 +150,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
                 GeneralUtility::trimExplode(',', $this->arguments['skipConverter'], true)
         );
         $activeConverters = [];
-        foreach (array_keys(
-                     $this->getResponsiveImagesUtility()->getAvailableConverters($skipConverter)
-                 ) as $converter) {
+        $availableConverters = $this->getResponsiveImagesUtility()->getAvailableConverters($image, $skipConverter);
+        foreach (array_keys($availableConverters) as $converter) {
             $activeConverters[$converter] = $this->getImageSettings('converters.'.$converter);
         }
         return $activeConverters;

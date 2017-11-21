@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\Service;
 
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Service\AbstractService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -36,6 +37,16 @@ abstract class AbstractFileConverterService extends AbstractService
         /** @var ImageService $imageService */
         $imageService = GeneralUtility::makeInstance(ImageService::class);
         return (boolean)$imageService->getImageSettings($this->typoscriptEnableKey.'._typoScriptNodeValue');
+    }
+
+    /**
+     * Check whether this converer accepts a particular file for conversion
+     *
+     * @param FileInterface $image File
+     * @return bool File is accepted for conversion
+     */
+    public function acceptsFile(FileInterface $image) {
+        return false;
     }
 
     /**

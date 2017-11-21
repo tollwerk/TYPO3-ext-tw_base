@@ -669,17 +669,19 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Return all available image converters
      *
+     * @param FileInterface $image Image reference
      * @param array $skip Skip converters
      * @return array Available image converters
      */
-    public function getAvailableConverters(array $skip = [])
+    public function getAvailableConverters(FileInterface $image, array $skip = [])
     {
         if ($this->availableImageConverters === null) {
             $this->availableImageConverters = [];
 
             // Test if the WebP converter is available
             $webPConverterService = GeneralUtility::makeInstanceService('fileconvert', 'webp');
-            if ($webPConverterService instanceof AbstractFileConverterService) {
+            if (($webPConverterService instanceof AbstractFileConverterService)
+                && ($webPConverterService->acceptsFile($image))) {
                 $this->availableImageConverters['webp'] = $webPConverterService;
             }
         }

@@ -36,7 +36,9 @@
 
 namespace Tollwerk\TwBase\Service;
 
+use Tollwerk\TwBase\Utility\ResponsiveImagesUtility;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 
@@ -51,6 +53,17 @@ class WebpConverterService extends AbstractFileConverterService
      * @var bool|string|null
      */
     protected $typoscriptEnableKey = 'converters.webp';
+
+    /**
+     * Check whether this converer accepts a particular file for conversion
+     *
+     * @param FileInterface $image File
+     * @return bool File is accepted for conversion
+     */
+    public function acceptsFile(FileInterface $image)
+    {
+        return in_array(strtolower($image->getExtension()), ResponsiveImagesUtility::SRCSET_FILE_EXTENSIONS);
+    }
 
     /**
      * Process a file
@@ -78,16 +91,6 @@ class WebpConverterService extends AbstractFileConverterService
         $output = $returnValue = null;
         CommandUtility::exec($cwebpCommand, $output, $returnValue);
 
-        if ($returnValue) {
-            return null;
-        }
-
-        // The dimensions aren't really needed as they get determined afterwards anyway
-//        $metaData = $sourceFile->_getMetaData();
-        return [
-//            'width' => $metaData['width'],
-//            'height' => $metaData['height'],
-            'filePath' => $targetFilePath,
-        ];
+        return $returnValue ? null : ['filePath' => $targetFilePath];
     }
 }
