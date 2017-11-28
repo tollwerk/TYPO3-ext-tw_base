@@ -1,6 +1,13 @@
 # noinspection SqlNoDataSourceInspectionForFile
 
 #
+# Modifying pages table
+#
+CREATE TABLE pages (
+    tx_twbase_title_language VARCHAR(16) NOT NULL,
+);
+
+#
 # Modifying tt_content table
 #
 CREATE TABLE tt_content (

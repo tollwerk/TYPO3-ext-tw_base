@@ -19,6 +19,8 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
     use CompileWithRenderStatic;
 
     /**
+     * Escape the output
+     *
      * @var bool
      */
     protected $escapeOutput = false;
@@ -43,8 +45,6 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
      * @param \Closure $renderChildrenClosure Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      * @return mixed|string Output
-     * @throws \InvalidArgumentException
-     * @throws \UnexpectedValueException
      */
     public static function renderStatic(
         array $arguments,
@@ -61,8 +61,8 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $headlineContext = $headlineContextManager->setupContext($level, $type);
 
         $class = implode(' ', array_filter([
-            'heading heading--'.$headlineContext->getVisualType(),
-            $headlineContext->isError() ? 'heading-semantic-error' : '',
+            'Heading Heading--'.$headlineContext->getVisualType(),
+            $headlineContext->isError() ? 'Heading--semantic-error' : '',
             trim($arguments['class'])
         ]));
 

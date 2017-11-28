@@ -97,6 +97,12 @@
 			<trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
 				<source>WebP</source>
 			</trans-unit>
+			<trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
+				<source>Page title language</source>
+			</trans-unit>
+			<trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
+				<source>--- Current language ---</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>

@@ -2,8 +2,6 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
-namespace Tollwerk\TwBase\ViewHelpers;
-
 use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
 
 /**
