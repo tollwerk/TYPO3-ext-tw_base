@@ -71,7 +71,7 @@ $fields = [
     ],
 ];
 
-// Add new fields to pages:
+// Add new fields to content elements:
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('tt_content', $fields);
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(

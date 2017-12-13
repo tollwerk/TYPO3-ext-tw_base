@@ -17,17 +17,6 @@ class AttributesViewHelper extends AbstractViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * Initialize arguments
-     */
-    public function initializeArguments()
-    {
-        parent::initializeArguments();
-        $this->registerArgument('attributes', 'array', 'Arbitrary number of HTML tag attributes', false, []);
-        $this->registerArgument('nonEmptyAttributes', 'array',
-            'Arbitrary number of HTML tag attributes that only get rendered if they\'re not empty', false, []);
-    }
-
-    /**
      * Render
      *
      * @param array $arguments Arguments
@@ -41,14 +30,19 @@ class AttributesViewHelper extends AbstractViewHelper
         RenderingContextInterface $renderingContext
     ) {
         $attributes = [];
+        $returnArray = $arguments['returnArray'];
         foreach ($arguments['attributes'] as $name => $value) {
-            $attributes[] = self::renderAttribute($name, $value, false);
+            $attributes[$name] = $returnArray ?
+                (strlen(trim($value)) ? trim($value) : null) :
+                self::renderAttribute($name, $value, false);
         }
         foreach ($arguments['nonEmptyAttributes'] as $name => $value) {
-            $attributes[] = self::renderAttribute($name, $value, true);
+            $attributes[$name] = $returnArray ?
+                (strlen(trim($value)) ? trim($value) : null) :
+                self::renderAttribute($name, $value, true);
         }
         $attributes = array_filter($attributes);
-        return (count($attributes) ? ' ' : '').implode(' ', $attributes);
+        return $returnArray ? $attributes : ((count($attributes) ? ' ' : '').implode(' ', $attributes));
     }
 
     /**
@@ -70,5 +64,19 @@ class AttributesViewHelper extends AbstractViewHelper
             $attribute .= '="'.htmlspecialchars(trim($value)).'"';
         }
         return $attribute;
+    }
+
+    /**
+     * Initialize arguments
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('attributes', 'array', 'Arbitrary number of HTML tag attributes', false, []);
+        $this->registerArgument(
+            'nonEmptyAttributes', 'array',
+            'Arbitrary number of HTML tag attributes that only get rendered if they\'re not empty', false, []
+        );
+        $this->registerArgument('returnArray', 'boolean', 'Return an attribute list instead of string', false, false);
     }
 }

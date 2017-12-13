@@ -8,6 +8,13 @@ CREATE TABLE pages (
 );
 
 #
+# Modifying pages_language_overlay table
+#
+CREATE TABLE pages_language_overlay (
+    tx_twbase_title_language VARCHAR(16) NOT NULL,
+);
+
+#
 # Modifying tt_content table
 #
 CREATE TABLE tt_content (

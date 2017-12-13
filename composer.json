@@ -1,19 +1,16 @@
 {
-    "name": "tollwerk/tw-base",
-    "type": "typo3-cms-extension",
-    "description": "Essentials and modern building blocks",
-    "authors": [
-        {
-            "name": "Joschi Kuphal",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "typo3/cms-core": "^8.7.1"
-    },
-    "autoload": {
-        "psr-4": {
-            "Tollwerk\\TwBase\\": "Classes"
-        }
+  "name": "tollwerk/tw-base",
+  "type": "typo3-cms-extension",
+  "description": "Essentials and modern building blocks",
+  "authors": [
+    {
+      "name": "Joschi Kuphal",
+      "role": "Developer"
     }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Tollwerk\\TwBase\\": "Classes"
+    }
+  }
 }
