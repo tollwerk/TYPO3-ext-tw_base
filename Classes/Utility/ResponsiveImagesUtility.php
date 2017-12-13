@@ -25,14 +25,12 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Object Manager
      *
      * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     * @inject
      */
     protected $objectManager;
     /**
      * Image Service
      *
      * @var \Tollwerk\TwBase\Service\ImageService
-     * @inject
      */
     protected $imageService;
     /**
@@ -52,6 +50,26 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @var array
      */
     protected $availableImageConverters = null;
+
+    /**
+     * Inject the object manager
+     *
+     * @param \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager
+     */
+    public function setObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManager $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
+
+    /**
+     * Inject the image service
+     *
+     * @param \Tollwerk\TwBase\Service\ImageService $imageService
+     */
+    public function setImageService(\Tollwerk\TwBase\Service\ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
 
     /**
      * Creates an image tag with the provided srcset candidates

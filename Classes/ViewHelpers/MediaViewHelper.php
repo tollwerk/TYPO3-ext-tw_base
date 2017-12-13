@@ -17,15 +17,40 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      * Configuration manager
      *
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
-     * @inject
      */
     protected $configurationManager;
+    /**
+     * Object manager
+     *
+     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     */
+    protected $objectManager;
     /**
      * SVG attributes to append (instead of overwrite)
      *
      * @var array
      */
     protected $appendAttributes = ['class'];
+
+    /**
+     * Inject the configuration manager
+     *
+     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     */
+    public function injectConfigurationManager(\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager)
+    {
+        $this->configurationManager = $configurationManager;
+    }
+
+    /**
+     * Inject the object manager
+     *
+     * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
+     */
+    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
+    {
+        $this->objectManager = $objectManager;
+    }
 
     /**
      * Initialize arguments
@@ -59,81 +84,81 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      */
     protected function renderImage(FileInterface $image, $width, $height)
     {
-        // If the image shouldn't be inlined
-        if (!$this->arguments['inline']) {
-            $activeConverters = $this->getActiveConverters($image);
+            // If the image shouldn't be inlined
+            if (!$this->arguments['inline']) {
+                $activeConverters = $this->getActiveConverters($image);
 
-            // If the image should be rendered responsively
-            if ($this->arguments['responsive'] || count($activeConverters)) {
-                // Determine the breakpoint specifications or preset to use
-                $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
+                // If the image should be rendered responsively
+                if ($this->arguments['responsive'] || count($activeConverters)) {
+                    // Determine the breakpoint specifications or preset to use
+                    $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
-                // If there are breakpoint specifications available: Render as <picture> element
-                if (!empty($breakpoints) || count($activeConverters)) {
-                    return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
+                    // If there are breakpoint specifications available: Render as <picture> element
+                    if (!empty($breakpoints) || count($activeConverters)) {
+                        return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
 
-                    // Else: Render with srcset?
-                } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
-                    return $this->renderImageSrcset($image, $width, $height);
+                        // Else: Render with srcset?
+                    } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
+                        return $this->renderImageSrcset($image, $width, $height);
+                    }
+                }
+
+                // If the image should be lazyloaded
+                if ($this->arguments['lazyload']) {
+                    return $this->renderLazyloadImage($image, $width, $height);
                 }
             }
 
-            // If the image should be lazyloaded
-            if ($this->arguments['lazyload']) {
-                return $this->renderLazyloadImage($image, $width, $height);
+            // Return a regular image
+            $cropVariant = $this->arguments['cropVariant'] ?: 'default';
+            $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
+            $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+            $cropArea = $cropVariantCollection->getCropArea($cropVariant);
+            $processingInstructions = [
+                'width' => $width,
+                'height' => $height,
+                'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
+            ];
+            $imageService = $this->getImageService();
+            $processedImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
+
+            // If this image should be inlined
+            if ($this->arguments['inline']) {
+                // SVG: Return as Inline SVG
+                if ($processedImage->getExtension() == 'svg') {
+                    return $this->renderInlineSvg($processedImage);
+                }
+
+                $imageUri = $this->getResponsiveImagesUtility()->getDataUri(
+                    $processedImage->getMimeType(),
+                    $processedImage->getForLocalProcessing()
+                );
+            } else {
+                $imageUri = $imageService->getImageUri($processedImage);
             }
-        }
 
-        // Return a regular image
-        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
-        $cropString = $image instanceof FileReference ? $image->getProperty('crop') : '';
-        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-        $cropArea = $cropVariantCollection->getCropArea($cropVariant);
-        $processingInstructions = [
-            'width' => $width,
-            'height' => $height,
-            'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
-        ];
-        $imageService = $this->getImageService();
-        $processedImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
+            if (!$this->tag->hasAttribute('data-focus-area')) {
+                $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
+                if (!$focusArea->isEmpty()) {
+                    $this->tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($image));
+                }
+            }
+            $this->tag->addAttribute('src', $imageUri);
+            $this->tag->addAttribute('width', $processedImage->getProperty('width'));
+            $this->tag->addAttribute('height', $processedImage->getProperty('height'));
 
-        // If this image should be inlined
-        if ($this->arguments['inline']) {
-            // SVG: Return as Inline SVG
-            if ($processedImage->getExtension() == 'svg') {
-                return $this->renderInlineSvg($processedImage);
+            $alt = $image->getProperty('alternative');
+            $title = $image->getProperty('title');
+
+            // The alt-attribute is mandatory to have valid html-code, therefore add it even if it is empty
+            if (empty($this->arguments['alt'])) {
+                $this->tag->addAttribute('alt', $alt);
+            }
+            if (empty($this->arguments['title']) && $title) {
+                $this->tag->addAttribute('title', $title);
             }
 
-            $imageUri = $this->getResponsiveImagesUtility()->getDataUri(
-                $processedImage->getMimeType(),
-                $processedImage->getForLocalProcessing()
-            );
-        } else {
-            $imageUri = $imageService->getImageUri($processedImage);
-        }
-
-        if (!$this->tag->hasAttribute('data-focus-area')) {
-            $focusArea = $cropVariantCollection->getFocusArea($cropVariant);
-            if (!$focusArea->isEmpty()) {
-                $this->tag->addAttribute('data-focus-area', $focusArea->makeAbsoluteBasedOnFile($image));
-            }
-        }
-        $this->tag->addAttribute('src', $imageUri);
-        $this->tag->addAttribute('width', $processedImage->getProperty('width'));
-        $this->tag->addAttribute('height', $processedImage->getProperty('height'));
-
-        $alt = $image->getProperty('alternative');
-        $title = $image->getProperty('title');
-
-        // The alt-attribute is mandatory to have valid html-code, therefore add it even if it is empty
-        if (empty($this->arguments['alt'])) {
-            $this->tag->addAttribute('alt', $alt);
-        }
-        if (empty($this->arguments['title']) && $title) {
-            $this->tag->addAttribute('title', $title);
-        }
-
-        return $this->tag->render();
+            return $this->tag->render();
     }
 
     /**
