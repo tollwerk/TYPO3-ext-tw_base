@@ -56,7 +56,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @param \TYPO3\CMS\Extbase\Object\ObjectManager $objectManager
      */
-    public function setObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManager $objectManager)
+    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManager $objectManager)
     {
         $this->objectManager = $objectManager;
     }
@@ -66,7 +66,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @param \Tollwerk\TwBase\Service\ImageService $imageService
      */
-    public function setImageService(\Tollwerk\TwBase\Service\ImageService $imageService)
+    public function injectImageService(\Tollwerk\TwBase\Service\ImageService $imageService)
     {
         $this->imageService = $imageService;
     }
