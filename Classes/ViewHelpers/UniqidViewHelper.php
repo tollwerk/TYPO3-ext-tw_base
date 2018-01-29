@@ -24,6 +24,7 @@ class UniqidViewHelper extends AbstractViewHelper
         parent::initializeArguments();
         $this->registerArgument('prefix', 'string', 'ID prefix', true);
         $this->registerArgument('data', 'mixed', 'Data to create the unique ID from', true);
+        $this->registerArgument('prefer', 'string', 'Preferred ID (if not empty)', false);
     }
 
     /**
@@ -41,6 +42,10 @@ class UniqidViewHelper extends AbstractViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
+        if (!empty($arguments['prefer'])) {
+            return $arguments['prefer'];
+        }
+
         // If it's a scalar component value
         if (is_scalar($arguments['data'])) {
             return $arguments['prefix'].substr(md5($arguments['data']), 0, 10);
