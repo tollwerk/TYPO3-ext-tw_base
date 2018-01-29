@@ -29,14 +29,27 @@ class ListViewHelper extends AbstractViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
+        return self::renderAttributes($arguments['attributes'], $arguments['nonEmptyAttributes'],
+            $arguments['returnArray']);
+    }
+
+    /**
+     * Render the list of attributes
+     *
+     * @param array $stdAttributes Attributes
+     * @param array $nonEmptyAttributes Non-empty attributes
+     * @param boolean $returnArray Return a list of attributes instead of an HTML string
+     * @return array|string List of attributes / HTML attribute string
+     */
+    protected function renderAttributes(array $stdAttributes, array $nonEmptyAttributes, $returnArray)
+    {
         $attributes = [];
-        $returnArray = $arguments['returnArray'];
-        foreach ($arguments['attributes'] as $name => $value) {
+        foreach ($stdAttributes as $name => $value) {
             $attributes[$name] = $returnArray ?
                 (strlen(trim($value)) ? trim($value) : null) :
                 self::renderAttribute($name, $value, false);
         }
-        foreach ($arguments['nonEmptyAttributes'] as $name => $value) {
+        foreach ($nonEmptyAttributes as $name => $value) {
             $attributes[$name] = $returnArray ?
                 (strlen(trim($value)) ? trim($value) : null) :
                 self::renderAttribute($name, $value, true);
