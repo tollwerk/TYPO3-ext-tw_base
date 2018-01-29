@@ -1,6 +1,6 @@
 <?php
 
-namespace Tollwerk\TwBase\ViewHelpers;
+namespace Tollwerk\TwBase\ViewHelpers\Attributes;
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -9,7 +9,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 /**
  * Render a list of HTML attributes to be added to an element
  */
-class AttributesViewHelper extends AbstractViewHelper
+class ListViewHelper extends AbstractViewHelper
 {
     /**
      * Enable static rendering
