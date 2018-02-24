@@ -4,20 +4,13 @@ namespace Tollwerk\TwBase\ViewHelpers;
 
 use Tollwerk\TwBase\Utility\HeadlineContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
  * Heading view helper
  */
 class HeadingViewHelper extends AbstractTagBasedViewHelper
 {
-    /**
-     * Enable static rendering
-     */
-    use CompileWithRenderStatic;
-
     /**
      * Escape the output
      *
@@ -32,27 +25,21 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
-        $this->registerTagAttribute('level', 'int', 'Headline level', false, null);
-        $this->registerTagAttribute('type', 'string', 'Visual type', false, 'medium');
-        $this->registerTagAttribute('hidden', 'boolean', 'Hide heading', false, false);
-        $this->registerTagAttribute('content', 'string', 'Headline content', true);
+        $this->registerArgument('level', 'int', 'Headline level', false, null);
+        $this->registerArgument('type', 'string', 'Visual type', false, 'medium');
+        $this->registerArgument('hidden', 'boolean', 'Hide heading', false, false);
+        $this->registerArgument('content', 'string', 'Headline content', true);
     }
 
     /**
-     * Render
+     * Render the heading
      *
-     * @param array $arguments Arguments
-     * @param \Closure $renderChildrenClosure Children rendering closure
-     * @param RenderingContextInterface $renderingContext Rendering context
-     * @return mixed|string Output
+     * @return string Heading
      */
-    public static function renderStatic(
-        array $arguments,
-        \Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $level = $arguments['level'];
-        $type = $arguments['type'];
+    public function render()
+    {
+        $level = $this->arguments['level'];
+        $type = $this->arguments['type'];
 
         /** @var HeadlineContextManager $headlineContextManager */
         $headlineContextManager = GeneralUtility::makeInstance(HeadlineContextManager::class);
@@ -63,15 +50,14 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $class = implode(' ', array_filter([
             'Heading Heading--'.$headlineContext->getVisualType(),
             $headlineContext->isError() ? 'Heading--semantic-error' : '',
-            trim($arguments['class'])
+            trim($this->arguments['class'])
         ]));
 
         $headingLevel = $headlineContext->getLevel();
-        $headingElement = ($headingLevel > 6) ? 'div' : 'h'.$headingLevel;
-        $headingTag = '<'.$headingElement.' class="'.htmlspecialchars($class).'">';
-        $headingTag .= $arguments['content'];
-        $headingTag .= '</'.$headingElement.'>'.PHP_EOL;
-        $content = $headingTag.(string)$renderChildrenClosure();
+        $this->tag->setTagName(($headingLevel > 6) ? 'div' : 'h'.$headingLevel);
+        $this->tag->addAttribute('class', $class);
+        $this->tag->setContent($this->arguments['content']);
+        $content = parent::render().$this->renderChildren();
 
         // Tear down the headline context
         $headlineContextManager->tearDownContext($headlineContext);
