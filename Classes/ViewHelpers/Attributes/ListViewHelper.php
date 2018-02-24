@@ -29,8 +29,11 @@ class ListViewHelper extends AbstractViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        return self::renderAttributes($arguments['attributes'], $arguments['nonEmptyAttributes'],
-            $arguments['returnArray']);
+        return self::renderAttributes(
+            (array)$arguments['attributes'],
+            (array)$arguments['nonEmptyAttributes'],
+            $arguments['returnArray']
+        );
     }
 
     /**
@@ -85,7 +88,7 @@ class ListViewHelper extends AbstractViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('attributes', 'array', 'Arbitrary number of HTML tag attributes', false, []);
+        $this->registerArgument('attributes', 'mixed', 'Arbitrary number of HTML tag attributes', false, []);
         $this->registerArgument(
             'nonEmptyAttributes', 'array',
             'Arbitrary number of HTML tag attributes that only get rendered if they\'re not empty', false, []
