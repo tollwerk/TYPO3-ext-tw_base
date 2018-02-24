@@ -2,7 +2,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
-use TYPO3\CMS\Fluid\Core\ViewHelper\TagBuilder;
+use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 /**
  * Tag sequence builder
