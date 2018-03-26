@@ -110,3 +110,13 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.Convert'
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Resource\\Processing\\LocalImageProcessor'] = [
     'className' => 'Tollwerk\\TwBase\\Service\\Resource\\Processing\\LocalImageProcessor',
 ];
+
+// Register the tel link builder
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['linkHandler']['tel'] = \Tollwerk\TwBase\LinkHandling\TelLinkBuilder::class;
+
+// Register an icon for the tel links
+\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
+    'tx-base-tel',
+    \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
+    ['source' => 'EXT:tw_base/Resources/Public/Icons/tel.png']
+);

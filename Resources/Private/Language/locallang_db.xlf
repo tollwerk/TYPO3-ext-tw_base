@@ -103,6 +103,12 @@
 			<trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
 				<source>--- Current language ---</source>
 			</trans-unit>
+			<trans-unit id="linkbrowse.tel" xml:space="preserve">
+				<source>Telecom</source>
+			</trans-unit>
+			<trans-unit id="linkbrowse.number" xml:space="preserve">
+				<source>Telecom number</source>
+			</trans-unit>
         </body>
     </file>
 </xliff>
