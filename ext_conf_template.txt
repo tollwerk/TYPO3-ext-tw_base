@@ -1,0 +1,2 @@
+# cat=basic; type=string; label=Global viewhelper namespace prefix: If set, the base viewhelpers will be globally registered with all Fluid templates using this prefix
+globalNSPrefix =
