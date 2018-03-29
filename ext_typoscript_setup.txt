@@ -1,0 +1,11 @@
+config.tx_extbase {
+	persistence {
+		classes {
+			Tollwerk\TwBase\Domain\Model\Country {
+				mapping {
+					tableName = static_countries
+				}
+			}
+		}
+	}
+}

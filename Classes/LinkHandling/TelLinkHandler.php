@@ -5,9 +5,9 @@ namespace Tollwerk\TwBase\LinkHandling;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Recordlist\Controller\AbstractLinkBrowserController;
 use TYPO3\CMS\Recordlist\LinkHandler\AbstractLinkHandler;
 use TYPO3\CMS\Recordlist\LinkHandler\LinkHandlerInterface;
-use TYPO3\CMS\Recordlist\Controller\AbstractLinkBrowserController;
 
 /**
  * Link handler for tel links
@@ -56,6 +56,7 @@ class TelLinkHandler extends AbstractLinkHandler implements LinkHandlerInterface
     {
         if ($linkParts['type'] === 'tel') {
             $this->linkParts = $linkParts;
+            $this->linkParts['url'] = ['number' => $this->linkParts['url']['value']];
             return true;
         }
         return false;
@@ -68,7 +69,7 @@ class TelLinkHandler extends AbstractLinkHandler implements LinkHandlerInterface
      */
     public function formatCurrentUrl()
     {
-        return $this->linkParts['url']['value'];
+        return $this->linkParts['url']['number'];
     }
 
     /**
@@ -82,7 +83,7 @@ class TelLinkHandler extends AbstractLinkHandler implements LinkHandlerInterface
     {
         GeneralUtility::makeInstance(PageRenderer::class)->loadRequireJsModule('TYPO3/CMS/TwBase/TelLinkHandler');
 
-        $this->view->assign('number', !empty($this->linkParts) ? $this->linkParts['url']['value'] : '');
+        $this->view->assign('number', !empty($this->linkParts) ? $this->linkParts['url']['number'] : '');
         return $this->view->render('Tel');
     }
 
@@ -104,6 +105,8 @@ class TelLinkHandler extends AbstractLinkHandler implements LinkHandlerInterface
     public function initialize(AbstractLinkBrowserController $linkBrowser, $identifier, array $configuration)
     {
         parent::initialize($linkBrowser, $identifier, $configuration);
-        $this->view->setTemplateRootPaths([GeneralUtility::getFileAbsFileName('EXT:tw_base/Resources/Private/Templates/LinkBrowser')]);
+        $this->view->setTemplateRootPaths(
+            [GeneralUtility::getFileAbsFileName('EXT:tw_base/Resources/Private/Templates/LinkBrowser')]
+        );
     }
 }
