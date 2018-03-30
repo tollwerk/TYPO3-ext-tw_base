@@ -49,6 +49,9 @@
 			<trans-unit id="images.sizes" xml:space="preserve">
 				<source>Sizes Query for Responsive Images: Sizes query which tells the browser which of the image sizes should be used in the current environment (%1$d can be used as a placeholder for the calculated image width)</source>
 			</trans-unit>
+			<trans-unit id="images.picturefill" xml:space="preserve">
+				<source>Use rendering suggested by picturefill.js and omit the src attribute: See https://github.com/scottjehl/picturefill#the-gotchas for an explanation</source>
+			</trans-unit>
 			<trans-unit id="images.lazyload.lqipmode" xml:space="preserve">
 				<source>Lazyload preview image mode: The mode used for generating low-quality lazyloading preview images (LQIP)</source>
 			</trans-unit>

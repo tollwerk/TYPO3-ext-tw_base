@@ -76,14 +76,14 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @param FileInterface $originalImage Original image
      * @param FileInterface $fallbackImage Fallback Image
-     * @param array|string $srcset Srcset candidates
-     * @param Area $cropArea Crop area
-     * @param Area $focusArea Focus area
-     * @param string $sizesQuery Sizes query
-     * @param TagBuilder $tag Tag builder
-     * @param bool $picturefillMarkup Add picturefill markup
-     * @param array $lazyloadSettings Lazyload settings
-     * @param bool $absoluteUri Create absolute URI
+     * @param array|string $srcset         Srcset candidates
+     * @param Area $cropArea               Crop area
+     * @param Area $focusArea              Focus area
+     * @param string $sizesQuery           Sizes query
+     * @param TagBuilder $tag              Tag builder
+     * @param bool $picturefillMarkup      Add picturefill markup
+     * @param array $lazyloadSettings      Lazyload settings
+     * @param bool $absoluteUri            Create absolute URI
      *
      * @return TagBuilder Image tag
      */
@@ -162,9 +162,9 @@ class ResponsiveImagesUtility implements SingletonInterface
      *   3: ['1x' => 'path/to/image@1x.jpg', '2x' => 'path/to/image@2x.jpg']
      *
      * @param  FileInterface $image Source image
-     * @param  int $defaultWidth Default width
+     * @param  int $defaultWidth    Default width
      * @param  array|string $srcset Srcset candidates
-     * @param  Area $cropArea Crop area
+     * @param  Area $cropArea       Crop area
      *
      * @return ProcessedFile[] Srcset images
      */
@@ -214,10 +214,10 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Adds metadata to an image tag
      *
-     * @param TagBuilder $tag Image tag
+     * @param TagBuilder $tag              Image tag
      * @param FileInterface $originalImage Original image
      * @param FileInterface $fallbackImage Fallback image
-     * @param Area $focusArea Focus area
+     * @param Area $focusArea              Focus area
      *
      * @return TagBuilder Image tag
      */
@@ -250,10 +250,10 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Adds lazyloading data to an image tag
      *
-     * @param TagBuilder $tag Image tag
-     * @param string $imageUri Image URI
+     * @param TagBuilder $tag      Image tag
+     * @param string $imageUri     Image URI
      * @param array $imageSettings Image settings
-     * @param string $srcset Srcset (responsive image)
+     * @param string $srcset       Srcset (responsive image)
      *
      * @return TagBuilder Lazyloading image tag
      */
@@ -294,7 +294,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Return a base64 encoded data URI for a file
      *
      * @param string $mimeType MIME type
-     * @param string $path File path
+     * @param string $path     File path
      *
      * @return string Data URI
      */
@@ -316,7 +316,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * 'path/to/image@200w.jpg 200w, path/to/image@400w.jpg 400w'
      *
      * @param ProcessedFile[] $srcsetImages Srcset images
-     * @param bool $absoluteUri Create absolute URI
+     * @param bool $absoluteUri             Create absolute URI
      *
      * @return string Srcset attribute
      */
@@ -333,17 +333,17 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Creates a picture tag with the provided image breakpoints
      *
-     * @param FileInterface $originalImage Original image
-     * @param FileInterface $fallbackImage Fallback Image
-     * @param array $breakpoints Breakpoints
+     * @param FileInterface $originalImage                 Original image
+     * @param FileInterface $fallbackImage                 Fallback Image
+     * @param array $breakpoints                           Breakpoints
      * @param CropVariantCollection $cropVariantCollection Crop variants
-     * @param Area $focusArea Focus area
-     * @param TagBuilder $tag Tag builder
-     * @param TagBuilder $fallbackTag Fallback tag builder
-     * @param bool $picturefillMarkup Add picturefill markup
-     * @param array $lazyloadSettings Lazyload settings
-     * @param array[] $converters File converters to apply
-     * @param bool $absoluteUri Create absolute URI
+     * @param Area $focusArea                              Focus area
+     * @param TagBuilder $tag                              Tag builder
+     * @param TagBuilder $fallbackTag                      Fallback tag builder
+     * @param bool $picturefillMarkup                      Add picturefill markup
+     * @param array $lazyloadSettings                      Lazyload settings
+     * @param array[] $converters                          File converters to apply
+     * @param bool $absoluteUri                            Create absolute URI
      *
      * @return TagBuilder Picture tag
      */
@@ -436,8 +436,8 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Move attributes from one tag to anoterh
      *
-     * @param TagBuilder $from Source tag
-     * @param TagBuilder $to Target tag
+     * @param TagBuilder $from     Source tag
+     * @param TagBuilder $to       Target tag
      * @param string[] $attributes Attribute names to move
      */
     protected function moveAttributes(TagBuilder $from, TagBuilder $to, array $attributes = [])
@@ -470,13 +470,13 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Creates and convert the source tags for a picture element
      *
-     * @param FileInterface $originalImage Original image
-     * @param array $breakpoints Breakpoints
+     * @param FileInterface $originalImage                 Original image
+     * @param array $breakpoints                           Breakpoints
      * @param CropVariantCollection $cropVariantCollection Crop variants
-     * @param int $defaultWidth Default width
-     * @param array $lazyloadSettings Lazyload settings
-     * @param array[] $converters File converters to apply
-     * @param bool $absoluteUri Create absolute URI
+     * @param int $defaultWidth                            Default width
+     * @param array $lazyloadSettings                      Lazyload settings
+     * @param array[] $converters                          File converters to apply
+     * @param bool $absoluteUri                            Create absolute URI
      *
      * @return array[] Source tags (regular and converted)
      */
@@ -531,13 +531,13 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Creates a source tag that can be used inside of a picture tag
      *
      * @param FileInterface $originalImage Original image
-     * @param int $defaultWidth Default width
-     * @param array|string $srcset Srcset candidates
-     * @param string $mediaQuery Media query
-     * @param string $sizesQuery Sizes query
-     * @param Area $cropArea Crop area
-     * @param array $lazyloadSettings Lazyload settings
-     * @param bool $absoluteUri Create absolute URI
+     * @param int $defaultWidth            Default width
+     * @param array|string $srcset         Srcset candidates
+     * @param string $mediaQuery           Media query
+     * @param string $sizesQuery           Sizes query
+     * @param Area $cropArea               Crop area
+     * @param array $lazyloadSettings      Lazyload settings
+     * @param bool $absoluteUri            Create absolute URI
      * @param array ProcessedFile[] $srcsetImages Generated srcset images
      *
      * @return TagBuilder Source tag
@@ -579,8 +579,8 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Convert a list of images using a particular converter
      *
      * @param array|ProcessedFile $images Images
-     * @param string $converter Converter key
-     * @param array $converterConfig Converter configuration
+     * @param string $converter           Converter key
+     * @param array $converterConfig      Converter configuration
      *
      * @return ProcessedFile[] Converted images
      */
@@ -606,9 +606,9 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Create converted fallback image alternatives
      *
      * @param FileInterface $fallbackImage Fallback image
-     * @param array $lazyloadSettings Lazyload settings
-     * @param array[] $converters File converters to apply
-     * @param bool $absoluteUri Create absolute URI
+     * @param array $lazyloadSettings      Lazyload settings
+     * @param array[] $converters          File converters to apply
+     * @param bool $absoluteUri            Create absolute URI
      *
      * @return string[] Alternative fallback image tags
      */
@@ -642,10 +642,10 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param TagBuilder|null $fallbackTag Fallback tag
      * @param FileInterface $originalImage Original image
      * @param FileInterface $fallbackImage Fallback image
-     * @param int $referenceWidth Reference width
-     * @param bool $picturefillMarkup Add picturefill markup
-     * @param bool $absoluteUri Create absolute URI
-     * @param Area|null $focusArea Focus area
+     * @param int $referenceWidth          Reference width
+     * @param bool $picturefillMarkup      Add picturefill markup
+     * @param bool $absoluteUri            Create absolute URI
+     * @param Area|null $focusArea         Focus area
      * @param array|null $lazyloadSettings Lazyload settings
      *
      * @return TagBuilder Fallback tag
@@ -707,7 +707,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Return all available image converters
      *
      * @param FileInterface $image Image reference
-     * @param array $skip Skip converters
+     * @param array $skip          Skip converters
      *
      * @return array Available image converters
      */

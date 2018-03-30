@@ -59,16 +59,20 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('srcset', 'mixed', 'Image sizes that should be rendered.', false);
+        $this->registerArgument('srcset', 'mixed', 'Image sizes that should be rendered', false);
         $this->registerArgument(
             'sizes',
             'string',
-            'Sizes query for responsive image.',
+            'Sizes query for responsive image',
             false,
             '(min-width: %1$dpx) %1$dpx, 100vw'
         );
         $this->registerArgument('breakpoints', 'mixed', 'Image breakpoint specifications or preset key', false);
-        $this->registerArgument('picturefill', 'bool', 'Use rendering suggested by picturefill.js', false, true);
+        $this->registerArgument('picturefill', 'bool',
+            'Use rendering suggested by picturefill.js and omit the src attribute (see https://github.com/scottjehl/picturefill#the-gotchas)',
+            false,
+            false
+        );
         $this->registerArgument('responsive', 'bool', 'Render responsive image', false, true);
         $this->registerArgument('lazyload', 'bool', 'Use lazyloading', false, false);
         $this->registerArgument('inline', 'bool', 'Inline the image using a data URI', false, false);
@@ -337,12 +341,11 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     protected function renderImageSrcset(FileInterface $image, $width, $height)
     {
         // Get crop variants
+        $cropVariant           = $this->arguments['cropVariant'] ?: 'default';
         $cropString            = $image instanceof FileReference ? $image->getProperty('crop') : '';
         $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-
-        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
-        $cropArea    = $cropVariantCollection->getCropArea($cropVariant);
-        $focusArea   = $cropVariantCollection->getFocusArea($cropVariant);
+        $cropArea              = $cropVariantCollection->getCropArea($cropVariant);
+        $focusArea             = $cropVariantCollection->getFocusArea($cropVariant);
 
         // Generate fallback image
         $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);

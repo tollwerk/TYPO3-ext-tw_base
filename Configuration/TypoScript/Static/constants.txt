@@ -37,14 +37,17 @@ plugin.tx_twbase {
             # cat=plugin.tx_twbase/images/b; type=string; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.sizes
             sizes = (min-width: %1$dpx) %1$dpx, 100vw
 
+            # cat=plugin.tx_twbase/images/c; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.picturefill
+            picturefill = 0
+
             lqip {
-                # cat=plugin.tx_twbase/images/c; type=options[Combo=0, Triangle=1, Rect=2, Ellipse=3, Circle=4, Rotatedrect=5, Beziers=6, Rotatedellipse=7, Polygon=0]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.lazyload.lqipmode
+                # cat=plugin.tx_twbase/images/d; type=options[Combo=0, Triangle=1, Rect=2, Ellipse=3, Circle=4, Rotatedrect=5, Beziers=6, Rotatedellipse=7, Polygon=0]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.lazyload.lqipmode
                 mode = 3
 
-                # cat=plugin.tx_twbase/images/d; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.lazyload.lqipnum
+                # cat=plugin.tx_twbase/images/e; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.lazyload.lqipnum
                 num = 8
 
-                # cat=plugin.tx_twbase/images/e; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.lazyload.lqipblur
+                # cat=plugin.tx_twbase/images/f; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images.lazyload.lqipblur
                 blur = 12
             }
         }
