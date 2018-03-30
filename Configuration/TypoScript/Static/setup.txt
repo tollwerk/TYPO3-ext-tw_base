@@ -8,6 +8,7 @@ lib.contentElement {
     settings.media {
         srcset = {$plugin.tx_twbase.settings.images.srcset}
         sizes = {$plugin.tx_twbase.settings.images.sizes}
+        densities = {$plugin.tx_twbase.settings.images.densities}
         picturefill = {$plugin.tx_twbase.settings.images.picturefill}
 
         # Responsive image breakpoint specifications
@@ -59,6 +60,7 @@ plugin.tx_twbase {
         images {
             srcset = {$plugin.tx_twbase.settings.images.srcset}
             sizes = {$plugin.tx_twbase.settings.images.sizes}
+            densities = {$plugin.tx_twbase.settings.images.densities}
             picturefill = {$plugin.tx_twbase.settings.images.picturefill}
             lqip {
                 mode = {$plugin.tx_twbase.settings.images.lqip.mode}

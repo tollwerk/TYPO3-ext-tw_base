@@ -11,6 +11,9 @@ use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * Render responsive images
+ */
 class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 {
     /**
@@ -284,16 +287,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      */
     protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
     {
-        // Get crop variants
-        $cropString            = $image instanceof FileReference ? $image->getProperty('crop') : '';
-        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-
-        $cropVariant = $this->arguments['cropVariant'] ?: 'default';
-        $cropArea    = $cropVariantCollection->getCropArea($cropVariant);
-        $focusArea   = $cropVariantCollection->getFocusArea($cropVariant);
-
-        // Generate fallback image
-        $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);
+        // Get crop variants & generate fallback image
+        list(, $focusArea, $fallbackImage, $cropVariantCollection) = $this->createAreasAndFallback($image, $width);
 
         // Generate picture tag
         $this->tag = $this->getResponsiveImagesUtility()->createPictureTag(
@@ -340,15 +335,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      */
     protected function renderImageSrcset(FileInterface $image, $width, $height)
     {
-        // Get crop variants
-        $cropVariant           = $this->arguments['cropVariant'] ?: 'default';
-        $cropString            = $image instanceof FileReference ? $image->getProperty('crop') : '';
-        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
-        $cropArea              = $cropVariantCollection->getCropArea($cropVariant);
-        $focusArea             = $cropVariantCollection->getFocusArea($cropVariant);
-
-        // Generate fallback image
-        $fallbackImage = $this->generateFallbackImage($image, $width, $cropArea);
+        // Get crop variants & generate fallback image
+        list($cropArea, $focusArea, $fallbackImage) = $this->createAreasAndFallback($image, $width);
 
         // Generate image tag
         $this->tag = $this->getResponsiveImagesUtility()->createImageTagWithSrcset(
@@ -364,6 +352,26 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         );
 
         return $this->tag->render();
+    }
+
+    /**
+     * Determine the crop & focus areas and create a fallback image
+     *
+     * @param  FileInterface $image Image reference
+     * @param  string $width        Image width
+     *
+     * @return array Crop area, focus area, fallback image and crop variant collection
+     */
+    protected function createAreasAndFallback(FileInterface $image, $width)
+    {
+        $cropVariant           = $this->arguments['cropVariant'] ?: 'default';
+        $cropString            = $image instanceof FileReference ? $image->getProperty('crop') : '';
+        $cropVariantCollection = CropVariantCollection::create((string)$cropString);
+        $cropArea              = $cropVariantCollection->getCropArea($cropVariant);
+        $focusArea             = $cropVariantCollection->getFocusArea($cropVariant);
+        $fallbackImage         = $this->generateFallbackImage($image, $width, $cropArea);
+
+        return [$cropArea, $focusArea, $fallbackImage, $cropVariantCollection];
     }
 
     /**

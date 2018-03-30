@@ -557,7 +557,7 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Generate different image sizes for srcset attribute
         $srcsetImages = $this->generateSrcsetImages($originalImage, $defaultWidth, $srcset, $cropArea);
-        $srcsetMode   = substr(key($srcsetImageUris), -1); // x or w
+        $srcsetMode   = substr(key($srcsetImages), -1); // x or w
 
         // Create source tag for this breakpoint
         $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');

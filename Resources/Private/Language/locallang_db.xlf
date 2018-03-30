@@ -46,6 +46,9 @@
 			<trans-unit id="images.srcset" xml:space="preserve">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			</trans-unit>
+			<trans-unit id="images.densities" xml:space="preserve">
+				<source>Display Densities for Responsive Images: Comma-separated list of display density descriptors (e. g. "1x, 2x") for the creation of media queries</source>
+			</trans-unit>
 			<trans-unit id="images.sizes" xml:space="preserve">
 				<source>Sizes Query for Responsive Images: Sizes query which tells the browser which of the image sizes should be used in the current environment (%1$d can be used as a placeholder for the calculated image width)</source>
 			</trans-unit>
