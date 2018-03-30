@@ -40,9 +40,9 @@ class ResponsiveImagesUtility implements SingletonInterface
      */
     protected $breakpointPrototype = [
         'cropVariant' => 'default',
-        'media' => '',
-        'sizes' => '(min-width: %1$dpx) %1$dpx, 100vw',
-        'srcset' => []
+        'media'       => '',
+        'sizes'       => '(min-width: %1$dpx) %1$dpx, 100vw',
+        'srcset'      => []
     ];
     /**
      * List of all available image converters
@@ -84,6 +84,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param bool $picturefillMarkup Add picturefill markup
      * @param array $lazyloadSettings Lazyload settings
      * @param bool $absoluteUri Create absolute URI
+     *
      * @return TagBuilder Image tag
      */
     public function createImageTagWithSrcset(
@@ -112,10 +113,10 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Generate different image sizes for srcset attribute
         $srcsetImages = $this->generateSrcsetImages($originalImage, $referenceWidth, $srcset, $cropArea, $absoluteUri);
-        $srcsetMode = substr(key($srcsetImages), -1); // x or w
+        $srcsetMode   = substr(key($srcsetImages), -1); // x or w
 
         // Add fallback image to source options
-        $fallbackWidthDescriptor = ($srcsetMode == 'x') ? '1x' : $referenceWidth.'w';
+        $fallbackWidthDescriptor                = ($srcsetMode == 'x') ? '1x' : $referenceWidth.'w';
         $srcsetImages[$fallbackWidthDescriptor] = $fallbackImage;
 
         // Add sizes attribute to image tag
@@ -164,6 +165,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param  int $defaultWidth Default width
      * @param  array|string $srcset Srcset candidates
      * @param  Area $cropArea Crop area
+     *
      * @return ProcessedFile[] Srcset images
      */
     public function generateSrcsetImages(
@@ -192,7 +194,7 @@ class ResponsiveImagesUtility implements SingletonInterface
                     break;
 
                 default:
-                    $candidateWidth = (int)$widthDescriptor;
+                    $candidateWidth  = (int)$widthDescriptor;
                     $widthDescriptor = $candidateWidth.'w';
             }
 
@@ -201,7 +203,7 @@ class ResponsiveImagesUtility implements SingletonInterface
                 $image,
                 [
                     'width' => $candidateWidth,
-                    'crop' => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
+                    'crop'  => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
                 ]
             );
         }
@@ -216,6 +218,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param FileInterface $originalImage Original image
      * @param FileInterface $fallbackImage Fallback image
      * @param Area $focusArea Focus area
+     *
      * @return TagBuilder Image tag
      */
     public function addMetadataToImageTag(
@@ -251,6 +254,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param string $imageUri Image URI
      * @param array $imageSettings Image settings
      * @param string $srcset Srcset (responsive image)
+     *
      * @return TagBuilder Lazyloading image tag
      */
     public function addLazyloadingToImageTag(
@@ -260,7 +264,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         $srcset = null
     ) {
         $lqipService = GeneralUtility::makeInstanceService('lqip', strtolower(pathinfo($imageUri, PATHINFO_EXTENSION)));
-        $lqipUri = ($lqipService instanceof AbstractLqipService) ?
+        $lqipUri     = ($lqipService instanceof AbstractLqipService) ?
             $lqipService->getImageLqip($imageUri, $imageSettings['lqip']) : false;
 
         if ($lqipUri) {
@@ -291,6 +295,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @param string $mimeType MIME type
      * @param string $path File path
+     *
      * @return string Data URI
      */
     public function getDataUri($mimeType, $path)
@@ -312,6 +317,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @param ProcessedFile[] $srcsetImages Srcset images
      * @param bool $absoluteUri Create absolute URI
+     *
      * @return string Srcset attribute
      */
     public function generateSrcsetAttribute(array $srcsetImages, $absoluteUri = false)
@@ -320,6 +326,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         foreach ($srcsetImages as $widthDescriptor => $imageCandidate) {
             $srcsetString[] = $this->imageService->getImageUri($imageCandidate, $absoluteUri).' '.$widthDescriptor;
         }
+
         return implode(', ', $srcsetString);
     }
 
@@ -337,6 +344,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param array $lazyloadSettings Lazyload settings
      * @param array[] $converters File converters to apply
      * @param bool $absoluteUri Create absolute URI
+     *
      * @return TagBuilder Picture tag
      */
     public function createPictureTag(
@@ -352,7 +360,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         array $converters = [],
         $absoluteUri = false
     ) {
-        $tag = $tag ?: $this->objectManager->get(TagBuilder::class, 'picture');
+        $tag         = $tag ?: $this->objectManager->get(TagBuilder::class, 'picture');
         $fallbackTag = $fallbackTag ?: $this->objectManager->get(TagBuilder::class, 'img');
         $this->moveAttributes($fallbackTag, $tag, ['id', 'class']);
 
@@ -367,14 +375,14 @@ class ResponsiveImagesUtility implements SingletonInterface
         if ($lastBreakpoint && !$lastBreakpoint['media'] && $picturefillMarkup) {
 
             // Generate different image sizes for last breakpoint
-            $cropArea = $cropVariantCollection->getCropArea($lastBreakpoint['cropVariant']);
+            $cropArea     = $cropVariantCollection->getCropArea($lastBreakpoint['cropVariant']);
             $srcsetImages = $this->generateSrcsetImages(
                 $originalImage,
                 $referenceWidth,
                 $lastBreakpoint['srcset'],
                 $cropArea
             );
-            $srcsetMode = substr(key($srcsetImages), -1); // x or w
+            $srcsetMode   = substr(key($srcsetImages), -1); // x or w
 
             // Set sizes query for fallback image
             if ($srcsetMode == 'w' && $lastBreakpoint['sizes']) {
@@ -446,6 +454,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Normalizes the provided breakpoints specification
      *
      * @param  array $breakpoints Breakpoint specification
+     *
      * @return array Normalized breakpoint specification
      */
     public function normalizeImageBreakpoints(array $breakpoints)
@@ -454,6 +463,7 @@ class ResponsiveImagesUtility implements SingletonInterface
             $breakpoint = array_replace($this->breakpointPrototype, $breakpoint);
         }
         ksort($breakpoints);
+
         return $breakpoints;
     }
 
@@ -467,6 +477,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param array $lazyloadSettings Lazyload settings
      * @param array[] $converters File converters to apply
      * @param bool $absoluteUri Create absolute URI
+     *
      * @return array[] Source tags (regular and converted)
      */
     protected function createAndConvertPictureSourceTags(
@@ -482,7 +493,7 @@ class ResponsiveImagesUtility implements SingletonInterface
         $sourceTags = $convertedSourceTags = [];
         foreach ($breakpoints as $breakpoint) {
             $srcsetImages = [];
-            $sourceTag = $this->createPictureSourceTag(
+            $sourceTag    = $this->createPictureSourceTag(
                 $originalImage,
                 $defaultWidth,
                 $breakpoint['srcset'],
@@ -528,6 +539,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param array $lazyloadSettings Lazyload settings
      * @param bool $absoluteUri Create absolute URI
      * @param array ProcessedFile[] $srcsetImages Generated srcset images
+     *
      * @return TagBuilder Source tag
      */
     public function createPictureSourceTag(
@@ -545,7 +557,7 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Generate different image sizes for srcset attribute
         $srcsetImages = $this->generateSrcsetImages($originalImage, $defaultWidth, $srcset, $cropArea);
-        $srcsetMode = substr(key($srcsetImageUris), -1); // x or w
+        $srcsetMode   = substr(key($srcsetImageUris), -1); // x or w
 
         // Create source tag for this breakpoint
         $sourceTag = $this->objectManager->get(TagBuilder::class, 'source');
@@ -569,6 +581,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param array|ProcessedFile $images Images
      * @param string $converter Converter key
      * @param array $converterConfig Converter configuration
+     *
      * @return ProcessedFile[] Converted images
      */
     protected function convertImages(
@@ -577,10 +590,12 @@ class ResponsiveImagesUtility implements SingletonInterface
         array $converterConfig = []
     ) {
         $imageService =& $this->imageService;
+
         return array_filter(
             array_map(
-                function (ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
+                function(ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
                     $convertedImage = $imageService->convert($image, $converterKey, $converterConfig);
+
                     return $convertedImage->usesOriginalFile() ? null : $convertedImage;
                 }, $images
             )
@@ -594,6 +609,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param array $lazyloadSettings Lazyload settings
      * @param array[] $converters File converters to apply
      * @param bool $absoluteUri Create absolute URI
+     *
      * @return string[] Alternative fallback image tags
      */
     public function createConvertedFallbackAlternatives(
@@ -616,6 +632,7 @@ class ResponsiveImagesUtility implements SingletonInterface
                 $fallbackAlternativeTags[] = $sourceTag->render();
             }
         }
+
         return $fallbackAlternativeTags;
     }
 
@@ -630,6 +647,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @param bool $absoluteUri Create absolute URI
      * @param Area|null $focusArea Focus area
      * @param array|null $lazyloadSettings Lazyload settings
+     *
      * @return TagBuilder Fallback tag
      */
     public function createPictureFallbackTag(
@@ -677,6 +695,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      * Test whether an image is eligible for srcset processing
      *
      * @param FileInterface $image Image
+     *
      * @return bool Image can have srcset
      */
     public function canSrcset(FileInterface $image)
@@ -689,6 +708,7 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @param FileInterface $image Image reference
      * @param array $skip Skip converters
+     *
      * @return array Available image converters
      */
     public function getAvailableConverters(FileInterface $image, array $skip = [])

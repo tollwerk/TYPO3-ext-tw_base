@@ -14,16 +14,16 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     // Service key
     'tx_twbase_primitive',
     array(
-        'title' => 'Primitive',
+        'title'       => 'Primitive',
         'description' => 'Create low-quality image previews (LQIP) with geometric shapes',
 
         'subtype' => 'jpg,png,gif',
 
         'available' => true,
-        'priority' => 60,
-        'quality' => 80,
+        'priority'  => 60,
+        'quality'   => 80,
 
-        'os' => '',
+        'os'   => '',
         'exec' => 'primitive,svgo',
 
         'className' => \Tollwerk\TwBase\Service\PrimitiveLqipService::class
@@ -38,16 +38,16 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     // Service key
     'tx_twbase_mozjpeg',
     array(
-        'title' => 'mozjpeg',
+        'title'       => 'mozjpeg',
         'description' => 'Compress JPEG images using the mozjpeg encoder (https://github.com/mozilla/mozjpeg)',
 
         'subtype' => 'jpg',
 
         'available' => true,
-        'priority' => 60,
-        'quality' => 80,
+        'priority'  => 60,
+        'quality'   => 80,
 
-        'os' => '',
+        'os'   => '',
         'exec' => 'mozjpeg',
 
         'className' => \Tollwerk\TwBase\Service\MozjpegCompressorService::class
@@ -62,16 +62,16 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     // Service key
     'tx_twbase_svgo',
     array(
-        'title' => 'svgo',
+        'title'       => 'svgo',
         'description' => 'Compress SVG vector graphics using the SVGO optimizer (https://github.com/svg/svgo)',
 
         'subtype' => 'svg',
 
         'available' => true,
-        'priority' => 60,
-        'quality' => 80,
+        'priority'  => 60,
+        'quality'   => 80,
 
-        'os' => '',
+        'os'   => '',
         'exec' => 'svgo',
 
         'className' => \Tollwerk\TwBase\Service\SvgoCompressorService::class
@@ -86,16 +86,16 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
     // Service key
     'tx_twbase_webp',
     array(
-        'title' => 'webp',
+        'title'       => 'webp',
         'description' => 'Convert images using the Google WebP converter (https://developers.google.com/speed/webp)',
 
         'subtype' => 'webp',
 
         'available' => true,
-        'priority' => 60,
-        'quality' => 80,
+        'priority'  => 60,
+        'quality'   => 80,
 
-        'os' => '',
+        'os'   => '',
         'exec' => 'cwebp',
 
         'className' => \Tollwerk\TwBase\Service\WebpConverterService::class
@@ -104,7 +104,7 @@ $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] 
 
 // Register additional image processing tasks
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.CropScaleMaskCompress'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageCropScaleMaskCompressTask::class;
-$GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.Convert'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageConvertTask::class;
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.Convert']               = \Tollwerk\TwBase\Service\Resource\Processing\ImageConvertTask::class;
 
 // Extend the local image processor
 $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects']['TYPO3\\CMS\\Core\\Resource\\Processing\\LocalImageProcessor'] = [
@@ -124,7 +124,7 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['linkHandler']['tel'] = \Tollwe
 // Register the global Fluid viewhelper namespace (if specified)
 $globalNSPrefix = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
     \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)
-    ->get('tw_base', 'globalNSPrefix'));
+                                                             ->get('tw_base', 'globalNSPrefix'));
 if (strlen($globalNSPrefix)) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces'][$globalNSPrefix] = ['Tollwerk\\TwBase\\ViewHelpers'];
 }

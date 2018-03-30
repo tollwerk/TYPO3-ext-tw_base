@@ -86,7 +86,7 @@
 				<source>Lazy loading</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_responsive" xml:space="preserve">
-				<source>Responsive</source>
+				<source>Make responsive</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_breakpoints" xml:space="preserve">
 				<source>Breakpoints preset</source>
@@ -96,6 +96,9 @@
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
 				<source>WebP</source>
+			</trans-unit>
+			<trans-unit id="tt_content.palette.imageadvanced" xml:space="preserve">
+				<source>Responsivity &amp; converters</source>
 			</trans-unit>
 			<trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
 				<source>Page title language</source>
