@@ -122,9 +122,12 @@ $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['linkHandler']['tel'] = \Tollwe
 );
 
 // Register the global Fluid viewhelper namespace (if specified)
-$globalNSPrefix = trim(\TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
-    \TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)
-                                                             ->get('tw_base', 'globalNSPrefix'));
+$globalNSPrefix = trim(
+    isset($GLOBALS['TYPO3_CONF_VARS']['EXTENSIONS']) ?
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)
+                                              ->get('tw_base', 'globalNSPrefix') :
+        unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['tw_base'])['globalNSPrefix']
+);
 if (strlen($globalNSPrefix)) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces'][$globalNSPrefix] = ['Tollwerk\\TwBase\\ViewHelpers'];
 }
