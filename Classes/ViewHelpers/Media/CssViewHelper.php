@@ -14,6 +14,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * Renders the CSS for a responsive background image
  *
  * @see https://css-tricks.com/responsive-images-css/
+ * @see https://ericportis.com/posts/2014/srcset-sizes/
+ * @see https://bitsofco.de/the-srcset-and-sizes-attributes/
  */
 class CssViewHelper extends MediaViewHelper
 {
