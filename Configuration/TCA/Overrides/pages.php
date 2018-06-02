@@ -13,12 +13,12 @@ $fields = [
             'type' => 'select',
             'renderType' => 'selectSingle',
             'items' => [
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:pages.tx_twbase_title_language.auto', 0],
+                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:pages.tx_twbase_title_language.auto', ''],
             ],
             'foreign_table' => 'static_languages',
             'allowNonIdValues' => true,
             'foreign_table_where' => 'AND static_languages.lg_sacred = 0 ORDER BY static_languages.lg_name_en',
-            'itemsProcFunc' => 'SJBR\\StaticInfoTables\\Hook\\Backend\\Form\\FormDataProvider\\TcaSelectItemsProcessor->translateLanguagesSelector',
+            'itemsProcFunc' => \SJBR\StaticInfoTables\Hook\Backend\Form\FormDataProvider\TcaSelectItemsProcessor::class.'->translateLanguagesSelector',
             'itemsProcFunc_config' => array(
                 'indexField' => 'lg_iso_2,lg_country_iso_2',
             ),
