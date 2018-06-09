@@ -70,11 +70,14 @@
 			<trans-unit id="tt_content.tx_twbase_heading_type.default" xml:space="preserve">
 				<source>Automatic</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.main" xml:space="preserve">
-				<source>Main</source>
+			<trans-unit id="tt_content.tx_twbase_heading_type.xx-large" xml:space="preserve">
+				<source>XX-Large</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.secondary" xml:space="preserve">
-				<source>Secondary</source>
+			<trans-unit id="tt_content.tx_twbase_heading_type.x-large" xml:space="preserve">
+				<source>X-Large</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.large" xml:space="preserve">
+				<source>Large</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.medium" xml:space="preserve">
 				<source>Medium</source>
@@ -82,8 +85,8 @@
 			<trans-unit id="tt_content.tx_twbase_heading_type.small" xml:space="preserve">
 				<source>Small</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.body" xml:space="preserve">
-				<source>Body</source>
+			<trans-unit id="tt_content.tx_twbase_heading_type.x-small" xml:space="preserve">
+				<source>X-Small</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_inline" xml:space="preserve">
 				<source>Inline image</source>

@@ -56,17 +56,19 @@ class HeadlineContextManager implements SingletonInterface
     /**
      * Visual headline types
      */
-    const VISUAL_TYPE_MAIN = 'main';
-    const VISUAL_TYPE_SECONDARY = 'secondary';
+    const VISUAL_TYPE_XXLARGE = 'xx-large';
+    const VISUAL_TYPE_XLARGE = 'x-large';
+    const VISUAL_TYPE_LARGE = 'large';
     const VISUAL_TYPE_MEDIUM = 'medium';
     const VISUAL_TYPE_SMALL = 'small';
-    const VISUAL_TYPE_BODY = 'body';
+    const VISUAL_TYPE_XSMALL = 'x-small';
     const VISUAL_TYPES = [
-        1 => self::VISUAL_TYPE_MAIN,
-        2 => self::VISUAL_TYPE_SECONDARY,
-        3 => self::VISUAL_TYPE_MEDIUM,
-        4 => self::VISUAL_TYPE_SMALL,
-        5 => self::VISUAL_TYPE_BODY,
+        1 => self::VISUAL_TYPE_XXLARGE,
+        2 => self::VISUAL_TYPE_XLARGE,
+        3 => self::VISUAL_TYPE_LARGE,
+        4 => self::VISUAL_TYPE_MEDIUM,
+        5 => self::VISUAL_TYPE_SMALL,
+        6 => self::VISUAL_TYPE_XSMALL,
     ];
 
     /**
