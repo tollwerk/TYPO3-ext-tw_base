@@ -39,5 +39,5 @@ Both the technical heading `level` as well as the visual heading `type` can be s
 
 The extension also introduces two different kind of *hidden* headings:
 
-* **Hidden, bug significant**: These headings will be rendered but they'll carry the additional CSS class `Heading--hidden` to indicate that they should be [visually hidden](https://a11yproject.com/posts/how-to-hide-content/). You can use this to keep the heading outline without really displaying anything.
-* **Hidden and insignificant**: These headings won't be rendered in the frontend but you will still see their content in the pages view in the TYPO3 backend.
+* **Hidden, but in outline**: These headings will be rendered but they'll carry the additional CSS class `Heading--hidden` to indicate that they should be [visually hidden](https://a11yproject.com/posts/how-to-hide-content/). You can use this to keep the heading outline in order without really displaying anything.
+* **Hidden**: These headings won't be rendered in the frontend but you will still see their content in the pages view in the TYPO3 backend.
