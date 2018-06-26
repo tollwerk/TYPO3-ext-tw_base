@@ -65,43 +65,49 @@
 				<source>Lazyload preview image blur: Standard deviation for the Gaussian Blur filter (0 = no blur effect)</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve">
-				<source>Visual type</source>
+				<source>Visual display</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.default" xml:space="preserve">
 				<source>Automatic</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.xx-large" xml:space="preserve">
-				<source>XX-Large</source>
+				<source>Heading level 1 (xx-large)</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.x-large" xml:space="preserve">
-				<source>X-Large</source>
+				<source>Heading level 2 (x-large)</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.large" xml:space="preserve">
-				<source>Large</source>
+				<source>Heading level 3 (large)</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.medium" xml:space="preserve">
-				<source>Medium</source>
+				<source>Heading level 4 (medium)</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.small" xml:space="preserve">
-				<source>Small</source>
+				<source>Heading level 5 (small)</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_heading_type.x-small" xml:space="preserve">
-				<source>X-Small</source>
+				<source>Heading level 5 (x-small)</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.hidden-significant" xml:space="preserve">
+				<source>Hidden, but in outline</source>
+			</trans-unit>
+			<trans-unit id="tt_content.tx_twbase_heading_type.hidden-insignificant" xml:space="preserve">
+				<source>Hidden</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_inline" xml:space="preserve">
-				<source>Inline image</source>
+				<source>Embed inline in source code</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_lazyload" xml:space="preserve">
 				<source>Lazy loading</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_responsive" xml:space="preserve">
-				<source>Make responsive</source>
+				<source>Responsive display</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_breakpoints" xml:space="preserve">
-				<source>Breakpoints preset</source>
+				<source>Breakpoint preset</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_skipconverter" xml:space="preserve">
-				<source>Skip converter</source>
+				<source>Skip converters</source>
 			</trans-unit>
 			<trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
 				<source>WebP</source>
@@ -113,7 +119,7 @@
 				<source>Page title language</source>
 			</trans-unit>
 			<trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
-				<source>--- Current language ---</source>
+				<source>--- Current page language ---</source>
 			</trans-unit>
 			<trans-unit id="linkbrowse.tel" xml:space="preserve">
 				<source>Telecom</source>

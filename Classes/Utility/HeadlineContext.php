@@ -3,12 +3,12 @@
 /**
  * tollwerk
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Tollwerk\TwBase\Utility
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
@@ -60,6 +60,12 @@ class HeadlineContext
      */
     protected $afterLevel;
     /**
+     * Headline is hidden
+     *
+     * @var boolean
+     */
+    protected $hidden;
+    /**
      * Semantic error
      *
      * @var boolean
@@ -69,17 +75,19 @@ class HeadlineContext
     /**
      * Constructor
      *
-     * @param int $level Headline level
+     * @param int $level         Headline level
      * @param string $visualType Visual headline type
-     * @param int $afterLevel Previous headline level
-     * @param bool $error Headline violates semantic structure
+     * @param int $afterLevel    Previous headline level
+     * @param bool $hidden       Headline is hidden
+     * @param bool $error        Headline violates semantic structure
      */
-    public function __construct($level, $visualType, $afterLevel, $error = false)
+    public function __construct($level, $visualType, $afterLevel, $hidden = false, $error = false)
     {
-        $this->level = $level;
+        $this->level      = $level;
         $this->visualType = $visualType;
         $this->afterLevel = $afterLevel;
-        $this->error = (boolean)$error;
+        $this->hidden     = (boolean)$hidden;
+        $this->error      = (boolean)$error;
     }
 
     /**
@@ -110,6 +118,16 @@ class HeadlineContext
     public function getAfterLevel()
     {
         return $this->afterLevel;
+    }
+
+    /**
+     * Return whether the headline is hidden
+     *
+     * @return bool Headline is hidden
+     */
+    public function isHidden()
+    {
+        return $this->hidden;
     }
 
     /**

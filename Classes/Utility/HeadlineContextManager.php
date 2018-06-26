@@ -82,6 +82,8 @@ class HeadlineContextManager implements SingletonInterface
     {
         $level = intval($level);
         $afterLevel = max(1, $this->currentLevel);
+        $hidden = ($level >= 100);
+        $level = ($level >= 100) ? 0 : $level;
         $error = null;
 
         // If a particular headline level was given
@@ -115,7 +117,7 @@ class HeadlineContextManager implements SingletonInterface
         }
 
         $this->currentLevel = $level;
-        return GeneralUtility::makeInstance(HeadlineContext::class, $level, $visualType, $afterLevel, $error);
+        return GeneralUtility::makeInstance(HeadlineContext::class, $level, $visualType, $afterLevel, $hidden, $error);
     }
 
     /**

@@ -1,9 +1,9 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	  xmlns:base="http://typo3.org/ns/Tollwerk/TwBase/ViewHelpers"
-	  data-namespace-typo3-fluid="true">
-<f:if condition="{header}">
-	<f:if condition="{layout} < 100">
-		<base:heading level="{layout}" type="{type}" class="{positionClass}" content="{header -> f:link.typolink(parameter: link)}"/>
-	</f:if>
-</f:if>
+      xmlns:base="http://typo3.org/ns/Tollwerk/TwBase/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+    <f:if condition="{header}">
+        <f:if condition="{layout} < 102">
+            <base:heading level="{layout}" type="{type}" class="{positionClass}" content="{header -> f:link.typolink(parameter: link)}"/>
+        </f:if>
+    </f:if>
 </html>

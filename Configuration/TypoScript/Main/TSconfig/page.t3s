@@ -3,18 +3,18 @@ TCEFORM.tt_content.header_layout {
     removeItems := addToList(100)
 
     altLabels {
-        0 = Automatic
-        1 = Headline level 1
-        2 = Headline level 2
-        3 = Headline level 3
-        4 = Headline level 4
-        5 = Headline level 5
+        0 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.default
+        1 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.xx-large
+        2 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.x-large
+        3 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.large
+        4 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.medium
+        5 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.small
     }
 
     addItems {
-        6 = Headline level 6
-        101 = Hidden / significant
-        102 = Hidden / insignificant
+        6 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.x-small
+        101 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.hidden-significant
+        102 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.hidden-insignificant
     }
 }
 
