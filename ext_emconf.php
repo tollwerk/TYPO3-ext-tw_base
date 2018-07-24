@@ -11,23 +11,22 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
-    'title' => 'tollwerk Base',
-    'description' => 'Essentials and modern build tools and extensions for TYPO3 websites',
-    'category' => 'misc',
-    'author' => 'Joschi Kuphal',
-    'author_email' => 'joschi@tollwerk.de',
-    'state' => 'alpha',
-    'internal' => '',
-    'uploadfolder' => '0',
-    'createDirs' => '',
+    'title'            => 'tollwerk Base',
+    'description'      => 'Essentials and modern build tools and extensions for TYPO3 websites',
+    'category'         => 'misc',
+    'author'           => 'Joschi Kuphal',
+    'author_email'     => 'joschi@tollwerk.de',
+    'state'            => 'alpha',
+    'internal'         => '',
+    'uploadfolder'     => '0',
+    'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version' => '2.0.0',
-    'constraints' => [
-        'depends' => [
+    'version'          => '2.0.0',
+    'constraints'      => [
+        'depends'   => [
             'typo3' => '8.7.0-9.99.99',
-            'static_info_tables' => '*',
         ],
         'conflicts' => [],
-        'suggests' => [],
+        'suggests'  => [],
     ],
 ];

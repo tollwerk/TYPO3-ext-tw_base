@@ -3,12 +3,12 @@
 /**
  * tollwerk
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Tollwerk\TwBase\Utility
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
@@ -74,17 +74,18 @@ class HeadlineContextManager implements SingletonInterface
     /**
      * Set up a new headline context
      *
-     * @param int $level Desired headline level
+     * @param int $level      Desired headline level
      * @param int $visualType Visual headline type
+     *
      * @return HeadlineContext Headline context
      */
     public function setupContext($level = null, $visualType = null)
     {
-        $level = intval($level);
+        $level      = intval($level);
         $afterLevel = max(1, $this->currentLevel);
-        $hidden = ($level >= 100);
-        $level = ($level >= 100) ? 0 : $level;
-        $error = null;
+        $hidden     = ($level >= 100);
+        $level      = ($level >= 100) ? 0 : $level;
+        $error      = null;
 
         // If a particular headline level was given
         if ($level > 0) {
@@ -117,6 +118,7 @@ class HeadlineContextManager implements SingletonInterface
         }
 
         $this->currentLevel = $level;
+
         return GeneralUtility::makeInstance(HeadlineContext::class, $level, $visualType, $afterLevel, $hidden, $error);
     }
 

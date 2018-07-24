@@ -37,8 +37,9 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
      */
     public function render()
     {
-        $level = $this->arguments['level'];
-        $type  = $this->arguments['type'];
+        $level   = $this->arguments['level'];
+        $type    = $this->arguments['type'];
+        $content = trim($this->arguments['content']);
 
         /** @var HeadlineContextManager $headingContextManager */
         $headingContextManager = GeneralUtility::makeInstance(HeadlineContextManager::class);
@@ -56,7 +57,7 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $headingLevel = $headingContext->getLevel();
         $this->tag->setTagName(($headingLevel > 6) ? 'div' : 'h'.$headingLevel);
         $this->tag->addAttribute('class', $class);
-        $this->tag->setContent($this->arguments['content']);
+        $this->tag->setContent($content);
         $content = parent::render().$this->renderChildren();
 
         // Tear down the headline context
