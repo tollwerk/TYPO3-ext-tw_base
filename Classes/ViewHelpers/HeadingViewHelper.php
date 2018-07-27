@@ -28,6 +28,7 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $this->registerArgument('level', 'int', 'Headline level', false, null);
         $this->registerArgument('type', 'string', 'Visual type', false, 1);
         $this->registerArgument('content', 'string', 'Headline content', true);
+        $this->registerArgument('restoreContext', 'boolean', 'Restore the heading context', false, true);
     }
 
     /**
@@ -61,7 +62,9 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $content = parent::render().$this->renderChildren();
 
         // Tear down the headline context
-        $headingContextManager->tearDownContext($headingContext);
+        if ((boolean)$this->arguments['restoreContext']) {
+            $headingContextManager->tearDownContext($headingContext);
+        }
 
         // Return the Rendered result
         return $content;

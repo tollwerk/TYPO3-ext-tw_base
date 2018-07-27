@@ -52,6 +52,18 @@ class HeadlineContextManager implements SingletonInterface
      * @var int
      */
     protected $currentLevel = 0;
+    /**
+     * Maximum rendered level
+     *
+     * @var int
+     */
+    protected $maxLevel = 0;
+    /**
+     * Headline contexts
+     *
+     * @var HeadlineContext[]
+     */
+    protected $contexts = [];
 
     /**
      * Visual headline types
@@ -118,8 +130,17 @@ class HeadlineContextManager implements SingletonInterface
         }
 
         $this->currentLevel = $level;
+        $headlineContext    = GeneralUtility::makeInstance(
+            HeadlineContext::class,
+            $level,
+            $visualType,
+            $afterLevel,
+            $hidden,
+            $error
+        );
+        $this->contexts[]   = $headlineContext;
 
-        return GeneralUtility::makeInstance(HeadlineContext::class, $level, $visualType, $afterLevel, $hidden, $error);
+        return $headlineContext;
     }
 
     /**
@@ -130,5 +151,35 @@ class HeadlineContextManager implements SingletonInterface
     public function tearDownContext(HeadlineContext $headlineContext)
     {
         $this->currentLevel = $headlineContext->getAfterLevel();
+    }
+
+    /**
+     * Return a hash representing the current heading context
+     *
+     * @return string Heading context hash
+     */
+    public function getCurrentContext(): string
+    {
+        return count($this->contexts) ? spl_object_hash($this->contexts[count($this->contexts) - 1]) : '';
+    }
+
+    /**
+     * Restore a heading context
+     *
+     * @param string $restoreContext Heading context descriptor
+     */
+    public function restoreContext(string $restoreContext): void
+    {
+        $restoreContext = trim($restoreContext);
+        if (!strlen($restoreContext)) {
+            $this->currentLevel = 1;
+            $this->contexts     = [];
+
+            return;
+        }
+
+        while (count($this->contexts) && (spl_object_hash($this->contexts[count($this->contexts) - 1]) != $restoreContext)) {
+            $this->currentLevel = array_pop($this->contexts)->getAfterLevel();
+        }
     }
 }
