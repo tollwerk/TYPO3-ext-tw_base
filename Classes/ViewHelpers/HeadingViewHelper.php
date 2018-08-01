@@ -26,7 +26,7 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
         $this->registerArgument('level', 'int', 'Headline level', false, null);
-        $this->registerArgument('type', 'string', 'Visual type', false, 1);
+        $this->registerArgument('type', 'string', 'Visual type', false, null);
         $this->registerArgument('content', 'string', 'Headline content', true);
         $this->registerArgument('restoreContext', 'boolean', 'Restore the heading context', false, true);
     }
@@ -46,7 +46,9 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $headingContextManager = GeneralUtility::makeInstance(HeadlineContextManager::class);
 
         // Set up a headline context
-        $headingContext = $headingContextManager->setupContext($level, $type);
+        $headingContext = $headingContextManager->setupContext($level, $type, $content);
+
+//        echo 'heading context: '.$headingContext->getLevel().'/'.$headingContext->getVisualType().' ('.$this->arguments['level'].'/'.$this->arguments['type'].')<br/>';
 
         $class = implode(' ', array_filter([
             'Heading Heading--'.$headingContext->getVisualType(),

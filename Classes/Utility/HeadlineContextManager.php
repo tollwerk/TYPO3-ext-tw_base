@@ -88,10 +88,11 @@ class HeadlineContextManager implements SingletonInterface
      *
      * @param int $level      Desired headline level
      * @param int $visualType Visual headline type
+     * @param string $contetn Heading content (for logging purposes only)
      *
      * @return HeadlineContext Headline context
      */
-    public function setupContext($level = null, $visualType = null)
+    public function setupContext($level = null, $visualType = null, string $content = '')
     {
         $level      = intval($level);
         $afterLevel = max(1, $this->currentLevel);

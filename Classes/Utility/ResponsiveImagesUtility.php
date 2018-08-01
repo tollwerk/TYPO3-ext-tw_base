@@ -407,12 +407,13 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         // Add converted fallback alternatives
         $convertedSourceTags = array_merge(
-            $convertedSourceTags, $this->createConvertedFallbackAlternatives(
-            $fallbackImage,
-            $lazyloadSettings,
-            $converters,
-            $absoluteUri
-        )
+            $convertedSourceTags,
+            $this->createConvertedFallbackAlternatives(
+                $fallbackImage,
+                $lazyloadSettings,
+                $converters,
+                $absoluteUri
+            )
         );
 
         // Finalize the fallback tag
@@ -593,7 +594,7 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         return array_filter(
             array_map(
-                function(ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
+                function (ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
                     $convertedImage = $imageService->convert($image, $converterKey, $converterConfig);
 
                     return $convertedImage->usesOriginalFile() ? null : $convertedImage;
