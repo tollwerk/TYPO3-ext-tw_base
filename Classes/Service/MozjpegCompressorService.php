@@ -20,15 +20,16 @@ class MozjpegCompressorService extends AbstractFileCompressorService
     /**
      * Process a file
      *
-     * @param TaskInterface $task Image processing task
+     * @param TaskInterface $task     Image processing task
      * @param array $processingResult Image processing result
-     * @param array $configuration Service configuration
+     * @param array $configuration    Service configuration
+     *
      * @return bool Success
      */
     public function processFile(TaskInterface $task, array $processingResult, array $configuration = [])
     {
-        $filePath = $processingResult['filePath'];
-        $mozjpegCommand = 'mozjpeg -copy none '.CommandUtility::escapeShellArgument($filePath);
+        $filePath       = $processingResult['filePath'];
+        $mozjpegCommand = 'mozjpeg -progressive -copy none '.CommandUtility::escapeShellArgument($filePath);
         $mozjpegCommand .= ' > '.CommandUtility::escapeShellArgument($filePath.'.optimized');
 
         $output = $returnValue = null;
