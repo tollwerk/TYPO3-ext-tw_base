@@ -4,7 +4,6 @@ namespace Tollwerk\TwBase\ViewHelpers\Link;
 
 use Tollwerk\TwBase\Domain\Repository\CountryRepository;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -26,8 +25,8 @@ class InfoViewHelper extends AbstractViewHelper
     /**
      * Render
      *
-     * @param array $arguments Arguments
-     * @param \Closure $renderChildrenClosure Children rendering closure
+     * @param array $arguments                            Arguments
+     * @param \Closure $renderChildrenClosure             Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
      * @return mixed|string Output
@@ -117,7 +116,7 @@ class InfoViewHelper extends AbstractViewHelper
      */
     protected static function processPageType(array &$currentLinkParts)
     {
-        $currentLinkParts['url'] = [page => $GLOBALS['TSFE']->sys_page->getPage_noCheck($currentLinkParts['url']['pageuid'])];
+        $currentLinkParts['url'] = ['page' => $GLOBALS['TSFE']->sys_page->getPage_noCheck($currentLinkParts['url']['pageuid'])];
     }
 
     /**

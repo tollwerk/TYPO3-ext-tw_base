@@ -287,7 +287,13 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      */
     protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
     {
-        // Get crop variants & generate fallback image
+        /**
+         * Get crop variants & generate fallback image
+         *
+         * @var Area $focusArea
+         * @var FileInterface $fallbackImage
+         * @var CropVariantCollection $cropVariantCollection
+         */
         list(, $focusArea, $fallbackImage, $cropVariantCollection) = $this->createAreasAndFallback($image, $width);
 
         // Generate picture tag

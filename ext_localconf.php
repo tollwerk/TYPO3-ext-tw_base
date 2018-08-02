@@ -131,3 +131,6 @@ $globalNSPrefix = trim(
 if (strlen($globalNSPrefix)) {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces'][$globalNSPrefix] = ['Tollwerk\\TwBase\\ViewHelpers'];
 }
+
+// Register the component service command controller
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \Tollwerk\TwBase\Command\ImageCommandController::class;
