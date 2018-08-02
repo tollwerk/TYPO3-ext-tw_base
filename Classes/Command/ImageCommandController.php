@@ -89,4 +89,12 @@ class ImageCommandController extends CommandController
             }
         }
     }
+
+    /**
+     * Clear all processed files
+     */
+    public function clearProcessedCommand()
+    {
+        $this->processedFileRepository->removeAll();
+    }
 }

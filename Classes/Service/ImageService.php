@@ -3,12 +3,12 @@
 /**
  * tollwerk
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Tollwerk\TwBase\Service
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2017 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
@@ -37,7 +37,6 @@
 namespace Tollwerk\TwBase\Service;
 
 use Tollwerk\TwBase\Utility\ArrayUtility;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -92,6 +91,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      *
      * @param FileInterface|FileReference $image
      * @param array $processingInstructions
+     *
      * @return ProcessedFile Processed file
      * @api
      */
@@ -119,12 +119,14 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      * Test whether there's an active compressor available
      *
      * @param FileInterface $file File
+     *
      * @return bool Compressor is available
      */
     protected function hasCompressorEnabled(FileInterface $file)
     {
-        $fileExtension = strtolower($file->getExtension());
+        $fileExtension  = strtolower($file->getExtension());
         $fileCompressor = GeneralUtility::makeInstanceService('filecompress', $fileExtension);
+
         return $fileCompressor instanceof AbstractFileCompressorService;
     }
 
@@ -137,9 +139,9 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
     public function getImageSettings($key = null)
     {
         if ($this->imageSettings === null) {
-            $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+            $objectManager        = GeneralUtility::makeInstance(ObjectManager::class);
             $configurationManager = $objectManager->get(ConfigurationManagerInterface::class);
-            $this->imageSettings = $configurationManager->getConfiguration(
+            $this->imageSettings  = $configurationManager->getConfiguration(
                 ConfigurationManagerInterface::CONFIGURATION_TYPE_SETTINGS,
                 'TwBase'
             );
@@ -156,6 +158,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
             }
             $imageSettings = $imageSettings[$step];
         }
+
         return $imageSettings;
     }
 
@@ -164,7 +167,8 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      *
      * @param FileInterface|FileReference $image
      * @param string $converter Converter key
-     * @param array $config Converter configuration
+     * @param array $config     Converter configuration
+     *
      * @return ProcessedFile Processed file
      * @api
      */
@@ -177,23 +181,30 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
             ])
         ];
 
+        get_class($image);
+
         // If a processed file should be converted: Reconstitute as regular file
         if (is_callable([$image, 'getOriginalFile'])) {
             $config = array_replace($image->getProcessingConfiguration(), $config);
-            $image = new File([
-                'uid' => $image->getOriginalFile()->getUid(),
-                'name' => $image->getName(),
-                'extension' => $image->getExtension(),
-                'identifier' => $image->getIdentifier(),
-                'identifier_hash' => $image->getHashedIdentifier(),
-                'mime_type' => $image->getMimeType(),
-                'url' => $image->getPublicUrl(),
-                'sha1' => $image->getSha1(),
-                'modification_date' => $image->getProperty('crdate'),
-            ], $image->getOriginalFile()->getStorage(), [
-                'width' => $image->getProperty('width'),
-                'height' => $image->getProperty('height'),
-            ]);
+
+            $originalFile = $image->getOriginalFile();
+            $originalFile->setIdentifier($image->getIdentifier());
+            $image  = $originalFile;
+
+//            $image  = new File([
+//                'uid'               => $image->getOriginalFile()->getUid(),
+//                'name'              => $image->getName(),
+//                'extension'         => $image->getExtension(),
+//                'identifier'        => $image->getIdentifier(),
+//                'identifier_hash'   => $image->getHashedIdentifier(),
+//                'mime_type'         => $image->getMimeType(),
+//                'url'               => $image->getPublicUrl(),
+//                'sha1'              => $image->getSha1(),
+//                'modification_date' => $image->getProperty('crdate'),
+//            ], $image->getOriginalFile()->getStorage(), [
+//                'width'  => $image->getProperty('width'),
+//                'height' => $image->getProperty('height'),
+//            ]);
         }
 
         // Convert the image
