@@ -15,6 +15,12 @@ class BinaryViewHelper extends AbstractViewHelper
      * Enable static rendering
      */
     use CompileWithRenderStatic;
+    /**
+     * Don't escape the output
+     *
+     * @var boolean
+     */
+    protected $escapeOutput = false;
 
     /**
      * Render

@@ -15,13 +15,20 @@ class ListViewHelper extends AbstractViewHelper
      * Enable static rendering
      */
     use CompileWithRenderStatic;
+    /**
+     * Don't escape the output
+     *
+     * @var boolean
+     */
+    protected $escapeOutput = false;
 
     /**
      * Render
      *
-     * @param array $arguments Arguments
-     * @param \Closure $renderChildrenClosure Children rendering closure
+     * @param array $arguments                            Arguments
+     * @param \Closure $renderChildrenClosure             Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
+     *
      * @return mixed|string Output
      */
     public static function renderStatic(
@@ -39,9 +46,10 @@ class ListViewHelper extends AbstractViewHelper
     /**
      * Render the list of attributes
      *
-     * @param array $stdAttributes Attributes
+     * @param array $stdAttributes      Attributes
      * @param array $nonEmptyAttributes Non-empty attributes
-     * @param boolean $returnArray Return a list of attributes instead of an HTML string
+     * @param boolean $returnArray      Return a list of attributes instead of an HTML string
+     *
      * @return array|string List of attributes / HTML attribute string
      */
     protected function renderAttributes(array $stdAttributes, array $nonEmptyAttributes, $returnArray)
@@ -58,15 +66,17 @@ class ListViewHelper extends AbstractViewHelper
                 self::renderAttribute($name, $value, true);
         }
         $attributes = array_filter($attributes);
+
         return $returnArray ? $attributes : ((count($attributes) ? ' ' : '').implode(' ', $attributes));
     }
 
     /**
      * Render a single attribute
      *
-     * @param string $name Attribute name
-     * @param mixed $value Attribute value
+     * @param string $name      Attribute name
+     * @param mixed $value      Attribute value
      * @param bool $skipIfEmpty Skip attribute if value is empty
+     *
      * @return null|string Attribute string
      */
     protected static function renderAttribute($name, $value, $skipIfEmpty = false)
@@ -79,6 +89,7 @@ class ListViewHelper extends AbstractViewHelper
         if (is_string($value)) {
             $attribute .= '="'.htmlspecialchars(trim($value)).'"';
         }
+
         return $attribute;
     }
 
