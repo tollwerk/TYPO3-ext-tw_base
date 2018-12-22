@@ -28,7 +28,8 @@ $EM_CONF[$_EXTKEY] = [
         ],
         'conflicts' => [],
         'suggests'  => [
-            'static_info_tables' => '*'
+            'static_info_tables' => '*',
+            'form'               => '*'
         ],
     ],
 ];
