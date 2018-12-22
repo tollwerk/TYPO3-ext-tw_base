@@ -2,7 +2,11 @@
 
 namespace Tollwerk\TwBase\Domain\Model;
 
-class Country extends \SJBR\StaticInfoTables\Domain\Model\Country
-{
+use SJBR\StaticInfoTables\Domain\Model\Country as StaticCountry;
 
+if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
+    class Country extends StaticCountry
+    {
+
+    }
 }

@@ -1,7 +1,9 @@
 {
   "name": "tollwerk/tw-base",
   "type": "typo3-cms-extension",
-  "description": "Essentials and modern building blocks",
+  "description": "Collection of building blocks and view helpers for TYPO3 projects made by tollwerk",
+  "homepage": "https://github.com/tollwerk/TYPO3-ext-tw_base",
+  "license": "GPL-2.0+",
   "authors": [
     {
       "name": "Joschi Kuphal",
@@ -10,7 +12,26 @@
   ],
   "autoload": {
     "psr-4": {
-      "Tollwerk\\TwBase\\": "Classes"
+      "Tollwerk\\TwBase\\": "Classes/"
     }
+  },
+  "replace": {
+    "tw_base": "self.version",
+    "typo3-ter/tw_base": "self.version"
+  },
+  "keywords": [
+    "typo3",
+    "fluid",
+    "extbase",
+    "viewhelper",
+    "mozjpeg",
+    "webp",
+    "picture"
+  ],
+  "require": {
+    "typo3/cms-core": ">=9.0 <9.5"
+  },
+  "suggest": {
+    "sjbr/static-info-tables": "Data and API for countries, languages and currencies for use in TYPO3 CMS"
   }
 }
