@@ -29,7 +29,7 @@
     "picture"
   ],
   "require": {
-    "typo3/cms-core": ">=9.0 <9.5"
+    "typo3/cms-core": "^9.5"
   },
   "suggest": {
     "sjbr/static-info-tables": "Data and API for countries, languages and currencies for use in TYPO3 CMS"
