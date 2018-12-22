@@ -52,15 +52,15 @@ class ListViewHelper extends AbstractViewHelper
      *
      * @return array|string List of attributes / HTML attribute string
      */
-    protected function renderAttributes(array $stdAttributes, array $nonEmptyAttributes, $returnArray)
+    protected static function renderAttributes(array $stdAttributes, array $nonEmptyAttributes, $returnArray)
     {
         $attributes = [];
-        foreach ($stdAttributes as $name => $value) {
+        foreach (self::flatten($stdAttributes) as $name => $value) {
             $attributes[$name] = $returnArray ?
                 (strlen(trim($value)) ? trim($value) : null) :
                 self::renderAttribute($name, $value, false);
         }
-        foreach ($nonEmptyAttributes as $name => $value) {
+        foreach (self::flatten($nonEmptyAttributes) as $name => $value) {
             $attributes[$name] = $returnArray ?
                 (strlen(trim($value)) ? trim($value) : null) :
                 self::renderAttribute($name, $value, true);
@@ -105,5 +105,26 @@ class ListViewHelper extends AbstractViewHelper
             'Arbitrary number of HTML tag attributes that only get rendered if they\'re not empty', false, []
         );
         $this->registerArgument('returnArray', 'boolean', 'Return an attribute list instead of string', false, false);
+    }
+
+    /**
+     * Recursively flatten an array
+     *
+     * @param array $array Array
+     *
+     * @return array Flattened array
+     */
+    protected static function flatten(array $array)
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, self::flatten($value));
+                continue;
+            }
+
+            $result[$key] = $value;
+        }
+        return $result;
     }
 }

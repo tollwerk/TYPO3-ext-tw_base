@@ -17,6 +17,7 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
      * Returns TRUE if this processor can process the given task.
      *
      * @param TaskInterface $task
+     *
      * @return bool
      */
     public function canProcessTask(TaskInterface $task)
@@ -26,6 +27,7 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
                 $task->getName(),
                 ['Preview', 'CropScaleMask', 'CropScaleMaskCompress', 'Convert']
             );
+
         return $canProcessTask;
     }
 
@@ -35,6 +37,7 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
      * This method adds new helper type for image compression & conversion
      *
      * @param string $taskName
+     *
      * @return LocalCropScaleMaskCompressHelper|LocalConvertHelper|LocalCropScaleMaskHelper|LocalPreviewHelper
      * @throws \InvalidArgumentException
      */
