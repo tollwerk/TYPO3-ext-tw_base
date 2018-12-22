@@ -58,15 +58,16 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
     }
 
     /**
+     * Return the graphical functions object
+     *
      * @return GraphicalFunctions
      */
-    protected function getGraphicalFunctionsObject()
+    protected function getGraphicalFunctionsObject(): GraphicalFunctions
     {
         static $graphicalFunctionsObject = null;
 
         if ($graphicalFunctionsObject === null) {
             $graphicalFunctionsObject = GeneralUtility::makeInstance(GraphicalFunctions::class);
-            $graphicalFunctionsObject->init();
         }
 
         return $graphicalFunctionsObject;
