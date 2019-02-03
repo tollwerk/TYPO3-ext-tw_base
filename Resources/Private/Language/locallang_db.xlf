@@ -16,6 +16,9 @@
 			<trans-unit id="file.layoutRootPath" xml:space="preserve">
 				<source>Path to template layouts (FE)</source>
 			</trans-unit>
+			<trans-unit id="file.iconRootPath" xml:space="preserve">
+				<source>Icon root directories (more significant ones first)</source>
+			</trans-unit>
             <trans-unit id="common" xml:space="preserve">
 				<source>Common settings</source>
 			</trans-unit>

@@ -7,7 +7,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Merge view helper
  *
- * @package    Tollwerk\TwNdf
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwFh\ViewHelpers
  */
 class MergeViewHelper extends AbstractViewHelper

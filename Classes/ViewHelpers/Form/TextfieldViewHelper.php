@@ -5,7 +5,7 @@ namespace Tollwerk\TwBase\ViewHelpers\Form;
 /**
  * Extended Textfield ViewHelper
  *
- * @package    Tollwerk\TwNdf
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers\Form
  */
 class TextfieldViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Form\TextfieldViewHelper
