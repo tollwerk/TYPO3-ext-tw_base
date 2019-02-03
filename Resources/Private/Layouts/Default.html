@@ -1,0 +1,66 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+    <f:if condition="{data.frame_class} != none">
+        <f:then>
+            <f:alias map="{
+                tagName: '{f:if(condition: \'{data.header} || {data.subheader}\', then: \'section\', else: \'div\')}',
+                className: 'frame frame-{data.frame_class} frame-type-{data.CType} frame-layout-{data.layout}{f:if(condition:
+            data.space_before_class, then: \' frame-space-before-{data.space_before_class}\')}{f:if(condition:
+            data.space_after_class, then: \' frame-space-after-{data.space_after_class}\')}'
+            }">
+                <f:render partial="Wrap" arguments="{tagName: tagName, className: className, data: data}" contentAs="content">
+                    <f:if condition="{data._LOCALIZED_UID}">
+                        <a name="c{data._LOCALIZED_UID}" class="anchor"></a>
+                    </f:if>
+                    <f:render section="Before" optional="true">
+                        <f:render partial="DropIn/Before/All" arguments="{_all}"/>
+                    </f:render>
+                    <f:alias map="{headingContext: '{base:heading.context.get()}'}">
+                        <f:render section="Header" optional="true">
+                            <f:if condition="{gallery.position.noWrap} != 1">
+                                <f:render partial="Header/All" arguments="{_all}"/>
+                            </f:if>
+                        </f:render>
+                        <f:render section="Main" optional="true"/>
+                        <f:render section="Footer" optional="true">
+                            <f:render partial="Footer/All" arguments="{_all}"/>
+                        </f:render>
+                        <base:heading.context.restore context="{headingContext}"/>
+                    </f:alias>
+                    <f:render section="After" optional="true">
+                        <f:render partial="DropIn/After/All" arguments="{_all}"/>
+                    </f:render>
+                </f:render>
+            </f:alias>
+        </f:then>
+        <f:else>
+            <a name="c{data.uid}" class="anchor"></a>
+            <f:if condition="{data._LOCALIZED_UID}">
+                <a name="c{data._LOCALIZED_UID}" class="anchor"></a>
+            </f:if>
+            <f:if condition="{data.space_before_class}">
+                <div class="frame-space-before-{data.space_before_class}"></div>
+            </f:if>
+            <f:render section="Before" optional="true">
+                <f:render partial="DropIn/Before/All" arguments="{_all}"/>
+            </f:render>
+            <f:alias map="{headingContext: '{base:heading.context.get()}'}">
+                <f:render section="Header" optional="true">
+                    <f:if condition="{gallery.position.noWrap} != 1">
+                        <f:render partial="Header/All" arguments="{_all}"/>
+                    </f:if>
+                </f:render>
+                <f:render section="Main" optional="true"/>
+                <f:render section="Footer" optional="true">
+                    <f:render partial="Footer/All" arguments="{_all}"/>
+                </f:render>
+                <base:heading.context.restore context="{headingContext}"/>
+            </f:alias>
+            <f:render section="After" optional="true">
+                <f:render partial="DropIn/After/All" arguments="{_all}"/>
+            </f:render>
+            <f:if condition="{data.space_after_class}">
+                <div class="frame-space-after-{data.space_after_class}"></div>
+            </f:if>
+        </f:else>
+    </f:if>
+</html>

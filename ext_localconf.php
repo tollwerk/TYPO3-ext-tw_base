@@ -1,104 +1,78 @@
 <?php
 
 $GLOBALS['TYPO3_CONF_VARS']['LOG']['Tollwerk']['TwBase']['writerConfiguration'] = [
-    \TYPO3\CMS\Core\Log\LogLevel::WARNING => [
-        \TYPO3\CMS\Core\Log\Writer\DatabaseWriter::class => []
-    ],
+    \TYPO3\CMS\Core\Log\LogLevel::WARNING => [\TYPO3\CMS\Core\Log\Writer\DatabaseWriter::class => []],
 ];
 
 // Register the Primitive LQIP service
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
     $_EXTKEY,
-    // Service type
-    'lqip',
-    // Service key
-    'tx_twbase_primitive',
+    'lqip', // Service type
+    'tx_twbase_primitive', // Service key
     array(
         'title'       => 'Primitive',
         'description' => 'Create low-quality image previews (LQIP) with geometric shapes',
-
-        'subtype' => 'jpg,png,gif',
-
-        'available' => true,
-        'priority'  => 60,
-        'quality'   => 80,
-
-        'os'   => '',
-        'exec' => 'primitive,svgo',
-
-        'className' => \Tollwerk\TwBase\Service\PrimitiveLqipService::class
+        'subtype'     => 'jpg,png,gif',
+        'available'   => true,
+        'priority'    => 60,
+        'quality'     => 80,
+        'os'          => '',
+        'exec'        => 'primitive,svgo',
+        'className'   => \Tollwerk\TwBase\Service\PrimitiveLqipService::class
     )
 );
 
 // Register the mozjpeg image compressor service
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
     $_EXTKEY,
-    // Service type
-    'filecompress',
-    // Service key
-    'tx_twbase_mozjpeg',
+    'filecompress', // Service type
+    'tx_twbase_mozjpeg', // Service key
     array(
         'title'       => 'mozjpeg',
         'description' => 'Compress JPEG images using the mozjpeg encoder (https://github.com/mozilla/mozjpeg)',
-
-        'subtype' => 'jpg',
-
-        'available' => true,
-        'priority'  => 60,
-        'quality'   => 80,
-
-        'os'   => '',
-        'exec' => 'mozjpeg',
-
-        'className' => \Tollwerk\TwBase\Service\MozjpegCompressorService::class
+        'subtype'     => 'jpg',
+        'available'   => true,
+        'priority'    => 60,
+        'quality'     => 80,
+        'os'          => '',
+        'exec'        => 'mozjpeg',
+        'className'   => \Tollwerk\TwBase\Service\MozjpegCompressorService::class
     )
 );
 
 // Register the SVGO image compressor service
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
     $_EXTKEY,
-    // Service type
-    'filecompress',
-    // Service key
-    'tx_twbase_svgo',
+    'filecompress', // Service type
+    'tx_twbase_svgo', // Service key
     array(
         'title'       => 'svgo',
         'description' => 'Compress SVG vector graphics using the SVGO optimizer (https://github.com/svg/svgo)',
-
-        'subtype' => 'svg',
-
-        'available' => true,
-        'priority'  => 60,
-        'quality'   => 80,
-
-        'os'   => '',
-        'exec' => 'svgo',
-
-        'className' => \Tollwerk\TwBase\Service\SvgoCompressorService::class
+        'subtype'     => 'svg',
+        'available'   => true,
+        'priority'    => 60,
+        'quality'     => 80,
+        'os'          => '',
+        'exec'        => 'svgo',
+        'className'   => \Tollwerk\TwBase\Service\SvgoCompressorService::class
     )
 );
 
 // Register the WebP image converter service
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
     $_EXTKEY,
-    // Service type
-    'fileconvert',
-    // Service key
-    'tx_twbase_webp',
+    'fileconvert', // Service type
+    'tx_twbase_webp', // Service key
     array(
         'title'       => 'webp',
         'description' => 'Convert images using the Google WebP converter (https://developers.google.com/speed/webp)',
-
-        'subtype' => 'webp',
-
-        'available' => true,
-        'priority'  => 60,
-        'quality'   => 80,
-
-        'os'   => '',
-        'exec' => 'cwebp',
-
-        'className' => \Tollwerk\TwBase\Service\WebpConverterService::class
+        'subtype'     => 'webp',
+        'available'   => true,
+        'priority'    => 60,
+        'quality'     => 80,
+        'os'          => '',
+        'exec'        => 'cwebp',
+        'className'   => \Tollwerk\TwBase\Service\WebpConverterService::class
     )
 );
 
@@ -134,3 +108,9 @@ if (strlen($globalNSPrefix)) {
 
 // Register the component service command controller
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['extbase']['commandControllers'][] = \Tollwerk\TwBase\Command\ImageCommandController::class;
+
+// Register the base viewhelper namespace
+$GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces']['base'] = ['Tollwerk\\TwBase\\ViewHelpers'];
+
+// Register a hook for injecting an SVG sprite
+$GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = \Tollwerk\TwBase\Utility\SvgIconManager::class.'->injectSvgSprite';

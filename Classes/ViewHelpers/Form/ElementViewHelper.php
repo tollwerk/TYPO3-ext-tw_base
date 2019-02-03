@@ -3,6 +3,7 @@
 namespace Tollwerk\TwBase\ViewHelpers\Form;
 
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Form\Domain\Model\FormDefinition;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -31,7 +32,15 @@ class ElementViewHelper extends AbstractViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        return $arguments['form']->getFormDefinition()->getElementByIdentifier($arguments['element']);
+        /** @var FormDefinition $formDefinition */
+        $formDefinition   = $arguments['form']->getFormDefinition();
+        $formIdentifier   = $formDefinition->getIdentifier();
+        $elementIdentfier = $arguments['element'];
+        if (strpos($elementIdentfier, $formIdentifier.'.') === 0) {
+            $elementIdentfier = substr($elementIdentfier, strlen($formIdentifier) + 1);
+        }
+
+        return $formDefinition->getElementByIdentifier($elementIdentfier);
     }
 
     /**

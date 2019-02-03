@@ -1,20 +1,20 @@
 <?php
 
 /**
- * tollwerk
+ * data
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
- * @subpackage Tollwerk\TwBase\Service
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2019 tollwerk GmbH <info@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,21 +34,28 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\Service;
+namespace Tollwerk\TwBase\ViewHelpers\Icon;
 
-use TYPO3\CMS\Core\Service\AbstractService;
+use Tollwerk\TwBase\Utility\SvgIconManager;
+use Tollwerk\TwBase\ViewHelpers\IconViewHelper;
 
 /**
- * Abstract LQIP service
+ * Use icon viewhelper
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  */
-abstract class AbstractLqipService extends AbstractService
+class UseViewHelper extends IconViewHelper
 {
     /**
-     * Create a low-quality image preview
+     * Get the icon DOM
      *
-     * @param string $imageUri Source image URL
-     * @param array $configuration Service configuration
-     * @return string LQIP URI
+     * @param string $iconFile Icon file path
+     *
+     * @return \DOMDocument Icon DOM
      */
-    abstract public function getImageLqip($imageUri, array $configuration = []);
+    protected function getIconDom(string $iconFile): \DOMDocument
+    {
+        return SvgIconManager::useIcon($iconFile);
+    }
 }
