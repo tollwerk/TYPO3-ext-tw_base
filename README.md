@@ -10,6 +10,7 @@
 * View helpers for preparing / refining lists of HTML element attributes (empty / non-empty, data attributes, binary attributes)
 * Form element view helper (returns a [Form Framework](https://docs.typo3.org/typo3cms/extensions/form/) element by its name)
 * Link info view helper (returns detailed information about a link target)
+* SVG icon & icon sprite view helpers (returns detailed information about a link target)
 
 ## Link handlers
 
@@ -25,3 +26,6 @@ These services won't work out of the box and require particular software to be a
 ## Miscellaneous
 
 * Image lazyloading with automatic SVG based preview images (like [SQIP](https://github.com/technopagan/sqip); requires particular software on the server)
+* Fluid Standalone template renderer
+* Email notification tool (HTML emails & plaintext)
+* Helper traits for repositories (for debugging SQL queries and for generally ignoring storage PIDs)
