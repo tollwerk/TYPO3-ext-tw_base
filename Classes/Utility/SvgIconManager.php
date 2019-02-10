@@ -123,12 +123,15 @@ class SvgIconManager
             }
         }
 
-        if ($svgDom->documentElement->hasAttribute('width')) {
-            $svgDom->documentElement->removeAttribute('width');
-        }
-        if ($svgDom->documentElement->hasAttribute('height')) {
-            $svgDom->documentElement->removeAttribute('height');
-        }
+        $svgDom->documentElement->setAttribute('width', $width);
+        $svgDom->documentElement->setAttribute('height', $height);
+
+//        if ($svgDom->documentElement->hasAttribute('width')) {
+//            $svgDom->documentElement->removeAttribute('width');
+//        }
+//        if ($svgDom->documentElement->hasAttribute('height')) {
+//            $svgDom->documentElement->removeAttribute('height');
+//        }
 
         return $svgDom;
     }
