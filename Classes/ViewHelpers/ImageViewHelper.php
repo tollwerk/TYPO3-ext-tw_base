@@ -50,12 +50,36 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\ImageViewHelper
      * @var \Tollwerk\TwBase\Service\ImageService
      */
     protected $imageService;
+    /**
+     * Extended image service
+     *
+     * @var \Tollwerk\TwBase\Service\ImageService
+     */
+    protected $extendedImageService;
 
     /**
-     * @param \Tollwerk\TwBase\Service\ImageService $imageService
+     * Inject the standard image service
+     *
+     * This method just overrides the parent class' method without doing anything. Although we want to use
+     * a custom image service, the method signatures have to be identical for compatibility reasons. Therefore
+     * we have to inject the extended image service using a different method. Ugly but works. ;)
+     *
+     * @see injectExtendedImageService()
+     *
+     * @param \TYPO3\CMS\Extbase\Service\ImageService $imageService
      */
-    public function injectImageService(\Tollwerk\TwBase\Service\ImageService $imageService)
+    public function injectImageService(\TYPO3\CMS\Extbase\Service\ImageService $imageService)
     {
-        $this->imageService = $imageService;
+        // Do nothing
+    }
+
+    /**
+     * Inject the extended image service
+     *
+     * @param \Tollwerk\TwBase\Service\ImageService $extendedImageService
+     */
+    public function injectExtendedImageService(\Tollwerk\TwBase\Service\ImageService $extendedImageService)
+    {
+        $this->imageService = $extendedImageService;
     }
 }
