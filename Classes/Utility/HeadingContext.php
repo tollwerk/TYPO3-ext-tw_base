@@ -37,12 +37,12 @@
 namespace Tollwerk\TwBase\Utility;
 
 /**
- * Headline context
+ * Heading context
  */
-class HeadlineContext
+class HeadingContext
 {
     /**
-     * Headline level
+     * Heading level
      *
      * @var int
      */
@@ -60,7 +60,7 @@ class HeadlineContext
      */
     protected $afterLevel;
     /**
-     * Headline is hidden
+     * Heading is hidden
      *
      * @var boolean
      */
@@ -75,11 +75,11 @@ class HeadlineContext
     /**
      * Constructor
      *
-     * @param int $level         Headline level
+     * @param int $level         Heading level
      * @param string $visualType Visual headline type
      * @param int $afterLevel    Previous headline level
-     * @param bool $hidden       Headline is hidden
-     * @param bool $error        Headline violates semantic structure
+     * @param bool $hidden       Heading is hidden
+     * @param bool $error        Heading violates semantic structure
      */
     public function __construct($level, $visualType, $afterLevel, $hidden = false, $error = false)
     {
@@ -93,7 +93,7 @@ class HeadlineContext
     /**
      * Return the headline level
      *
-     * @return int Headline level
+     * @return int Heading level
      */
     public function getLevel()
     {
@@ -123,7 +123,7 @@ class HeadlineContext
     /**
      * Return whether the headline is hidden
      *
-     * @return bool Headline is hidden
+     * @return bool Heading is hidden
      */
     public function isHidden()
     {
@@ -133,7 +133,7 @@ class HeadlineContext
     /**
      * Return whether the headline violates the semantic structure
      *
-     * @return bool Headline error
+     * @return bool Heading error
      */
     public function isError()
     {

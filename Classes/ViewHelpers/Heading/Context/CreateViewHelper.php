@@ -36,7 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
 
-use Tollwerk\TwBase\Utility\HeadlineContextManager;
+use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -53,7 +53,7 @@ class CreateViewHelper extends AbstractViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('level', 'int', 'Headline level', false, null);
+        $this->registerArgument('level', 'int', 'Heading level', false, null);
         $this->registerArgument('type', 'string', 'Visual type', false, null);
     }
 
@@ -64,7 +64,7 @@ class CreateViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        $headingContextManager = GeneralUtility::makeInstance(HeadlineContextManager::class);
+        $headingContextManager = GeneralUtility::makeInstance(HeadingContextManager::class);
         $currentContext        = $headingContextManager->getCurrentContext();
         $headingContextManager->setupContext($this->arguments['level'], $this->arguments['type']);
 
