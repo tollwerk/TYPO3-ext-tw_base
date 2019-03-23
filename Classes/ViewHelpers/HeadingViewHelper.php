@@ -2,7 +2,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
-use Tollwerk\TwBase\Utility\HeadlineContextManager;
+use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
@@ -25,9 +25,9 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
     {
         parent::initializeArguments();
         $this->registerUniversalTagAttributes();
-        $this->registerArgument('level', 'int', 'Headline level', false, null);
+        $this->registerArgument('level', 'int', 'Heading level', false, null);
         $this->registerArgument('type', 'string', 'Visual type', false, null);
-        $this->registerArgument('content', 'string', 'Headline content', true);
+        $this->registerArgument('content', 'string', 'Heading content', true);
         $this->registerArgument('restoreContext', 'boolean', 'Restore the heading context', false, true);
     }
 
@@ -42,8 +42,8 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
         $type    = $this->arguments['type'];
         $content = trim($this->arguments['content']);
 
-        /** @var HeadlineContextManager $headingContextManager */
-        $headingContextManager = GeneralUtility::makeInstance(HeadlineContextManager::class);
+        /** @var HeadingContextManager $headingContextManager */
+        $headingContextManager = GeneralUtility::makeInstance(HeadingContextManager::class);
 
         // Set up a headline context
         $headingContext = $headingContextManager->setupContext($level, $type, $content);

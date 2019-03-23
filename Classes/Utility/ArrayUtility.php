@@ -4,6 +4,9 @@ namespace Tollwerk\TwBase\Utility;
 
 /**
  * Array utility
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Utility
  */
 class ArrayUtility
 {
@@ -11,6 +14,7 @@ class ArrayUtility
      * Recursively convert empty values in an array to FALSE
      *
      * @param array $array Array
+     *
      * @return array Modified array
      */
     public static function recursivelyFalsify(array $array)
@@ -22,6 +26,7 @@ class ArrayUtility
                 $array[$key] = empty($value) ? false : $value;
             }
         }
+
         return $array;
     }
 }

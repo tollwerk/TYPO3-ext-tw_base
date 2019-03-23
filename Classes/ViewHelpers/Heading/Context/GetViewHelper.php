@@ -36,7 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
 
-use Tollwerk\TwBase\Utility\HeadlineContextManager;
+use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -54,6 +54,6 @@ class GetViewHelper extends AbstractViewHelper
      */
     public function render()
     {
-        return GeneralUtility::makeInstance(HeadlineContextManager::class)->getCurrentContext();
+        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentContext();
     }
 }

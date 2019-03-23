@@ -42,9 +42,9 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Headline context manager
+ * Heading context manager
  */
-class HeadlineContextManager implements SingletonInterface
+class HeadingContextManager implements SingletonInterface
 {
     /**
      * Current headline level
@@ -59,9 +59,9 @@ class HeadlineContextManager implements SingletonInterface
      */
     protected $maxLevel = 0;
     /**
-     * Headline contexts
+     * Heading contexts
      *
-     * @var HeadlineContext[]
+     * @var HeadingContext[]
      */
     protected $contexts = [];
 
@@ -90,7 +90,7 @@ class HeadlineContextManager implements SingletonInterface
      * @param int $visualType Visual headline type
      * @param string $contetn Heading content (for logging purposes only)
      *
-     * @return HeadlineContext Headline context
+     * @return HeadingContext Heading context
      */
     public function setupContext($level = null, $visualType = null, string $content = '')
     {
@@ -132,7 +132,7 @@ class HeadlineContextManager implements SingletonInterface
 
         $this->currentLevel = $level;
         $headlineContext    = GeneralUtility::makeInstance(
-            HeadlineContext::class,
+            HeadingContext::class,
             $level,
             $visualType,
             $afterLevel,
@@ -147,9 +147,9 @@ class HeadlineContextManager implements SingletonInterface
     /**
      * Tear down the last headline context
      *
-     * @param HeadlineContext $headlineContext Headline context to tear down
+     * @param HeadingContext $headlineContext Heading context to tear down
      */
-    public function tearDownContext(HeadlineContext $headlineContext)
+    public function tearDownContext(HeadingContext $headlineContext)
     {
         $this->currentLevel = $headlineContext->getAfterLevel();
     }
@@ -165,15 +165,26 @@ class HeadlineContextManager implements SingletonInterface
     }
 
     /**
+     * Return the current heading level
+     *
+     * @return int Current heading level
+     */
+    public function getCurrentLevel(): int
+    {
+        return $this->currentLevel;
+    }
+
+    /**
      * Restore a heading context
      *
      * @param string $restoreContext Heading context descriptor
+     * @param bool $restoreRoot      Restore the root level if requested
      */
-    public function restoreContext(string $restoreContext): void
+    public function restoreContext(string $restoreContext, bool $restoreRoot = false): void
     {
         $restoreContext = trim($restoreContext);
         if (!strlen($restoreContext)) {
-            $this->currentLevel = 1;
+            $this->currentLevel = $restoreRoot ? 0 : 1;
             $this->contexts     = [];
 
             return;
