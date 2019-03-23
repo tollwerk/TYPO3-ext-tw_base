@@ -16,6 +16,13 @@
 
 * [Telecommunication link handler](Docs/LinkHandler/tel.md)
 
+## Utilities
+
+* [Array utility](Classes/Utility/ArrayUtility.php) for advanced array operations
+* [cURL utility](Classes/Utility/CurlUtility.php) for making HTTP requests
+* [Email utility](Classes/Utility/EmailUtility.php) for sending out mixed HTML / plaintext emails
+
+
 ## Services
 
 * Image compression services (mozjpeg, SVGO)
