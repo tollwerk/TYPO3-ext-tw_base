@@ -279,4 +279,52 @@ class TcaUtility
 
         return $config;
     }
+
+    /**
+     * Creates the string for TCA['types'][...]['showitem']
+     *
+     * @param array $showitem Array of divs, fields and palletes to show<p>
+     *                        The first level is the name of the div, so use "General", "Access" etc. here.
+     *                        The second level can be a string for a single field like "title" or "crdate" or an array
+     *                        for rendering a palette. If you want to render a palette on the second level use an array
+     *                        with pallete name as first key. Optional you can have a second key for palette label.</p>
+     *                        <p>
+     *                        Example:<br />
+     *                        <code>
+     *                        \Tollwerk\TwRws\Utility\TcaUtility::createShowitemString([
+     *                          'General' => [
+     *                              'title'
+     *                              'description',
+     *                              [PALETTE_NAME, OPTIONAL_PALETTE_LABEL]
+     *                          ],
+     *                          'Access' => [
+     *                              'crdate',
+     *                              [PALETTE_NAME, OPTIONAL_PALETTE_LABEL],
+     *                          ]
+     *                      ]);
+     *                      </code>
+     *                      </p>
+     *
+     * @return string
+     */
+    public static function createShowitemString(array $showitem = []): string
+    {
+        $showitemArray = [];
+        $divCounter = 0;
+
+        foreach ($showitem as $divName => $divFields) {
+            $showitemArray[] = '--div--;' . ($divCounter > 0 ? $divName : 'LLL:EXT:tw_rws/Resources/Private/Language/locallang_db.xlf:tca.div.general');
+            foreach ($divFields as $field) {
+                // Array means it's a palette
+                if (is_array($field)) {
+                    $showitemArray[] = '--palette--;'.(count($field) > 1 ? $field[1] : '').';'.$field[0];
+                } else {
+                    $showitemArray[] = $field;
+                }
+            }
+            $divCounter++;
+        }
+        $string = implode(','.PHP_EOL, $showitemArray);
+        return $string;
+    }
 }
