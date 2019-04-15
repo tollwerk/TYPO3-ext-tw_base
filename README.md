@@ -22,7 +22,7 @@
 * [Array utility](Classes/Utility/ArrayUtility.php) for advanced array operations
 * [cURL utility](Classes/Utility/CurlUtility.php) for making HTTP requests
 * [Email utility](Classes/Utility/EmailUtility.php) for sending out mixed HTML / plaintext emails
-
+* [TCA utility](Classes/Utility/TcaUtility.php) for easier TCA configuration and manipulation
 
 ## Services
 
