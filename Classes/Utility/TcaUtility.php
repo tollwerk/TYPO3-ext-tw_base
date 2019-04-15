@@ -313,7 +313,7 @@ class TcaUtility
         $divCounter = 0;
 
         foreach ($showitem as $divName => $divFields) {
-            $showitemArray[] = '--div--;' . ($divCounter > 0 ? $divName : 'LLL:EXT:tw_rws/Resources/Private/Language/locallang_db.xlf:tca.div.general');
+            $showitemArray[] = '--div--;' . ($divCounter > 0 ? $divName : 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general');
             foreach ($divFields as $field) {
                 // Array means it's a palette
                 if (is_array($field)) {
