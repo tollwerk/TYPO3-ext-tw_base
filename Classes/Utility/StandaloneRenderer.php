@@ -91,10 +91,11 @@ class StandaloneRenderer
      * @param string $templateName Template name
      * @param array $parameters    Template parameters
      * @param string $format       Template format
+     * @param string|null $section
      *
      * @return string Rendered template
      */
-    public function render(string $templateName, array $parameters = [], string $format = 'html'): string
+    public function render(string $templateName, array $parameters = [], string $format = 'html', string $section = null): string
     {
         $view = $this->objectManager->get(StandaloneView::class);
         $view->setFormat($format);
@@ -106,6 +107,6 @@ class StandaloneRenderer
         $parameters['settings'] = $this->configuration['settings'];
         $view->assignMultiple($parameters);
 
-        return $view->render();
+        return $section ? $view->renderSection($section, $parameters) : $view->render();
     }
 }
