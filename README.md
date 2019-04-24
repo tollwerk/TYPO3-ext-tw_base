@@ -24,6 +24,10 @@
 * [Email utility](Classes/Utility/EmailUtility.php) for sending out mixed HTML / plaintext emails
 * [TCA utility](Classes/Utility/TcaUtility.php) for easier TCA configuration and manipulation
 
+## Validators
+
+* [Unique object validator](Classes/Domain/Validator/UniqueObjectValidator.php) for testing whether a unique value is already taken (e.g. for use with the Form Framework)
+
 ## Services
 
 * Image compression services (mozjpeg, SVGO)
