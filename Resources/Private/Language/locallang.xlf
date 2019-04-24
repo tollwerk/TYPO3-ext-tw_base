@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z"
+          product-name="tw_base">
+        <header/>
+        <body>
+            <trans-unit id="validator.uniqueObject.error">
+                <source>Unique value already taken</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

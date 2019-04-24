@@ -1,20 +1,20 @@
 <?php
 
 /**
- * Forget Heritage
+ * tollwerk
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Utility
- * @author     Joschi Kuphal <joschi@kuphal.net> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@kuphal.net>
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -86,16 +86,21 @@ class StandaloneRenderer
     }
 
     /**
-     * Render a template
+     * Render a Fluid template
      *
      * @param string $templateName Template name
      * @param array $parameters    Template parameters
-     * @param string $format       Template format
+     * @param string $format       Optional: Template format
+     * @param string|null $section Optional: template section
      *
      * @return string Rendered template
      */
-    public function render(string $templateName, array $parameters = [], string $format = 'html'): string
-    {
+    public function render(
+        string $templateName,
+        array $parameters = [],
+        string $format = 'html',
+        string $section = null
+    ): string {
         $view = $this->objectManager->get(StandaloneView::class);
         $view->setFormat($format);
         $view->setTemplateRootPaths($this->configuration['view']['templateRootPaths']);
@@ -106,6 +111,6 @@ class StandaloneRenderer
         $parameters['settings'] = $this->configuration['settings'];
         $view->assignMultiple($parameters);
 
-        return $view->render();
+        return $section ? $view->renderSection($section, $parameters) : $view->render();
     }
 }

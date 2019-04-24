@@ -7,127 +7,127 @@
             <trans-unit id="file" xml:space="preserve">
 				<source>Files &amp; directories</source>
 			</trans-unit>
-			<trans-unit id="file.templateRootPath" xml:space="preserve">
+            <trans-unit id="file.templateRootPath" xml:space="preserve">
 				<source>Path to template files (FE)</source>
 			</trans-unit>
-			<trans-unit id="file.partialRootPath" xml:space="preserve">
+            <trans-unit id="file.partialRootPath" xml:space="preserve">
 				<source>Path to template partials (FE)</source>
 			</trans-unit>
-			<trans-unit id="file.layoutRootPath" xml:space="preserve">
+            <trans-unit id="file.layoutRootPath" xml:space="preserve">
 				<source>Path to template layouts (FE)</source>
 			</trans-unit>
-			<trans-unit id="file.iconRootPath" xml:space="preserve">
+            <trans-unit id="file.iconRootPath" xml:space="preserve">
 				<source>Icon root directories (more significant ones first)</source>
 			</trans-unit>
             <trans-unit id="common" xml:space="preserve">
 				<source>Common settings</source>
 			</trans-unit>
-			<trans-unit id="common.enable" xml:space="preserve">
+            <trans-unit id="common.enable" xml:space="preserve">
 				<source>Enable this extension</source>
 			</trans-unit>
-			<trans-unit id="images" xml:space="preserve">
+            <trans-unit id="images" xml:space="preserve">
 				<source>Images</source>
 			</trans-unit>
-			<trans-unit id="compressors" xml:space="preserve">
+            <trans-unit id="compressors" xml:space="preserve">
 				<source>Compressors</source>
 			</trans-unit>
-			<trans-unit id="compressors.mozjpeg" xml:space="preserve">
+            <trans-unit id="compressors.mozjpeg" xml:space="preserve">
 				<source>JPEG compressor: Enable the mozjpeg image compressor</source>
 			</trans-unit>
-			<trans-unit id="compressors.svgo" xml:space="preserve">
+            <trans-unit id="compressors.svgo" xml:space="preserve">
 				<source>SVG compressor: Enable the SVGO graphics compressor</source>
 			</trans-unit>
-			<trans-unit id="converters" xml:space="preserve">
+            <trans-unit id="converters" xml:space="preserve">
 				<source>Converters</source>
 			</trans-unit>
-			<trans-unit id="converters.webp" xml:space="preserve">
+            <trans-unit id="converters.webp" xml:space="preserve">
 				<source>WebP converter: Enable automatic encoding of WebP image variants</source>
 			</trans-unit>
-			<trans-unit id="converters.webp.quality" xml:space="preserve">
+            <trans-unit id="converters.webp.quality" xml:space="preserve">
 				<source>WebP quality (0-100)</source>
 			</trans-unit>
-			<trans-unit id="images.srcset" xml:space="preserve">
+            <trans-unit id="images.srcset" xml:space="preserve">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			</trans-unit>
-			<trans-unit id="images.densities" xml:space="preserve">
+            <trans-unit id="images.densities" xml:space="preserve">
 				<source>Display Densities for Responsive Images: Comma-separated list of display density descriptors (e. g. "1x, 2x") for the creation of media queries</source>
 			</trans-unit>
-			<trans-unit id="images.sizes" xml:space="preserve">
+            <trans-unit id="images.sizes" xml:space="preserve">
 				<source>Sizes Query for Responsive Images: Sizes query which tells the browser which of the image sizes should be used in the current environment (%1$d can be used as a placeholder for the calculated image width)</source>
 			</trans-unit>
-			<trans-unit id="images.picturefill" xml:space="preserve">
+            <trans-unit id="images.picturefill" xml:space="preserve">
 				<source>Use rendering suggested by picturefill.js and omit the src attribute: See https://github.com/scottjehl/picturefill#the-gotchas for an explanation</source>
 			</trans-unit>
-			<trans-unit id="images.lazyload.lqipmode" xml:space="preserve">
+            <trans-unit id="images.lazyload.lqipmode" xml:space="preserve">
 				<source>Lazyload preview image mode: The mode used for generating low-quality lazyloading preview images (LQIP)</source>
 			</trans-unit>
-			<trans-unit id="images.lazyload.lqipnum" xml:space="preserve">
+            <trans-unit id="images.lazyload.lqipnum" xml:space="preserve">
 				<source>Lazyload preview image quality: The number of poligons generated for low-quality lazyloading preview images (LQIP)</source>
 			</trans-unit>
-			<trans-unit id="images.lazyload.lqipblur" xml:space="preserve">
+            <trans-unit id="images.lazyload.lqipblur" xml:space="preserve">
 				<source>Lazyload preview image blur: Standard deviation for the Gaussian Blur filter (0 = no blur effect)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve">
 				<source>Visual display</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.default" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.default" xml:space="preserve">
 				<source>Automatic</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.xx-large" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.xx-large" xml:space="preserve">
 				<source>Heading level 1 (xx-large)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.x-large" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.x-large" xml:space="preserve">
 				<source>Heading level 2 (x-large)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.large" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.large" xml:space="preserve">
 				<source>Heading level 3 (large)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.medium" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.medium" xml:space="preserve">
 				<source>Heading level 4 (medium)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.small" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.small" xml:space="preserve">
 				<source>Heading level 5 (small)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.x-small" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.x-small" xml:space="preserve">
 				<source>Heading level 5 (x-small)</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.hidden-significant" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.hidden-significant" xml:space="preserve">
 				<source>Hidden, but in outline</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_heading_type.hidden-insignificant" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_heading_type.hidden-insignificant" xml:space="preserve">
 				<source>Hidden</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_inline" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_inline" xml:space="preserve">
 				<source>Embed inline in source code</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_lazyload" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_lazyload" xml:space="preserve">
 				<source>Lazy loading</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_responsive" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_responsive" xml:space="preserve">
 				<source>Responsive display</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_breakpoints" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_breakpoints" xml:space="preserve">
 				<source>Breakpoint preset</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_skipconverter" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_skipconverter" xml:space="preserve">
 				<source>Skip converters</source>
 			</trans-unit>
-			<trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
+            <trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
 				<source>WebP</source>
 			</trans-unit>
-			<trans-unit id="tt_content.palette.imageadvanced" xml:space="preserve">
+            <trans-unit id="tt_content.palette.imageadvanced" xml:space="preserve">
 				<source>Responsivity &amp; converters</source>
 			</trans-unit>
-			<trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
+            <trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
 				<source>Page title language</source>
 			</trans-unit>
-			<trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
+            <trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
 				<source>--- Current page language ---</source>
 			</trans-unit>
-			<trans-unit id="linkbrowse.tel" xml:space="preserve">
+            <trans-unit id="linkbrowse.tel" xml:space="preserve">
 				<source>Telecom</source>
 			</trans-unit>
-			<trans-unit id="linkbrowse.number" xml:space="preserve">
+            <trans-unit id="linkbrowse.number" xml:space="preserve">
 				<source>Telecom number</source>
 			</trans-unit>
         </body>
