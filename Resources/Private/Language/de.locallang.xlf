@@ -1,13 +1,10 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <xliff version="1.0">
-    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z"
-          product-name="tw_base">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z" product-name="tw_base">
         <header/>
         <body>
-            <trans-unit id="validator.uniqueObject.error">
-				<source>Already existing</source>
-                <target>Existiert bereits</target>
-			</trans-unit>
+            <trans-unit id="validator.uniqueObject.error" approved="no">
+                <source>Unique value already taken</source> <target state="needs-translation">Eindeutiger Wert bereits belegt</target></trans-unit>
         </body>
     </file>
 </xliff>

@@ -5,8 +5,8 @@
         <header/>
         <body>
             <trans-unit id="validator.uniqueObject.error">
-				<source>Already existing</source>
-			</trans-unit>
+                <source>Unique value already taken</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

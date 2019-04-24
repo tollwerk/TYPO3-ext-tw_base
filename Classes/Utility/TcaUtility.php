@@ -3,8 +3,8 @@
 /**
  * tollwerk
  *
- * @category   Jkphl
- * @package    Jkphl\Rdfalite
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Utility
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
@@ -14,7 +14,7 @@
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -283,48 +283,47 @@ class TcaUtility
     /**
      * Creates the string for TCA['types'][...]['showitem']
      *
-     * @param array $showitem Array of divs, fields and palletes to show<p>
-     *                        The first level is the name of the div, so use "General", "Access" etc. here.
-     *                        The second level can be a string for a single field like "title" or "crdate" or an array
-     *                        for rendering a palette. If you want to render a palette on the second level use an array
-     *                        with pallete name as first key. Optional you can have a second key for palette label.</p>
-     *                        <p>
-     *                        Example:<br />
-     *                        <code>
-     *                        \Tollwerk\TwRws\Utility\TcaUtility::createShowitemString([
-     *                          'General' => [
+     * @param array $showitem       Array of divs, fields and palletes to show<p>
+     *                              The first level is the name of the div, so use "General", "Access" etc. here.
+     *                              The second level can be a string for a single field like "title" or "crdate" or an
+     *                              array for rendering a palette. If you want to render a palette on the second level
+     *                              use an array with pallete name as first key. Optional you can have a second key for
+     *                              palette label.</p>
+     *                              <p>
+     *                              Example:<br />
+     *                              <code>
+     *                              \Tollwerk\TwRws\Utility\TcaUtility::createShowitemString([
+     *                              'General' => [
      *                              'title'
      *                              'description',
      *                              [PALETTE_NAME, OPTIONAL_PALETTE_LABEL]
-     *                          ],
-     *                          'Access' => [
+     *                              ],
+     *                              'Access' => [
      *                              'crdate',
      *                              [PALETTE_NAME, OPTIONAL_PALETTE_LABEL],
-     *                          ]
-     *                      ]);
-     *                      </code>
-     *                      </p>
+     *                              ]
+     *                              ]);
+     *                              </code>
+     *                              </p>
      *
-     * @return string
+     * @return string String ready for being used as showitem
      */
     public static function createShowitemString(array $showitem = []): string
     {
         $showitemArray = [];
-        $divCounter = 0;
+        $divCounter    = 0;
 
+        // Run through all defined items
         foreach ($showitem as $divName => $divFields) {
-            $showitemArray[] = '--div--;' . ($divCounter > 0 ? $divName : 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general');
+            $showitemArray[] = '--div--;'.($divCounter++ ? $divName : 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general');
+
+            // Run through all fields
             foreach ($divFields as $field) {
-                // Array means it's a palette
-                if (is_array($field)) {
-                    $showitemArray[] = '--palette--;'.(count($field) > 1 ? $field[1] : '').';'.$field[0];
-                } else {
-                    $showitemArray[] = $field;
-                }
+                // Array type means it's a palette
+                $showitemArray[] = is_array($field) ? '--palette--;'.(count($field) > 1 ? $field[1] : '').';'.$field[0] : $field;
             }
-            $divCounter++;
         }
-        $string = implode(','.PHP_EOL, $showitemArray);
-        return $string;
+
+        return implode(','.PHP_EOL, $showitemArray);
     }
 }
