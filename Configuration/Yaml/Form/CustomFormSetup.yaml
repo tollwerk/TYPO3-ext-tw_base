@@ -1,0 +1,72 @@
+TYPO3:
+  CMS:
+    Form:
+      prototypes:
+        standard:
+
+          # -----------------------------------
+          # Display of form elements in backend
+
+          formEditor:
+
+            # Register js files/modules with requireJS. Form framework searches for those files here:
+            # 'EXT:..../Resources/Public/JavaScript/Backend/FormEditor/......js
+            dynamicRequireJsModules:
+              additionalViewModelModules:
+                - 'TYPO3/CMS/TwBase/Backend/FormEditor/TimeViewmodel'
+
+            # For displaying in backend: What fluid template should be used?
+            # For now, use the default template from tx_core
+            formEditorPartials:
+              FormElement-Time: 'Stage/SimpleTemplate'
+
+
+          formElementsDefinition:
+
+            # Additional root paths for display in frontend.
+            # Numeric keys should be unique, so a timestamp would be appropriate but we want tw_base to be the first one right after tx_form itself
+            Form:
+              renderingOptions:
+                templateRootPaths:
+                  11: 'EXT:tw_base/Resources/Private/Templates/Form/'
+                partialRootPaths:
+                  11: 'EXT:tw_base/Resources/Private/Partials/Form/'
+                layoutRootPaths:
+                  11: 'EXT:tw_base/Resources/Private/Layouts/Form/'
+
+            # ---------------------------------------------------------
+            # Display in backend: Details of the field inside the column on the right side
+            Time:
+
+              # Inherit the default rendering and properties like "Label" and "Description"
+              # see SYSEXT:form/Configuration/Yaml/FormEditorSetup.yaml
+              __inheritances:
+                10: 'TYPO3.CMS.Form.mixins.formElementMixins.FormElementMixin'
+
+              # Title shown on summary page and above the form
+              formEditor:
+                # TODO: Get label from translation file
+                label: 'formEditor.elements.time.label'
+                group: html5
+                groupSorting: 501
+
+                # This icon is registerd inside ext_localconf.php
+                iconIdentifier: 'tx-base-formfield-clock'
+
+                # Default values for defined properties. Todo: Remove or implement
+                predefinedDefaults:
+                  properties:
+                    test: ''
+
+                # Additional properties can be defined here
+                editors:
+                  # 200 gets inherited from FormElementMixin and contains the property "Label"
+                  # 230 gets inherited from FormElementMixin and contains the property  "Description"
+                  # 700 contains the column dimensions for xs, sm, ... when inserted into a row element
+                  # 800 is the "required" checkbox
+                  # 300 TODO: Remove or implement
+                  300:
+                    identifier: 'test'
+                    templateName: 'Inspector-TextEditor'
+                    label: 'Test'
+                    propertyPath: 'properties.test'

@@ -1,0 +1,26 @@
+plugin.tx_form {
+    settings {
+        yamlConfigurations {
+            11 = EXT:tw_base/Configuration/Yaml/Form/CustomFormSetup.yaml
+        }
+    }
+
+    view {
+        partialRootPaths {
+            11 = EXT:tw_base/Resources/Private/Partials/Form/
+        }
+    }
+}
+
+module.tx_form {
+    settings {
+        yamlConfigurations {
+            11 = EXT:tw_base/Configuration/Yaml/Form/CustomFormSetup.yaml
+        }
+    }
+    view {
+        partialRootPaths {
+            11 = EXT:tw_base/Resources/Private/Partials/Form/
+        }
+    }
+}
