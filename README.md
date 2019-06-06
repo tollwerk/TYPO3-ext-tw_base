@@ -23,6 +23,7 @@
 * [cURL utility](Classes/Utility/CurlUtility.php) for making HTTP requests
 * [Email utility](Classes/Utility/EmailUtility.php) for sending out mixed HTML / plaintext emails
 * [TCA utility](Classes/Utility/TcaUtility.php) for easier TCA configuration and manipulation
+* [Localization utility](Classes/Utility/LocalizationUtility.php) for enhanced localization with fallback to given translation key
 
 ## Validators
 
