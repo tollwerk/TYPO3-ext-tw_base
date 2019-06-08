@@ -30,7 +30,8 @@
   ],
   "require": {
     "typo3/cms-core": "^9.5",
-    "soundasleep/html2text": "^0.5.0"
+    "soundasleep/html2text": "^0.5.0",
+    "wyrihaximus/html-compress": "^1.4.0"
   },
   "suggest": {
     "sjbr/static-info-tables": "Data and API for countries, languages and currencies for use in TYPO3 CMS",
