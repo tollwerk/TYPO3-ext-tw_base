@@ -195,10 +195,10 @@ class ResponsiveImagesUtility implements SingletonInterface
      *   1+2+4: ['200w' => 'path/to/image@200w.jpg', '400w' => 'path/to/image@200w.jpg']
      *   3: ['1x' => 'path/to/image@1x.jpg', '2x' => 'path/to/image@2x.jpg']
      *
-     * @param  FileInterface $image Source image
-     * @param  int $defaultWidth    Default width
-     * @param  array|string $srcset Srcset candidates
-     * @param  Area $cropArea       Crop area
+     * @param FileInterface $image Source image
+     * @param int $defaultWidth    Default width
+     * @param array|string $srcset Srcset candidates
+     * @param Area $cropArea       Crop area
      *
      * @return ProcessedFile[] Srcset images
      */
@@ -488,7 +488,7 @@ class ResponsiveImagesUtility implements SingletonInterface
     /**
      * Normalizes the provided breakpoints specification
      *
-     * @param  array $breakpoints Breakpoint specification
+     * @param array $breakpoints Breakpoint specification
      *
      * @return array Normalized breakpoint specification
      */
@@ -628,7 +628,7 @@ class ResponsiveImagesUtility implements SingletonInterface
 
         return array_filter(
             array_map(
-                function (ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
+                function(ProcessedFile $image) use ($imageService, $converterKey, $converterConfig) {
                     $convertedImage = $imageService->convert($image, $converterKey, $converterConfig);
 
                     return $convertedImage->usesOriginalFile() ? null : $convertedImage;

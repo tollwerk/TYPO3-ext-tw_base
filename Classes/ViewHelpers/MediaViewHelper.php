@@ -9,7 +9,9 @@ use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
+use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 /**
  * Render responsive images
@@ -19,7 +21,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Configuration manager
      *
-     * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface
+     * @var ConfigurationManagerInterface
      */
     protected $configurationManager;
     /**
@@ -38,10 +40,10 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Inject the configuration manager
      *
-     * @param \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+     * @param ConfigurationManagerInterface $configurationManager
      */
     public function injectConfigurationManager(
-        \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface $configurationManager
+        ConfigurationManagerInterface $configurationManager
     ) {
         $this->configurationManager = $configurationManager;
     }
@@ -251,7 +253,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         if (!is_array($breakpoints)) {
             $breakpoints = trim($breakpoints);
             $setup       = $this->configurationManager->getConfiguration(
-                \TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
+                ConfigurationManagerInterface::CONFIGURATION_TYPE_FULL_TYPOSCRIPT
             );
             list(, $configsPresets) = GeneralUtility::makeInstance(TypoScriptParser::class)
                                                     ->getVal('lib.contentElement.settings.media.breakpoints', $setup);
@@ -333,9 +335,9 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Render <img> element with srcset/sizes attributes
      *
-     * @param  FileInterface $image Image reference
-     * @param  string $width        Image width
-     * @param  string $height       Image height
+     * @param FileInterface $image Image reference
+     * @param string $width        Image width
+     * @param string $height       Image height
      *
      * @return string Rendered <img> element
      */
@@ -363,8 +365,8 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Determine the crop & focus areas and create a fallback image
      *
-     * @param  FileInterface $image Image reference
-     * @param  string $width        Image width
+     * @param FileInterface $image Image reference
+     * @param string $width        Image width
      *
      * @return array Crop area, focus area, fallback image and crop variant collection
      */
@@ -383,9 +385,9 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Render a lazyloaded <img> element
      *
-     * @param  FileInterface $image Image reference
-     * @param  string $width        Image width
-     * @param  string $height       Image height
+     * @param FileInterface $image Image reference
+     * @param string $width        Image width
+     * @param string $height       Image height
      *
      * @return string Rendered <img> element
      */
