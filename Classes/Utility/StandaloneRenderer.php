@@ -88,10 +88,11 @@ class StandaloneRenderer
     /**
      * Render a Fluid template
      *
-     * @param string $templateName Template name
-     * @param array $parameters    Template parameters
-     * @param string $format       Optional: Template format
-     * @param string|null $section Optional: template section
+     * @param string $templateName  Template name
+     * @param array $parameters     Template parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
      */
@@ -99,14 +100,25 @@ class StandaloneRenderer
         string $templateName,
         array $parameters = [],
         string $format = 'html',
-        string $section = null
+        string $section = null,
+        string $language = null
     ): string {
         $view = $this->objectManager->get(StandaloneView::class);
         $view->setFormat($format);
         $view->setTemplateRootPaths($this->configuration['view']['templateRootPaths']);
         $view->setLayoutRootPaths($this->configuration['view']['layoutRootPaths']);
         $view->setPartialRootPaths($this->configuration['view']['partialRootPaths']);
-        $view->setTemplatePathAndFilename($this->templateRootPath.'/'.trim($templateName, '/').'.'.$format);
+
+        // Try localized template path
+        $templatePathAndFilename = $this->templateRootPath.'/'.trim($templateName, '/').'.'.$format;
+        if ($language) {
+            $localizedTemplatePathAndFilename = $this->templateRootPath.'/'.trim($templateName.'.'.$language,
+                    '/').'.'.$format;
+            if (file_exists($localizedTemplatePathAndFilename)) {
+                $templatePathAndFilename = $localizedTemplatePathAndFilename;
+            }
+        }
+        $view->setTemplatePathAndFilename($templatePathAndFilename);
 
         $parameters['settings'] = $this->configuration['settings'];
         $view->assignMultiple($parameters);
