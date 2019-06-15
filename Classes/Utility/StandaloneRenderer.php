@@ -63,6 +63,12 @@ class StandaloneRenderer
      */
     protected $configuration;
     /**
+     * Partial root path
+     *
+     * @var string
+     */
+    protected $partialRootPath;
+    /**
      * Template root path
      *
      * @var string
@@ -79,6 +85,10 @@ class StandaloneRenderer
         $this->objectManager    = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager   = $this->objectManager->get(ConfigurationManager::class);
         $this->configuration    = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK);
+        $this->partialRootPath  = rtrim(
+            GeneralUtility::getFileAbsFileName($this->configuration['view']['partialRootPath']),
+            '/'
+        );
         $this->templateRootPath = rtrim(
             GeneralUtility::getFileAbsFileName($this->configuration['view']['templateRootPath']),
             '/'
@@ -86,10 +96,10 @@ class StandaloneRenderer
     }
 
     /**
-     * Render a Fluid template
+     * Render a Fluid template (alias for renderTemplate())
      *
      * @param string $templateName  Template name
-     * @param array $parameters     Template parameters
+     * @param array $parameters     Parameters
      * @param string $format        Optional: Template format
      * @param string|null $section  Optional: template section
      * @param string|null $language Optional: language suffix
@@ -103,6 +113,85 @@ class StandaloneRenderer
         string $section = null,
         string $language = null
     ): string {
+        return $this->renderTemplate($templateName, $parameters, $format, $section, $language);
+    }
+
+    /**
+     * Render a Fluid template
+     *
+     * @param string $templateName  Template name
+     * @param array $parameters     Parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
+     *
+     * @return string Rendered template
+     */
+    public function renderTemplate(
+        string $templateName,
+        array $parameters = [],
+        string $format = 'html',
+        string $section = null,
+        string $language = null
+    ): string {
+        return $this->renderWithRootPath(
+            $this->templateRootPath,
+            $templateName,
+            $parameters,
+            $format,
+            $section,
+            $language
+        );
+    }
+
+    /**
+     * Render a Fluid partial
+     *
+     * @param string $partialName   Partial name
+     * @param array $parameters     Parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
+     *
+     * @return string Rendered template
+     */
+    public function renderPartial(
+        string $partialName,
+        array $parameters = [],
+        string $format = 'html',
+        string $section = null,
+        string $language = null
+    ): string {
+        return $this->renderWithRootPath(
+            $this->partialRootPath,
+            $partialName,
+            $parameters,
+            $format,
+            $section,
+            $language
+        );
+    }
+
+    /**
+     * Render a Fluid template or partial
+     *
+     * @param string $rootPath      Root path
+     * @param string $name          Template or partial name
+     * @param array $parameters     Parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
+     *
+     * @return string Rendered template
+     */
+    protected function renderWithRootPath(
+        string $rootPath,
+        string $name,
+        array $parameters,
+        string $format,
+        string $section = null,
+        string $language = null
+    ): string {
         $view = $this->objectManager->get(StandaloneView::class);
         $view->setFormat($format);
         $view->setTemplateRootPaths($this->configuration['view']['templateRootPaths']);
@@ -110,16 +199,14 @@ class StandaloneRenderer
         $view->setPartialRootPaths($this->configuration['view']['partialRootPaths']);
 
         // Try localized template path
-        $templatePathAndFilename = $this->templateRootPath.'/'.trim($templateName, '/').'.'.$format;
+        $templatePathAndFilename = $rootPath.'/'.trim($name, '/').'.'.$format;
         if ($language) {
-            $localizedTemplatePathAndFilename = $this->templateRootPath.'/'.trim($templateName.'.'.$language,
-                    '/').'.'.$format;
+            $localizedTemplatePathAndFilename = $rootPath.'/'.trim($name.'.'.$language, '/').'.'.$format;
             if (file_exists($localizedTemplatePathAndFilename)) {
                 $templatePathAndFilename = $localizedTemplatePathAndFilename;
             }
         }
         $view->setTemplatePathAndFilename($templatePathAndFilename);
-
         $parameters['settings'] = $this->configuration['settings'];
         $view->assignMultiple($parameters);
 
