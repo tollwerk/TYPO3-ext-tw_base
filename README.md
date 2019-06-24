@@ -10,6 +10,7 @@
 * [`uniqid` viewhelper](Docs/ViewHelpers/uniqid.md)
 * Viewhelpers for preparing / refining lists of HTML element attributes (empty / non-empty, data attributes, binary attributes)
 * Form element viewhelper (returns a [Form Framework](https://docs.typo3.org/typo3cms/extensions/form/) element by its name)
+* `form.page.elementsByIdentifier` viewhelper (returns an array of all renderable elements of a form page by their identifier)
 * Link info viewhelper (returns detailed information about a link target)
 * SVG icon & icon sprite viewhelpers (returns detailed information about a link target)
 
