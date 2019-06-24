@@ -51,6 +51,6 @@ class LocalizationUtility extends \TYPO3\CMS\Extbase\Utility\LocalizationUtility
      */
     public static function translate($key, $extensionName = null, $arguments = null, string $languageKey = null, array $alternativeLanguageKeys = null)
     {
-        return parent::translate($key, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys) ? : $key;
+        return parent::translate($key, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys) ? : (explode(':', $key))[count(explode(':', $key))-1];
     }
 }
