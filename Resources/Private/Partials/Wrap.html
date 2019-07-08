@@ -1,16 +1,5 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
-    <f:switch expression="{data.CType}">
-        <f:case value="text">
-            <{tagName} id="c{data.uid}" class="{className} grid">
-                <div class="c6 large-c4 large-s1">
-                    <f:format.raw>{content}</f:format.raw>
-                </div>
-            </{tagName}>
-        </f:case>
-        <f:defaultCase>
-            <{tagName} id="c{data.uid}" class="{className}">
-                <f:format.raw>{content}</f:format.raw>
-            </{tagName}>
-        </f:defaultCase>
-    </f:switch>
+    <{tagName} id="c{data.uid}" class="{className}">
+        <f:format.raw>{content}</f:format.raw>
+    </{tagName}>
 </html>
