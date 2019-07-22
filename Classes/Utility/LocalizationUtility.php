@@ -1,13 +1,14 @@
 <?php
+
 /**
- * Ziereis Relaunch
+ * tollwerk
  *
- * @category Tollwerk
- * @package Tollwerk\TwBase
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Utility
- * @author Klaus Fiedler <klaus@tollwerk.de> / @jkphl
- * @copyright Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Klaus Fiedler <klaus@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Klaus Fiedler <klaus@tollwerk.de>
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
@@ -35,22 +36,41 @@
 
 namespace Tollwerk\TwBase\Utility;
 
-
+/**
+ * Extended Localization Utility
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Utility
+ */
 class LocalizationUtility extends \TYPO3\CMS\Extbase\Utility\LocalizationUtility
 {
     /**
      * Returns the localized label of the LOCAL_LANG key, $key.
      * If the translated string is empty, will return the translation $key.
      *
-     * @param string $key The key from the LOCAL_LANG array for which to return the value.
-     * @param string|null $extensionName The name of the extension
-     * @param array $arguments The arguments of the extension, being passed over to vsprintf
-     * @param string $languageKey The language key or null for using the current language from the system
-     * @param string[] $alternativeLanguageKeys The alternative language keys if no translation was found. If null and we are in the frontend, then the language_alt from TypoScript setup will be used
+     * @param string $key                       The key from the LOCAL_LANG array for which to return the value.
+     * @param string|null $extensionName        The name of the extension
+     * @param array $arguments                  The arguments of the extension, being passed over to vsprintf
+     * @param string $languageKey               The language key or null for using the current language from the system
+     * @param string[] $alternativeLanguageKeys The alternative language keys if no translation was found. If null and
+     *                                          we are in the frontend, then the language_alt from TypoScript setup
+     *                                          will be used
+     *
      * @return string The value from LOCAL_LANG or null if no translation was found.
      */
-    public static function translate($key, $extensionName = null, $arguments = null, string $languageKey = null, array $alternativeLanguageKeys = null)
-    {
-        return parent::translate($key, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys) ? : (explode(':', $key))[count(explode(':', $key))-1];
+    public static function translate(
+        $key,
+        $extensionName = null,
+        $arguments = null,
+        string $languageKey = null,
+        array $alternativeLanguageKeys = null
+    ) {
+        $localization = parent::translate($key, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys);
+        if (strlen($localization)) {
+            return $localization;
+        }
+        $key = explode(':', $key, 2);
+
+        return array_pop($key);
     }
 }
