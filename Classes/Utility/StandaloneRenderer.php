@@ -201,7 +201,7 @@ class StandaloneRenderer
         // Try localized template path
         $templatePathAndFilename = $rootPath.'/'.trim($name, '/').'.'.$format;
         if ($language) {
-            $localizedTemplatePathAndFilename = $rootPath.'/'.trim($name.'.'.$language, '/').'.'.$format;
+            $localizedTemplatePathAndFilename = $rootPath.'/'.trim($name.'.'.strtolower($language), '/').'.'.$format;
             if (file_exists($localizedTemplatePathAndFilename)) {
                 $templatePathAndFilename = $localizedTemplatePathAndFilename;
             }
