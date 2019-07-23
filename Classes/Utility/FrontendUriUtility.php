@@ -36,12 +36,12 @@
 
 namespace Tollwerk\TwBase\Utility;
 
+use RuntimeException;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 use TYPO3\CMS\Frontend\Page\PageRepository;
@@ -75,7 +75,6 @@ class FrontendUriUtility
     public static function build(int $pageUid, array $params = [], int $pageType = 0): string
     {
         $tsfeController = self::getTypoScriptFrontendController($pageUid, $pageType);
-        DebugUtility::debug($tsfeController);
         $params['type'] = $pageType;
         if (isset($params['type']) && !intval($params['type'])) {
             unset($params['type']);
@@ -161,6 +160,6 @@ class FrontendUriUtility
             return self::$rootPageTyposcriptController[$rootPage.'/'.$pageType];
         }
 
-        throw new \RuntimeException('Can\'t find site for page ID '.$pageUid, 1563878859);
+        throw new RuntimeException('Can\'t find site for page ID '.$pageUid, 1563878859);
     }
 }
