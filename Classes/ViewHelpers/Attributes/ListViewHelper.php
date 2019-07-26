@@ -86,7 +86,7 @@ class ListViewHelper extends AbstractViewHelper
             return null;
         }
         $attribute = htmlspecialchars(trim($name));
-        if (is_string($value)) {
+        if (!is_bool($value)) {
             $attribute .= '="'.htmlspecialchars(trim($value)).'"';
         }
 

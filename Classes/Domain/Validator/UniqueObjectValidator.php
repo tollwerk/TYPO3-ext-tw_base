@@ -50,6 +50,15 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 class UniqueObjectValidator extends AbstractValidator
 {
     /**
+     * Value skips
+     *
+     * Necessary for "skipping" values, i.e. the validator will be short-circuited for follow-up
+     * requests, always returning that the value is valid
+     *
+     * @var array
+     */
+    protected static $skip = [];
+    /**
      * Supported options
      *
      * @var array
@@ -64,9 +73,15 @@ class UniqueObjectValidator extends AbstractValidator
      * Check if $value is valid. If it is not valid, needs to add an error to result.
      *
      * @param mixed $value
+     *
+     * @return bool
      */
     public function isValid($value)
     {
+        // Short-circuit if value is skiped
+        if (isset(self::$skip[$this->calculateValueHash($value)])) {
+            return;
+        }
         $connection   = GeneralUtility::makeInstance(ConnectionPool::class)
                                       ->getConnectionForTable($this->options['table']);
         $queryBuilder = $connection->createQueryBuilder();
@@ -78,7 +93,6 @@ class UniqueObjectValidator extends AbstractValidator
                                ->andWhere($queryBuilder->expr()->eq('deleted', 0))
                                ->setMaxResults(1)
                                ->execute();
-
         if ($result->rowCount()) {
             $this->result->addError(
                 new Error(
@@ -87,5 +101,30 @@ class UniqueObjectValidator extends AbstractValidator
                 )
             );
         }
+    }
+
+    /**
+     * Skip a particular value
+     *
+     * @param mixed $value Value
+     */
+    public function skipValue($value): void
+    {
+        self::$skip[$this->calculateValueHash($value)] = true;
+    }
+
+    /**
+     * Calculate a unique hash for a particular value
+     *
+     * @param mixed $value Value
+     *
+     * @return string Value hash
+     */
+    protected function calculateValueHash($value): string
+    {
+        $options          = $this->options;
+        $options['value'] = $value;
+
+        return md5(serialize($value));
     }
 }

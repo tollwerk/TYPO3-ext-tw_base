@@ -40,6 +40,7 @@ use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * TCA utility
@@ -265,12 +266,12 @@ class TcaUtility
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         /** @var BackendConfigurationManager $configurationManager */
         $configurationManager = $objectManager->get(BackendConfigurationManager::class);
-        $setup                = $configurationManager->getTypoScriptSetup();
+        $setup = $configurationManager->getTypoScriptSetup();
         list(, $conf) = GeneralUtility::makeInstance(TypoScriptParser::class)
-                                      ->getVal('lib.contentElement.settings.media.breakpoints.presets', $setup);
+            ->getVal('lib.contentElement.settings.media.breakpoints.presets', $setup);
 
         // Run through all defined presets
-        foreach ($conf as $key => $configs) {
+        foreach ((array)$conf as $key => $configs) {
             $config['items'][] = [
                 sprintf('%s (%s)', ucfirst($key), implode(', ', GeneralUtility::trimExplode(',', $configs, true))),
                 $key,
@@ -311,7 +312,7 @@ class TcaUtility
     public static function createShowitemString(array $showitem = []): string
     {
         $showitemArray = [];
-        $divCounter    = 0;
+        $divCounter = 0;
 
         // Run through all defined items
         foreach ($showitem as $divName => $divFields) {

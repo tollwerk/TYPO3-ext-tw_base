@@ -62,7 +62,7 @@ class SvgIconManager
     /**
      * Return an unique use key for the given SVG source
      *
-     * @param $svgSource SVG source file path
+     * @param string $svgSource SVG source file path
      *
      * @return \DOMDocument SVG usage
      */
@@ -70,12 +70,35 @@ class SvgIconManager
     {
         // Create a unique use key
         if (empty(self::$uses[$svgSource])) {
-            self::$uses[$svgSource] = self::getUseSource($svgSource,
-                strtolower(pathinfo($svgSource, PATHINFO_FILENAME))
-                .substr(md5_file($svgSource), 0, 8));
+            self::$uses[$svgSource] = self::getUseSource($svgSource, self::getUseKey($svgSource));
         }
 
         return self::$uses[$svgSource];
+    }
+
+    /**
+     * Register a SVG source for sprite output and return the use reference key
+     *
+     * @param string $svgSource SVG source file path
+     *
+     * @return string|null Use reference key
+     */
+    public static function useIconReference($svgSource)
+    {
+        return self::useIcon($svgSource) ? self::getUseKey($svgSource) : null;
+    }
+
+    /**
+     * Create and return a unique use reference hash for a SVG file
+     *
+     * @param string $svgSource SVG source file path
+     *
+     * @return string
+     */
+    protected static function getUseKey($svgSource)
+    {
+        return strtolower(pathinfo($svgSource, PATHINFO_FILENAME))
+               .substr(md5_file($svgSource), 0, 8);
     }
 
     /**

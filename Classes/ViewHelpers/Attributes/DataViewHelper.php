@@ -29,7 +29,7 @@ class DataViewHelper extends ListViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $dataAttributes = self::renderAttributes($arguments['attributes'], $arguments['nonEmptyAttributes'], true);
+        $dataAttributes = self::renderAttributes($arguments['attributes'] ?? [], $arguments['nonEmptyAttributes'] ?? [], true);
         $excludeAttributes = is_array($arguments['exclude']) ?
             $arguments['exclude'] : GeneralUtility::trimExplode(',', $arguments['exclude'], true);
         if (count($excludeAttributes)) {
@@ -53,7 +53,7 @@ class DataViewHelper extends ListViewHelper
     {
         parent::initializeArguments();
         $this->overrideArgument('attributes', 'array',
-            'Arbitrary number of values to be rendered as HTML data attributes', true);
+            'Arbitrary number of values to be rendered as HTML data attributes', false, []);
         $this->registerArgument('exclude', 'mixed',
             'List of variables to be excluded from the data attributes', false, []);
     }

@@ -79,16 +79,26 @@ class EmailUtility
     /**
      * Send an email to one or more recipients
      *
-     * @param array $recipients Recipients
-     * @param string $subject   Betreff
-     * @param string $html      HTML content
-     * @param string $plain     Plaintext content
+     * @param array $recipients          Recipients
+     * @param string $subject            Betreff
+     * @param string $html               HTML content
+     * @param string $plain              Plaintext content
+     * @param array $cc                  CC repipients
+     * @param array $bcc                 BCC recipients
+     * @param array|string|null $replyTo Reply-To recipient
      *
      * @return int Number of successfully sent emails
      * @throws Swift_SwiftException If the email would be empty
      */
-    public function send(array $recipients, string $subject, string $html = '', string $plain = ''): int
-    {
+    public function send(
+        array $recipients,
+        string $subject,
+        string $html = '',
+        string $plain = '',
+        array $cc = [],
+        array $bcc = [],
+        $replyTo = null
+    ): int {
         $html  = trim($html);
         $plain = trim($plain);
         if (!strlen($html) && !strlen($plain)) {
@@ -99,7 +109,10 @@ class EmailUtility
         $mail = GeneralUtility::makeInstance(MailMessage::class);
         $mail->setSubject($subject)
              ->setFrom([$this->senderAddress => $this->senderName])
-             ->setTo($recipients);
+             ->setTo($recipients)
+             ->setCc($cc)
+             ->setBcc($bcc)
+             ->setReplyTo($replyTo);
 
         // If there's HTML content
         if (strlen($html)) {

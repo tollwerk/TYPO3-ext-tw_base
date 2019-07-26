@@ -697,9 +697,11 @@ class ResponsiveImagesUtility implements SingletonInterface
     ) {
         // Get the fallback image URI
         $fallbackImageUri = $this->imageService->getImageUri($fallbackImage, $absoluteUri);
+        $aspectRatio      = $fallbackImage->getProperty('width') / $fallbackImage->getProperty('height');
 
         // Provide image width to be consistent with TYPO3 core behavior
         $fallbackTag->addAttribute('width', $referenceWidth);
+        $fallbackTag->addAttribute('height', round($referenceWidth / $aspectRatio));
 
         // Add metadata to fallback image
         $this->addMetadataToImageTag($fallbackTag, $originalImage, $fallbackImage, $focusArea);

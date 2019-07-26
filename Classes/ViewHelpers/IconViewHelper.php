@@ -37,6 +37,7 @@
 namespace Tollwerk\TwBase\ViewHelpers;
 
 use Tollwerk\TwBase\Utility\SvgIconManager;
+use Tollwerk\TwBase\ViewHelpers\Icon\IconViewHelperTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
@@ -44,7 +45,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
- * IconViewHelper
+ * Icon ViewHelper
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
@@ -52,17 +53,16 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 class IconViewHelper extends AbstractTagBasedViewHelper
 {
     /**
+     * Use shared icon viewhelper methods
+     */
+    use IconViewHelperTrait;
+    /**
      * HTML tag name
      *
      * @var string
      */
     protected $tagName = 'svg';
-    /**
-     * Icon root paths
-     *
-     * @var string[]|null
-     */
-    protected static $iconRootPaths = null;
+
     /**
      * Icon types
      */
@@ -114,27 +114,6 @@ class IconViewHelper extends AbstractTagBasedViewHelper
         }
     }
 
-    /**
-     * Find an icon and return the absolute icon path
-     *
-     * @param string $icon Icon name
-     *
-     * @return string Icon file path
-     * @throws InvalidConfigurationTypeException
-     * @throws \OutOfBoundsException If the icon is unknown
-     */
-    protected function getIconFile(string $icon): string
-    {
-        // Search for the icon in the given icon root path order
-        foreach ($this->getIconRootPaths() as $iconRootPath) {
-            $iconFile = GeneralUtility::getFileAbsFileName($iconRootPath.$icon);
-            if (is_file($iconFile)) {
-                return $iconFile;
-            }
-        }
-
-        throw new \OutOfBoundsException($icon, 1549185715);
-    }
 
     /**
      * Get the icon DOM
@@ -167,31 +146,5 @@ class IconViewHelper extends AbstractTagBasedViewHelper
             $content .= $iconDom->saveXML($child);
         }
         $this->tag->setContent($content);
-    }
-
-    /**
-     * Return the list of icon root paths
-     *
-     * @return string[] Icon root paths
-     * @throws InvalidConfigurationTypeException
-     */
-    protected function getIconRootPaths(): array
-    {
-        if (self::$iconRootPaths === null) {
-
-            self::$iconRootPaths  = [];
-            $objectManager        = GeneralUtility::makeInstance(ObjectManager::class);
-            $configurationManager = $objectManager->get(ConfigurationManager::class);
-            $settings             = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
-                'TwBase');
-            self::$iconRootPaths  = array_map(
-                function($rootPath) {
-                    return rtrim($rootPath, '/').'/';
-                },
-                GeneralUtility::trimExplode(',', $settings['icons']['iconRootPath'], true)
-            );
-        }
-
-        return self::$iconRootPaths;
     }
 }
