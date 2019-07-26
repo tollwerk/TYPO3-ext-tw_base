@@ -1,22 +1,20 @@
 <?php
 
-namespace Tollwerk\TwBase\ViewHelpers\Uri;
-
 /**
- * NDF
+ * tollwerk
  *
- * @category   Artefakt
- * @package    Artefakt\Core
- * @subpackage ${NAMESPACE}
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Uri
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2018 tollwerk GmbH <info@tollwerk.de>
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -35,6 +33,8 @@ namespace Tollwerk\TwBase\ViewHelpers\Uri;
  *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
+
+namespace Tollwerk\TwBase\ViewHelpers\Uri;
 
 use Tollwerk\TwBase\Service\ImageService;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;

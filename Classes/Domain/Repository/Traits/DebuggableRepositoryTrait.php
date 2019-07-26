@@ -53,7 +53,7 @@ trait DebuggableRepositoryTrait
      * @param bool $format
      * @param bool $exit
      */
-    protected function debugQuery($query, $format = true, $exit = true)
+    protected function debugQuery(QueryInterface $query, $format = true, $exit = true)
     {
         function getFormattedSQL($sql_raw)
         {

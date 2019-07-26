@@ -40,6 +40,7 @@ use Tollwerk\TwBase\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
+use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -71,18 +72,17 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
     /**
      * Processed file repository
      *
-     * @var \TYPO3\CMS\Core\Resource\ProcessedFileRepository
+     * @var ProcessedFileRepository
      */
     protected $processedFileRepository;
 
     /**
      * Inject the processed file repository
      *
-     * @param \TYPO3\CMS\Core\Resource\ProcessedFileRepository $processedFileRepository
+     * @param ProcessedFileRepository $processedFileRepository
      */
-    public function injectProcessedFileRepository(
-        \TYPO3\CMS\Core\Resource\ProcessedFileRepository $processedFileRepository
-    ) {
+    public function injectProcessedFileRepository(ProcessedFileRepository $processedFileRepository)
+    {
         $this->processedFileRepository = $processedFileRepository;
     }
 
@@ -181,15 +181,13 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
             ])
         ];
 
-        get_class($image);
-
         // If a processed file should be converted: Reconstitute as regular file
         if (is_callable([$image, 'getOriginalFile'])) {
             $config = array_replace($image->getProcessingConfiguration(), $config);
 
             $originalFile = $image->getOriginalFile();
             $originalFile->setIdentifier($image->getIdentifier());
-            $image  = $originalFile;
+            $image = $originalFile;
 
 //            $image  = new File([
 //                'uid'               => $image->getOriginalFile()->getUid(),

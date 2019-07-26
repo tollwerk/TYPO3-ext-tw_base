@@ -1,20 +1,20 @@
 <?php
 
 /**
- * NDF
+ * tollwerk
  *
- * @category   Artefakt
- * @package    Artefakt\Core
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2018 tollwerk GmbH <info@tollwerk.de>
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -36,8 +36,14 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
+use Tollwerk\TwBase\Service\ImageService;
+use TYPO3\CMS\Extbase\Service\ImageService as CoreImageService;
+
 /**
  * Extended image view helper
+ *
+ * Use this viewhelper as a replacement for the standard Fluid <f:image> viewhelper. It basically switches
+ * to the custom extended image service providing additional functionality
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
@@ -47,13 +53,13 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\ImageViewHelper
     /**
      * Image service
      *
-     * @var \Tollwerk\TwBase\Service\ImageService
+     * @var ImageService
      */
     protected $imageService;
     /**
      * Extended image service
      *
-     * @var \Tollwerk\TwBase\Service\ImageService
+     * @var ImageService
      */
     protected $extendedImageService;
 
@@ -64,11 +70,12 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\ImageViewHelper
      * a custom image service, the method signatures have to be identical for compatibility reasons. Therefore
      * we have to inject the extended image service using a different method. Ugly but works. ;)
      *
+     * @param CoreImageService $imageService
+     *
      * @see injectExtendedImageService()
      *
-     * @param \TYPO3\CMS\Extbase\Service\ImageService $imageService
      */
-    public function injectImageService(\TYPO3\CMS\Extbase\Service\ImageService $imageService)
+    public function injectImageService(CoreImageService $imageService)
     {
         // Do nothing
     }
@@ -76,9 +83,9 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\ImageViewHelper
     /**
      * Inject the extended image service
      *
-     * @param \Tollwerk\TwBase\Service\ImageService $extendedImageService
+     * @param ImageService $extendedImageService
      */
-    public function injectExtendedImageService(\Tollwerk\TwBase\Service\ImageService $extendedImageService)
+    public function injectExtendedImageService(ImageService $extendedImageService)
     {
         $this->imageService = $extendedImageService;
     }

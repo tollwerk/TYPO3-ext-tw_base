@@ -1,5 +1,39 @@
 <?php
 
+/**
+ * tollwerk
+ *
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
+ */
+
+/***********************************************************************************
+ *  The MIT License (MIT)
+ *
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of
+ *  this software and associated documentation files (the "Software"), to deal in
+ *  the Software without restriction, including without limitation the rights to
+ *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ *  the Software, and to permit persons to whom the Software is furnished to do so,
+ *  subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ***********************************************************************************/
+
 namespace Tollwerk\TwBase\ViewHelpers;
 
 use Tollwerk\TwBase\Service\ImageService;
@@ -9,12 +43,18 @@ use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
-use TYPO3\CMS\Core\Utility\DebugUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 
 /**
- * Render responsive images
+ * Extended media view helper
+ *
+ * Use this viewhelper as a replacement for the standard Fluid <f:media> viewhelper. This one provides support
+ * for responsive images
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  */
 class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 {
@@ -27,7 +67,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Object manager
      *
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
     /**
@@ -42,18 +82,17 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @param ConfigurationManagerInterface $configurationManager
      */
-    public function injectConfigurationManager(
-        ConfigurationManagerInterface $configurationManager
-    ) {
+    public function injectConfigurationManager(ConfigurationManagerInterface $configurationManager): void
+    {
         $this->configurationManager = $configurationManager;
     }
 
     /**
      * Inject the object manager
      *
-     * @param \TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager
+     * @param ObjectManagerInterface $objectManager
      */
-    public function injectObjectManager(\TYPO3\CMS\Extbase\Object\ObjectManagerInterface $objectManager)
+    public function injectObjectManager(ObjectManagerInterface $objectManager): void
     {
         $this->objectManager = $objectManager;
     }
@@ -199,7 +238,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return array Active converters
      */
-    protected function getActiveConverters(FileInterface $image)
+    protected function getActiveConverters(FileInterface $image): array
     {
         $skipConverter       = array_filter(
             is_array($this->arguments['skipConverter']) ?
@@ -217,11 +256,12 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
 
     /**
      * Returns an instance of the responsive images utility
+     *
      * This fixes an issue with DI after clearing the cache
      *
-     * @return ResponsiveImagesUtility
+     * @return ResponsiveImagesUtility Responsive Image Utility
      */
-    protected function getResponsiveImagesUtility()
+    protected function getResponsiveImagesUtility(): ResponsiveImagesUtility
     {
         return $this->objectManager->get(ResponsiveImagesUtility::class);
     }
@@ -233,7 +273,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return array Image settings
      */
-    protected function getImageSettings($key = 'images')
+    protected function getImageSettings($key = 'images'): array
     {
         /** @var ImageService $imageService */
         $imageService = GeneralUtility::makeInstance(ImageService::class);
@@ -287,8 +327,13 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return string Rendered <picture> element
      */
-    protected function renderPicture(FileInterface $image, $width, $height, array $breakpoints, array $converters)
-    {
+    protected function renderPicture(
+        FileInterface $image,
+        $width,
+        $height,
+        array $breakpoints,
+        array $converters
+    ): string {
         /**
          * Get crop variants & generate fallback image
          *
@@ -324,7 +369,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return FileInterface Fallback image
      */
-    protected function generateFallbackImage(FileInterface $image, $width, Area $cropArea)
+    protected function generateFallbackImage(FileInterface $image, $width, Area $cropArea): FileInterface
     {
         return $this->getImageService()->applyProcessingInstructions($image, [
             'width' => $width,
@@ -370,7 +415,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return array Crop area, focus area, fallback image and crop variant collection
      */
-    protected function createAreasAndFallback(FileInterface $image, $width)
+    protected function createAreasAndFallback(FileInterface $image, $width): array
     {
         $cropVariant           = $this->arguments['cropVariant'] ?: 'default';
         $cropString            = $image instanceof FileReference ? $image->getProperty('crop') : '';
@@ -391,7 +436,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return string Rendered <img> element
      */
-    protected function renderLazyloadImage(FileInterface $image, $width, $height)
+    protected function renderLazyloadImage(FileInterface $image, $width, $height): string
     {
         $cropVariant            = $this->arguments['cropVariant'] ?: 'default';
         $cropString             = $image instanceof FileReference ? $image->getProperty('crop') : '';
@@ -444,7 +489,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      *
      * @return string Inline SVG
      */
-    protected function renderInlineSvg(FileInterface $processedFile)
+    protected function renderInlineSvg(FileInterface $processedFile): string
     {
         $svgDom = new \DOMDocument();
         $svgDom->loadXML($processedFile->getContents());

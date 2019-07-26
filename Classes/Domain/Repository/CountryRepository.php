@@ -38,8 +38,10 @@ namespace Tollwerk\TwBase\Domain\Repository;
 
 use SJBR\StaticInfoTables\Domain\Repository\CountryRepository as StaticCountryRepository;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Extbase\Persistence\QueryResultInterface;
 use TYPO3\CMS\Extbase\Persistence\RepositoryInterface;
 
+// If the Static Info Tables extension is loaded: Declare an extended country model
 if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
     /**
      * Country repository
@@ -49,18 +51,18 @@ if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
         /**
          * Find a list of countries by an international phone number
          *
-         * @param int $intlPhoneNumer International phone number
+         * @param string $intlPhoneNumer International phone number
          *
-         * @return \TYPO3\CMS\Extbase\Persistence\QueryResultInterface Matching countries
+         * @return QueryResultInterface Matching countries
          */
-        public function findByIntlPhoneNumber($intlPhoneNumer)
+        public function findByIntlPhoneNumber(string $intlPhoneNumer): ?QueryResultInterface
         {
             $intlPhoneNumer = preg_replace('/[^0-9]+/', '', $intlPhoneNumer);
             if ($intlPhoneNumer[0] === '0') {
                 return null;
             }
-            $sql   = 'SELECT * FROM `static_countries` WHERE "'.intval($intlPhoneNumer)
-                     .'" LIKE CONCAT(`cnPhone`, "%") ORDER BY LENGTH(`cnPhone`) DESC';
+
+            $sql   = 'SELECT * FROM `static_countries` WHERE "'.$intlPhoneNumer.'" LIKE CONCAT(`cnPhone`, "%") ORDER BY LENGTH(`cnPhone`) DESC';
             $query = $this->createQuery();
             $query->statement($sql);
 
@@ -392,11 +394,11 @@ if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
         /**
          * Find a list of countries by an international phone number
          *
-         * @param int $intlPhoneNumer International phone number
+         * @param string $intlPhoneNumer International phone number
          *
-         * @return null Matching countries
+         * @return array[]|null Matching countries
          */
-        public function findByIntlPhoneNumber($intlPhoneNumer)
+        public function findByIntlPhoneNumber(string $intlPhoneNumer): ?array
         {
             $intlPhoneNumer = preg_replace('/[^0-9]+/', '', $intlPhoneNumer);
             if ($intlPhoneNumer[0] === '0') {

@@ -4,7 +4,7 @@
  * tollwerk
  *
  * @category   Tollwerk
- * @package    Tollwerk\Vamoso
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers\Icon
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
@@ -40,6 +40,12 @@ use Tollwerk\TwBase\Utility\SvgIconManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
+/**
+ * Return an icon use reference string
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Icon
+ */
 class UserefViewHelper extends AbstractViewHelper
 {
     /**
@@ -59,7 +65,7 @@ class UserefViewHelper extends AbstractViewHelper
     }
 
     /**
-     * Render the icon
+     * Return an icon use reference string
      *
      * @return string Rendered icon
      * @throws InvalidConfigurationTypeException

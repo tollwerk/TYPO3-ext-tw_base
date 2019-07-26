@@ -4,7 +4,7 @@
  * tollwerk
  *
  * @category   Tollwerk
- * @package    Tollwerk\Vamoso
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers\Icon
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl

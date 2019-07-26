@@ -1,20 +1,20 @@
 <?php
 
 /**
- * data
+ * tollwerk
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Icon
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 tollwerk GmbH <info@tollwerk.de>
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -40,7 +40,7 @@ use Tollwerk\TwBase\Utility\SvgIconManager;
 use Tollwerk\TwBase\ViewHelpers\IconViewHelper;
 
 /**
- * <use> Icon ViewHelper for
+ * <use> Icon ViewHelper
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers

@@ -43,7 +43,7 @@ use TYPO3\CMS\Extbase\Validation\Error;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**
- * Checks if there already is existing an object nside a given repository
+ * Checks for uniqueness within a given repository
  *
  * @package Tollwerk\TwBase\Domain\Validator
  */
@@ -58,6 +58,7 @@ class UniqueObjectValidator extends AbstractValidator
      * @var array
      */
     protected static $skip = [];
+
     /**
      * Supported options
      *

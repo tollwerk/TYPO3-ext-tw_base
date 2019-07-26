@@ -1,20 +1,20 @@
 <?php
 
 /**
- * data
+ * tollwerk
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2018 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 tollwerk GmbH <info@tollwerk.de>
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -38,14 +38,11 @@ namespace Tollwerk\TwBase\ViewHelpers;
 
 use Tollwerk\TwBase\Utility\SvgIconManager;
 use Tollwerk\TwBase\ViewHelpers\Icon\IconViewHelperTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
- * Icon ViewHelper
+ * Render a single SVG icon
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers

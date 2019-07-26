@@ -37,7 +37,9 @@
 namespace Tollwerk\TwBase\Domain\Model;
 
 use SJBR\StaticInfoTables\Domain\Model\Country as StaticCountry;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
+// If the Static Info Tables extension is loaded: Declare an extended country model
 if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
     /**
      * Country

@@ -18,6 +18,7 @@ module.tx_form {
             11 = EXT:tw_base/Configuration/Yaml/Form/CustomFormSetup.yaml
         }
     }
+
     view {
         partialRootPaths {
             11 = EXT:tw_base/Resources/Private/Partials/Form/

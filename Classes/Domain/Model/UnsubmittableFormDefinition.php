@@ -37,6 +37,8 @@
 namespace Tollwerk\TwBase\Domain\Model;
 
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
+use TYPO3\CMS\Form\Domain\Model\Renderable\CompositeRenderableInterface;
+use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 
 /**
  * Form definition for unsubmittable forms
@@ -46,5 +48,32 @@ use TYPO3\CMS\Form\Domain\Model\FormDefinition;
  */
 class UnsubmittableFormDefinition extends FormDefinition
 {
+    /**
+     * Hook after current page initialization
+     *
+     * This is just an example hook — don't use it directly (might have unintended side effects!) but use as a template
+     * for rolling your own hook method in some custom class.
+     * See https://docs.typo3.org/c/typo3/cms-form/master/en-us/I/ApiReference/Index.html#afterinitializecurrentpage for
+     * documentation on the `afterInitializeCurrentPage` hook.
+     *
+     * @param FormRuntime $formRuntime
+     * @param CompositeRenderableInterface $currentPage
+     * @param null|CompositeRenderableInterface $lastPage
+     * @param array $requestArguments
+     *
+     * @return CompositeRenderableInterface
+     * @throws \TYPO3\CMS\Form\Exception
+     * @see https://docs.typo3.org/c/typo3/cms-form/master/en-us/I/ApiReference/Index.html#afterinitializecurrentpage
+     */
+    public function afterInitializeCurrentPage(
+        FormRuntime $formRuntime,
+        CompositeRenderableInterface $currentPage = null,
+        CompositeRenderableInterface $lastPage = null,
+        array $requestArguments = []
+    ): ?CompositeRenderableInterface {
+        /** @var FormDefinition $formDefinition */
+        $formDefinition = $formRuntime->getFormDefinition();
 
+        return ($formDefinition instanceof UnsubmittableFormDefinition) ? $formDefinition->getPageByIndex(0) : $currentPage;
+    }
 }

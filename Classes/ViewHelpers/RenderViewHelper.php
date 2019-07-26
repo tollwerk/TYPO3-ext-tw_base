@@ -4,7 +4,7 @@
  * tollwerk
  *
  * @category   Tollwerk
- * @package    Tollwerk\Vamoso
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
@@ -42,6 +42,9 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 /**
  * Extended render viewhelper
+ *
+ * Use this viewhelper as a drop-in replacement for the standard Fluid <f:render> view helper. It enables shifting
+ * the heading level by a certain number of levels for rendering the referenced partials.
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
