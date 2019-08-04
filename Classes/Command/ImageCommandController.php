@@ -2,6 +2,7 @@
 
 namespace Tollwerk\TwBase\Command;
 
+use Doctrine\DBAL\FetchMode;
 use Tollwerk\TwBase\Service\ImageService;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
@@ -96,5 +97,81 @@ class ImageCommandController extends CommandController
     public function clearProcessedCommand()
     {
         $this->processedFileRepository->removeAll();
+    }
+
+    /**
+     * Clear orphan file references
+     */
+    public function clearOrphanFilereferencesCommand()
+    {
+        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+
+        // Get a list of all available tables
+        $connection = $connectionPool->getConnectionForTable('sys_file_reference');
+        $query      = $connection->query('SHOW TABLES');
+        $tablenames = $query->execute() ? $query->fetchAll(FetchMode::COLUMN) : [];
+
+        // Delete all file references with invalid record IDs or empty tablenames
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_file_reference');
+        $queryBuilder->getRestrictions()->removeAll();
+        $query = $queryBuilder->delete('sys_file_reference')
+                              ->where($queryBuilder->expr()->eq('uid_foreign', 0))
+                              ->orWhere($queryBuilder->expr()->eq('tablenames', $queryBuilder->quote('')));
+        if (count($tablenames)) {
+            $query->orWhere($queryBuilder->expr()->notIn(
+                'tablenames',
+                array_map([$queryBuilder, 'quote'], $tablenames))
+            );
+        }
+        $query->execute();
+
+        // Extract all referenced tables
+        $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_file_reference');
+        $queryBuilder->getRestrictions()->removeAll();
+        $query  = $queryBuilder->select('tablenames')
+                               ->from('sys_file_reference')
+                               ->groupBy('tablenames');
+        $result = $query->execute();
+        if ($result) {
+            // Run through all join tables
+            foreach ($result->fetchAll(FetchMode::COLUMN) as $joinTable) {
+                $queryBuilder = $connectionPool->getQueryBuilderForTable('sys_file_reference');
+                $queryBuilder->getRestrictions()->removeAll();
+                $orphanQuery  = $queryBuilder->select('s.uid AS local', 'j.uid AS foreign')
+                                             ->from('sys_file_reference', 's')
+                                             ->leftJoin(
+                                                 's',
+                                                 $joinTable,
+                                                 'j',
+                                                 $queryBuilder->expr()->eq(
+                                                     's.uid_foreign',
+                                                     $queryBuilder->quoteIdentifier('j.uid')
+                                                 )
+                                             )
+                                             ->where($queryBuilder->expr()->eq(
+                                                 's.tablenames',
+                                                 $queryBuilder->quote($joinTable))
+                                             )
+                                             ->having($queryBuilder->expr()->isNull('foreign'));
+                $orphanResult = $orphanQuery->execute();
+                if ($orphanResult) {
+                    $orphans = $orphanResult->fetchAll(FetchMode::COLUMN);
+                    if (count($orphans)) {
+                        $orphanQueryBuilder = $connectionPool->getQueryBuilderForTable('sys_file_reference');
+                        $orphanQueryBuilder->getRestrictions()->removeAll();
+                        $orphanDeleteQuery = $orphanQueryBuilder->delete('sys_file_reference')
+                                                                ->where(
+                                                                    $orphanQueryBuilder->expr()->in(
+                                                                        'uid',
+                                                                        array_map(
+                                                                            [$orphanQueryBuilder, 'quote'],
+                                                                            $orphans
+                                                                        )
+                                                                    ));
+                        $orphanDeleteQuery->execute();
+                    }
+                }
+            }
+        }
     }
 }
