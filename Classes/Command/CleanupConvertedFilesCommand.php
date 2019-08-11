@@ -44,6 +44,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -71,6 +72,8 @@ class CleanupConvertedFilesCommand extends Command
      * Constructor
      *
      * @param string|null $name
+     *
+     * @throws Exception
      */
     public function __construct(string $name = null)
     {
