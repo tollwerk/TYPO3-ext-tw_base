@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Attributes;
 
+use Closure;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -57,14 +58,14 @@ class DataViewHelper extends ListViewHelper
      * Render
      *
      * @param array $arguments                            Arguments
-     * @param \Closure $renderChildrenClosure             Children rendering closure
+     * @param Closure $renderChildrenClosure              Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
      * @return mixed|string Output
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
         $dataAttributes    = self::renderAttributes($arguments['attributes'] ?? [],

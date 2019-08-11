@@ -60,9 +60,9 @@ class CreateViewHelper extends AbstractViewHelper
     /**
      * Create a new heading context and return the previous one
      *
-     * @return string Current Context
+     * @return string Current heading context
      */
-    public function render()
+    public function render(): string
     {
         $headingContextManager = GeneralUtility::makeInstance(HeadingContextManager::class);
         $currentContext        = $headingContextManager->getCurrentContext();

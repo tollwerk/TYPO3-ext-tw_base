@@ -36,13 +36,17 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Uri;
 
+use Closure;
+use InvalidArgumentException;
+use RuntimeException;
 use Tollwerk\TwBase\Service\ImageService;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
-use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception as ExtbaseException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
+use UnexpectedValueException;
 
 /**
  * Extended image view helper
@@ -57,17 +61,17 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\ImageViewHelper
      * $src
      *
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      *
-     * @return string
-     * @throws Exception
+     * @return string Image path
+     * @throws ExtbaseException
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string {
         $src                = $arguments['src'];
         $image              = $arguments['image'];
         $treatIdAsReference = $arguments['treatIdAsReference'];
@@ -102,29 +106,25 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Uri\ImageViewHelper
             $processedImage = $imageService->applyProcessingInstructions($image, $processingInstructions);
 
             return $imageService->getImageUri($processedImage, $absolute);
-        } catch (ResourceDoesNotExistException $e) {
-            // thrown if file does not exist
-            throw new Exception($e->getMessage(), 1509741907, $e);
-        } catch (\UnexpectedValueException $e) {
+        } catch (UnexpectedValueException $e) {
             // thrown if a file has been replaced with a folder
             throw new Exception($e->getMessage(), 1509741908, $e);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             // RuntimeException thrown if a file is outside of a storage
             throw new Exception($e->getMessage(), 1509741909, $e);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             // thrown if file storage does not exist
             throw new Exception($e->getMessage(), 1509741910, $e);
         }
-
-        return '';
     }
 
     /**
      * Return an instance of ImageService using object manager
      *
      * @return ImageService
+     * @throws ExtbaseException
      */
-    protected static function getImageService()
+    protected static function getImageService(): ImageService
     {
         /** @var ObjectManager $objectManager */
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);

@@ -36,9 +36,13 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
+use DOMAttr;
+use DOMDocument;
+use OutOfBoundsException;
 use Tollwerk\TwBase\Utility\SvgIconManager;
 use Tollwerk\TwBase\ViewHelpers\Icon\IconViewHelperTrait;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
@@ -54,19 +58,18 @@ class IconViewHelper extends AbstractTagBasedViewHelper
      */
     use IconViewHelperTrait;
     /**
-     * HTML tag name
-     *
-     * @var string
-     */
-    protected $tagName = 'svg';
-
-    /**
      * Icon types
      */
     const TYPE_INLINE = 'inline';
     const TYPE_OUTLINE = 'outline';
     const TYPE_OPAQUE = 'opaque';
     const TYPES = [self::TYPE_INLINE, self::TYPE_OUTLINE, self::TYPE_OPAQUE];
+    /**
+     * HTML tag name
+     *
+     * @var string
+     */
+    protected $tagName = 'svg';
 
     /**
      * Initialize arguments
@@ -87,6 +90,7 @@ class IconViewHelper extends AbstractTagBasedViewHelper
      *
      * @return string Rendered icon
      * @throws InvalidConfigurationTypeException
+     * @throws Exception
      * @api
      */
     public function render(): string
@@ -106,33 +110,20 @@ class IconViewHelper extends AbstractTagBasedViewHelper
             $this->tag->forceClosingTag(true);
 
             return $this->tag->render();
-        } catch (\OutOfBoundsException $e) {
+        } catch (OutOfBoundsException $e) {
             return '<!-- Unknown SVG icon "'.$e->getMessage().'" -->';
         }
-    }
-
-
-    /**
-     * Get the icon DOM
-     *
-     * @param string $iconFile Icon file path
-     *
-     * @return \DOMDocument Icon DOM
-     */
-    protected function getIconDom(string $iconFile): \DOMDocument
-    {
-        return SvgIconManager::getIcon($iconFile);
     }
 
     /**
      * Set the icon properties
      *
-     * @param \DOMDocument $iconDom Icon dom
+     * @param DOMDocument $iconDom Icon dom
      */
-    protected function setIconProperties(\DOMDocument $iconDom): void
+    protected function setIconProperties(DOMDocument $iconDom): void
     {
         // Copy attributes
-        /** @var \DOMAttr $attribute */
+        /** @var DOMAttr $attribute */
         foreach ($iconDom->documentElement->attributes as $attribute) {
             $this->tag->addAttribute($attribute->localName, $attribute->value);
         }
@@ -143,5 +134,17 @@ class IconViewHelper extends AbstractTagBasedViewHelper
             $content .= $iconDom->saveXML($child);
         }
         $this->tag->setContent($content);
+    }
+
+    /**
+     * Get the icon DOM
+     *
+     * @param string $iconFile Icon file path
+     *
+     * @return DOMDocument Icon DOM
+     */
+    protected function getIconDom(string $iconFile): DOMDocument
+    {
+        return SvgIconManager::getIcon($iconFile);
     }
 }

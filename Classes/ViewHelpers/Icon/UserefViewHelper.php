@@ -36,8 +36,10 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Icon;
 
+use OutOfBoundsException;
 use Tollwerk\TwBase\Utility\SvgIconManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -69,6 +71,7 @@ class UserefViewHelper extends AbstractViewHelper
      *
      * @return string Rendered icon
      * @throws InvalidConfigurationTypeException
+     * @throws Exception
      * @api
      */
     public function render(): string
@@ -77,9 +80,8 @@ class UserefViewHelper extends AbstractViewHelper
             $icon = ucfirst(pathinfo($this->arguments['icon'], PATHINFO_FILENAME)).'.svg';
 
             return SvgIconManager::useIconReference($this->getIconFile($icon));
-        } catch (\OutOfBoundsException $e) {
+        } catch (OutOfBoundsException $e) {
             return '<!-- Unknown SVG icon "'.$e->getMessage().'" -->';
         }
     }
-
 }

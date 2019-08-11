@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Attributes;
 
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -63,14 +64,14 @@ class BinaryViewHelper extends AbstractViewHelper
      * Render
      *
      * @param array $arguments                            Arguments
-     * @param \Closure $renderChildrenClosure             Children rendering closure
+     * @param Closure $renderChildrenClosure              Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
      * @return mixed|string Output
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
         $attributes = [];

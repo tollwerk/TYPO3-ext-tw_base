@@ -36,9 +36,11 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Icon;
 
+use OutOfBoundsException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -62,8 +64,8 @@ trait IconViewHelperTrait
      * @param string $icon Icon name
      *
      * @return string Icon file path
+     * @throws Exception
      * @throws InvalidConfigurationTypeException
-     * @throws \OutOfBoundsException If the icon is unknown
      */
     protected function getIconFile(string $icon): string
     {
@@ -75,7 +77,7 @@ trait IconViewHelperTrait
             }
         }
 
-        throw new \OutOfBoundsException($icon, 1549185715);
+        throw new OutOfBoundsException($icon, 1549185715);
     }
 
     /**
@@ -83,6 +85,7 @@ trait IconViewHelperTrait
      *
      * @return string[] Icon root paths
      * @throws InvalidConfigurationTypeException
+     * @throws Exception
      */
     protected function getIconRootPaths(): array
     {

@@ -50,9 +50,9 @@ class GetViewHelper extends AbstractViewHelper
     /**
      * Returns the current heading context
      *
-     * @return string
+     * @return string Current heading context
      */
-    public function render()
+    public function render(): string
     {
         return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentContext();
     }

@@ -36,9 +36,12 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
+use Closure;
+use InvalidArgumentException;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+use UnexpectedValueException;
 
 /**
  * Create a unique ID for a data set
@@ -54,32 +57,21 @@ class UniqidViewHelper extends AbstractViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * Initialize arguments
-     */
-    public function initializeArguments()
-    {
-        parent::initializeArguments();
-        $this->registerArgument('prefix', 'string', 'ID prefix', true);
-        $this->registerArgument('data', 'mixed', 'Data to create the unique ID from', true);
-        $this->registerArgument('prefer', 'string', 'Preferred ID (if not empty)', false);
-    }
-
-    /**
      * Render
      *
      * @param array $arguments                            Arguments
-     * @param \Closure $renderChildrenClosure             Children rendering closure
+     * @param Closure $renderChildrenClosure              Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
      * @return mixed|string Output
-     * @throws \InvalidArgumentException
-     * @throws \UnexpectedValueException
+     * @throws InvalidArgumentException
+     * @throws UnexpectedValueException
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string {
         if (!empty($arguments['prefer'])) {
             return $arguments['prefer'];
         }
@@ -100,5 +92,16 @@ class UniqidViewHelper extends AbstractViewHelper
         } else {
             return $arguments['prefix'].substr(md5(rand(0, time())), 0, 10);
         }
+    }
+
+    /**
+     * Initialize arguments
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('prefix', 'string', 'ID prefix', true);
+        $this->registerArgument('data', 'mixed', 'Data to create the unique ID from', true);
+        $this->registerArgument('prefer', 'string', 'Preferred ID (if not empty)', false);
     }
 }

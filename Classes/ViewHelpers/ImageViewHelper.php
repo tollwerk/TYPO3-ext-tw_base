@@ -75,7 +75,7 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\ImageViewHelper
      * @see injectExtendedImageService()
      *
      */
-    public function injectImageService(CoreImageService $imageService)
+    public function injectImageService(CoreImageService $imageService): void
     {
         // Do nothing
     }
@@ -85,7 +85,7 @@ class ImageViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\ImageViewHelper
      *
      * @param ImageService $extendedImageService
      */
-    public function injectExtendedImageService(ImageService $extendedImageService)
+    public function injectExtendedImageService(ImageService $extendedImageService): void
     {
         $this->imageService = $extendedImageService;
     }

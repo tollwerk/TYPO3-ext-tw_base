@@ -36,7 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Form\Page;
 
-use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
+use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
 use TYPO3\CMS\Form\Domain\Model\FormElements\Page;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -63,13 +63,13 @@ class ElementsByIdentifierViewHelper extends AbstractViewHelper
     /**
      * Return a lst of form elements by identifier
      *
-     * @return array List of form elements by identifier
+     * @return FormElementInterface[] List of form elements by identifier
      */
-    public function render()
+    public function render(): array
     {
         /**
          * @var Page $page
-         * @var GenericFormElement $element
+         * @var FormElementInterface $element
          */
         $page     = $this->arguments['page'];
         $elements = [];

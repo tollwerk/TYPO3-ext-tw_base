@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Icon;
 
+use DOMDocument;
 use Tollwerk\TwBase\Utility\SvgIconManager;
 use Tollwerk\TwBase\ViewHelpers\IconViewHelper;
 
@@ -52,9 +53,9 @@ class UseViewHelper extends IconViewHelper
      *
      * @param string $iconFile Icon file path
      *
-     * @return \DOMDocument Icon DOM
+     * @return DOMDocument Icon DOM
      */
-    protected function getIconDom(string $iconFile): \DOMDocument
+    protected function getIconDom(string $iconFile): DOMDocument
     {
         return SvgIconManager::useIcon($iconFile);
     }

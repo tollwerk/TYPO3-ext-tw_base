@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
+use Closure;
 use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -52,37 +53,19 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 class RenderViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\RenderViewHelper
 {
     /**
-     * Initialize all arguments
-     *
-     * @return void
-     * @api
-     */
-    public function initializeArguments()
-    {
-        parent::initializeArguments();
-        $this->registerArgument(
-            'shiftHeadingLevel',
-            'int',
-            'Temporarily shift the heading level by this number',
-            false,
-            0
-        );
-    }
-
-    /**
      * Render
      *
      * @param array $arguments
-     * @param \Closure $renderChildrenClosure
+     * @param Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
      *
      * @return string
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): string {
         $shiftHeadingLevel = intval($arguments['shiftHeadingLevel']);
         if ($shiftHeadingLevel > 0) {
             $shiftedRenderChildrenClosure = function() use ($renderChildrenClosure, $shiftHeadingLevel) {
@@ -99,5 +82,23 @@ class RenderViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\RenderViewHelper
         }
 
         return parent::renderStatic($arguments, $renderChildrenClosure, $renderingContext);
+    }
+
+    /**
+     * Initialize all arguments
+     *
+     * @return void
+     * @api
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument(
+            'shiftHeadingLevel',
+            'int',
+            'Temporarily shift the heading level by this number',
+            false,
+            0
+        );
     }
 }

@@ -36,10 +36,12 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Link;
 
+use Closure;
 use Tollwerk\TwBase\Domain\Repository\CountryRepository;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Frontend\Service\TypoLinkCodecService;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -63,16 +65,16 @@ class InfoViewHelper extends AbstractViewHelper
      * Render
      *
      * @param array $arguments                            Arguments
-     * @param \Closure $renderChildrenClosure             Children rendering closure
+     * @param Closure $renderChildrenClosure              Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
-     * @return mixed|string Output
+     * @return array Link information
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): array {
         $currentLinkParts           = GeneralUtility::makeInstance(TypoLinkCodecService::class)
                                                     ->decode($arguments['typolink']);
         $currentLinkParts['params'] = $currentLinkParts['additionalParams'];
@@ -113,11 +115,44 @@ class InfoViewHelper extends AbstractViewHelper
     }
 
     /**
+     * Process a link of type 'page'
+     *
+     * @param array $currentLinkParts Current URL parts
+     */
+    protected static function processPageType(array &$currentLinkParts): void
+    {
+        $currentLinkParts['url'] = ['page' => $GLOBALS['TSFE']->sys_page->getPage_noCheck($currentLinkParts['url']['pageuid'])];
+    }
+
+    /**
+     * Process a link of type 'url'
+     *
+     * @param array $currentLinkParts Current URL parts
+     */
+    protected static function processUrlType(array &$currentLinkParts): void
+    {
+        $currentLinkParts['url'] = array_replace($currentLinkParts['url'], parse_url($currentLinkParts['url']['url']));
+    }
+
+    /**
+     * Process a link of type 'email'
+     *
+     * @param array $currentLinkParts Current URL parts
+     */
+    protected static function processEmailType(array &$currentLinkParts): void
+    {
+        list($currentLinkParts['url']['user'], $currentLinkParts['url']['host']) = explode(
+            '@',
+            $currentLinkParts['url']['email']
+        );
+    }
+
+    /**
      * Process a link of type 'tel'
      *
      * @param array $currentLinkParts Current URL parts
      */
-    protected static function processTelType(array &$currentLinkParts)
+    protected static function processTelType(array &$currentLinkParts): void
     {
         $currentLinkParts['url']['intl'] = preg_match(
             '/^(?:\+|(?:00))(\d+)$/',
@@ -126,47 +161,18 @@ class InfoViewHelper extends AbstractViewHelper
         );
 
         // If the number is in international format and the static info tables extension is available
-        if ($currentLinkParts['url']['intl'] && ExtensionManagementUtility::isLoaded('static_info_tables')) {
-            $objectManager     = GeneralUtility::makeInstance(ObjectManager::class);
-            $countryRepository = $objectManager->get(CountryRepository::class);
-            $countries         = $countryRepository->findByIntlPhoneNumber($local[1]);
-            if ($countries) {
-                $currentLinkParts['url']['countries'] = $countries;
+        try {
+            if ($currentLinkParts['url']['intl'] && ExtensionManagementUtility::isLoaded('static_info_tables')) {
+                $objectManager     = GeneralUtility::makeInstance(ObjectManager::class);
+                $countryRepository = $objectManager->get(CountryRepository::class);
+                $countries         = $countryRepository->findByIntlPhoneNumber($local[1]);
+                if ($countries) {
+                    $currentLinkParts['url']['countries'] = $countries;
+                }
             }
+        } catch (Exception $e) {
+            // Ignore
         }
-    }
-
-    /**
-     * Process a link of type 'url'
-     *
-     * @param array $currentLinkParts Current URL parts
-     */
-    protected static function processUrlType(array &$currentLinkParts)
-    {
-        $currentLinkParts['url'] = array_replace($currentLinkParts['url'], parse_url($currentLinkParts['url']['url']));
-    }
-
-    /**
-     * Process a link of type 'page'
-     *
-     * @param array $currentLinkParts Current URL parts
-     */
-    protected static function processPageType(array &$currentLinkParts)
-    {
-        $currentLinkParts['url'] = ['page' => $GLOBALS['TSFE']->sys_page->getPage_noCheck($currentLinkParts['url']['pageuid'])];
-    }
-
-    /**
-     * Process a link of type 'email'
-     *
-     * @param array $currentLinkParts Current URL parts
-     */
-    protected static function processEmailType(array &$currentLinkParts)
-    {
-        list($currentLinkParts['url']['user'], $currentLinkParts['url']['host']) = explode(
-            '@',
-            $currentLinkParts['url']['email']
-        );
     }
 
     /**

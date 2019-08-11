@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Attributes;
 
+use Closure;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -63,14 +64,14 @@ class ListViewHelper extends AbstractViewHelper
      * Render
      *
      * @param array $arguments                            Arguments
-     * @param \Closure $renderChildrenClosure             Children rendering closure
+     * @param Closure $renderChildrenClosure              Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
      * @return mixed|string Output
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
         return self::renderAttributes(
@@ -108,6 +109,28 @@ class ListViewHelper extends AbstractViewHelper
     }
 
     /**
+     * Recursively flatten an array
+     *
+     * @param array $array Array
+     *
+     * @return array Flattened array
+     */
+    protected static function flatten(array $array): array
+    {
+        $result = [];
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, self::flatten($value));
+                continue;
+            }
+
+            $result[$key] = $value;
+        }
+
+        return $result;
+    }
+
+    /**
      * Render a single attribute
      *
      * @param string $name      Attribute name
@@ -116,7 +139,7 @@ class ListViewHelper extends AbstractViewHelper
      *
      * @return null|string Attribute string
      */
-    protected static function renderAttribute($name, $value, $skipIfEmpty = false)
+    protected static function renderAttribute($name, $value, $skipIfEmpty = false): ?string
     {
         // Return if the value is empty and empty attributes should be skipped
         if (!strlen(trim($value)) && $skipIfEmpty) {
@@ -142,27 +165,5 @@ class ListViewHelper extends AbstractViewHelper
             'Arbitrary number of HTML tag attributes that only get rendered if they\'re not empty', false, []
         );
         $this->registerArgument('returnArray', 'boolean', 'Return an attribute list instead of string', false, false);
-    }
-
-    /**
-     * Recursively flatten an array
-     *
-     * @param array $array Array
-     *
-     * @return array Flattened array
-     */
-    protected static function flatten(array $array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result = array_merge($result, self::flatten($value));
-                continue;
-            }
-
-            $result[$key] = $value;
-        }
-
-        return $result;
     }
 }

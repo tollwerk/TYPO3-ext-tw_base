@@ -37,6 +37,7 @@
 namespace Tollwerk\TwBase\ViewHelpers\Form;
 
 use TYPO3\CMS\Fluid\ViewHelpers\FormViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
 
 /**
  * Trait for form fields without name prefix
@@ -48,7 +49,7 @@ trait UnprefixedNameTrait
     /**
      * Initialize the arguments.
      *
-     * @throws \TYPO3Fluid\Fluid\Core\ViewHelper\Exception
+     * @throws Exception
      * @api
      */
     public function initializeArguments()
@@ -65,7 +66,7 @@ trait UnprefixedNameTrait
      *
      * @return string Name
      */
-    public function getName()
+    public function getName(): string
     {
         $formObjectName = null;
         if ((boolean)$this->arguments['dontPrefixName']) {

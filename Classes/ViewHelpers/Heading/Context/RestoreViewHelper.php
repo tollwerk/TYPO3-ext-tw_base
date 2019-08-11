@@ -58,11 +58,9 @@ class RestoreViewHelper extends AbstractViewHelper
 
     /**
      * Restores a heading context
-     *
-     * @return string
      */
-    public function render()
+    public function render(): void
     {
-        return GeneralUtility::makeInstance(HeadingContextManager::class)->restoreContext($this->arguments['context']);
+        GeneralUtility::makeInstance(HeadingContextManager::class)->restoreContext($this->arguments['context']);
     }
 }

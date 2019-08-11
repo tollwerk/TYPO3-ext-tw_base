@@ -65,7 +65,7 @@ class MergeViewHelper extends AbstractViewHelper
      *
      * @return array Resulting array
      */
-    public function render()
+    public function render(): array
     {
         return array_replace($this->purge($this->arguments['a']), $this->purge($this->arguments['b']));
     }
@@ -77,7 +77,7 @@ class MergeViewHelper extends AbstractViewHelper
      *
      * @return array Purged array
      */
-    protected function purge($array)
+    protected function purge($array): array
     {
         return array_filter(array_map('trim', (array)$array));
     }

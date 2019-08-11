@@ -36,7 +36,6 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Script;
 
-use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 use WyriHaximus\HtmlCompress\Factory;
 
@@ -59,7 +58,6 @@ class WriteViewHelper extends AbstractTagBasedViewHelper
      * Render the script
      *
      * @return string Rendered icon
-     * @throws InvalidConfigurationTypeException
      * @api
      */
     public function render(): string

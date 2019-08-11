@@ -65,7 +65,7 @@ class TagSequenceBuilder extends TagBuilder
      *
      * @param TagBuilder $tag Tag
      */
-    public function addTag(TagBuilder $tag)
+    public function addTag(TagBuilder $tag): void
     {
         $this->tags[] = $tag;
     }
@@ -73,9 +73,9 @@ class TagSequenceBuilder extends TagBuilder
     /**
      * Renders and returns the tag sequence
      *
-     * @return string
+     * @return string Rendered tag sequence
      */
-    public function render()
+    public function render(): string
     {
         $sequence = '';
         /** @var TagBuilder $tag */

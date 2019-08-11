@@ -36,7 +36,9 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Form;
 
+use Closure;
 use TYPO3\CMS\Form\Domain\Model\FormDefinition;
+use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -59,16 +61,16 @@ class ElementViewHelper extends AbstractViewHelper
      * Render
      *
      * @param array $arguments                            Arguments
-     * @param \Closure $renderChildrenClosure             Children rendering closure
+     * @param Closure $renderChildrenClosure              Children rendering closure
      * @param RenderingContextInterface $renderingContext Rendering context
      *
-     * @return mixed|string Output
+     * @return FormElementInterface|null Form element
      */
     public static function renderStatic(
         array $arguments,
-        \Closure $renderChildrenClosure,
+        Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
-    ) {
+    ): ?FormElementInterface {
         /** @var FormDefinition $formDefinition */
         $formDefinition   = $arguments['form']->getFormDefinition();
         $formIdentifier   = $formDefinition->getIdentifier();

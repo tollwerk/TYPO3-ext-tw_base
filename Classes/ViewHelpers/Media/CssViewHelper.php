@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Media;
 
+use InvalidArgumentException;
 use Tollwerk\TwBase\Service\ImageService;
 use Tollwerk\TwBase\ViewHelpers\MediaViewHelper;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
@@ -43,6 +44,7 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
 
 /**
  * Renders the CSS for a responsive background image
@@ -55,26 +57,27 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class CssViewHelper extends MediaViewHelper
 {
-    /**
-     * Image service
-     *
-     * @var ImageService
-     */
-    protected $imageService = null;
+
+    const PCRE_MEDIA_COND = '\((min|max)\-width\s*\:\s*(\d+(?:\.\d+)?)(vw|%|px|em|rem)\)';
     /**
      * Regular expression matching a simple media condition
      *
      * @var string
      */
 //    const PCRE_MEDIA_COND = '/\((min|max)\-width\s*\:\s*(\d+(?:\.\d+)?)(vw|%|px)\)/';
-    const PCRE_MEDIA_COND = '\((min|max)\-width\s*\:\s*(\d+(?:\.\d+)?)(vw|%|px|em|rem)\)';
+    const PCRE_SIZE = '/^('.self::PCRE_MEDIA_COND.'(?:\s*and\s*'.self::PCRE_MEDIA_COND.')*\s+)?(\d+(?:\.\d+)?)(vw|%|px|em|rem)$/';
     /**
      * Regular expression matching simple size queries
      *
      * @var string
      */
 //    const PCRE_SIZE = '/^(?:'.self::PCRE_MEDIA_COND.'(?:\s*and\s*'.self::PCRE_MEDIA_COND.')*\s+)?(\d+(?:\.\d+)?)(vw|%|px)$/';
-    const PCRE_SIZE = '/^('.self::PCRE_MEDIA_COND.'(?:\s*and\s*'.self::PCRE_MEDIA_COND.')*\s+)?(\d+(?:\.\d+)?)(vw|%|px|em|rem)$/';
+    /**
+     * Image service
+     *
+     * @var ImageService
+     */
+    protected $imageService = null;
 
     /**
      * Initialize arguments
@@ -100,8 +103,9 @@ class CssViewHelper extends MediaViewHelper
      * @param string $height       Image height
      *
      * @return string Rendered <img> or <picture> element
+     * @throws Exception
      */
-    protected function renderImage(FileInterface $image, $width, $height)
+    protected function renderImage(FileInterface $image, $width, $height): string
     {
         // If the image shouldn't be inlined
         if (!$this->arguments['inline']) {
@@ -135,44 +139,6 @@ class CssViewHelper extends MediaViewHelper
     }
 
     /**
-     * Render a simple <img> element
-     *
-     * @param FileInterface $image Image reference
-     * @param string $width        Image width
-     * @param string $height       Image height
-     *
-     * @return string Rendered <img> element
-     */
-    protected function renderSimpleImage(FileInterface $image, $width, $height)
-    {
-        // Return a regular image
-        $cropVariant            = $this->arguments['cropVariant'] ?: 'default';
-        $cropString             = $image instanceof FileReference ? $image->getProperty('crop') : '';
-        $cropVariantCollection  = CropVariantCollection::create((string)$cropString);
-        $cropArea               = $cropVariantCollection->getCropArea($cropVariant);
-        $processingInstructions = [
-            'width'  => $width,
-            'height' => $height,
-            'crop'   => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
-        ];
-        $processedImage         = $this->getImageService()
-                                       ->applyProcessingInstructions($image, $processingInstructions);
-
-        // If the image should be inlined: Create a data URI
-        if ($this->arguments['inline']) {
-            $imageUri = $this->getResponsiveImagesUtility()->getDataUri(
-                $processedImage->getMimeType(),
-                $processedImage->getForLocalProcessing()
-            );
-        } else {
-            $imageUri = $this->getImageService()->getImageUri($processedImage);
-        }
-
-        return $this->wrapCssRule('background-image: url("'.$imageUri.'")');
-    }
-
-
-    /**
      * Render <img> element with srcset/sizes attributes
      *
      * @param FileInterface $image Image reference
@@ -180,12 +146,14 @@ class CssViewHelper extends MediaViewHelper
      * @param string $height       Image height
      *
      * @return string Rendered <img> element
+     * @throws Exception
      */
-    protected function renderImageSrcset(FileInterface $image, $width, $height)
+    protected function renderImageSrcset(FileInterface $image, $width, $height): string
     {
         $css = [];
 
         // Get crop variants & generate fallback image
+        /** @var FileInterface $fallbackImage */
         list($cropArea, $focusArea, $fallbackImage) = $this->createAreasAndFallback($image, $width);
 
         // Generate fallback image url
@@ -200,8 +168,7 @@ class CssViewHelper extends MediaViewHelper
                                                            $image,
                                                            $referenceWidth,
                                                            $this->arguments['srcset'],
-                                                           $cropArea,
-                                                           false
+                                                           $cropArea
                                                        );
         $srcsetMode                             = substr(key($srcsetImages), -1); // x or w
         $fallbackWidthDescriptor                = ($srcsetMode == 'x') ? '1x' : $referenceWidth.'w';
@@ -214,13 +181,27 @@ class CssViewHelper extends MediaViewHelper
     }
 
     /**
+     * Return an instance of ImageService
+     *
+     * @return ImageService
+     */
+    protected function getImageService(): ImageService
+    {
+        if (!($this->imageService instanceof ImageService)) {
+            $this->imageService = $this->objectManager->get(ImageService::class);
+        }
+
+        return $this->imageService;
+    }
+
+    /**
      * Create CSS based on pixel density descriptors
      *
      * @param ProcessedFile[] $srcsetImages Image candidates
      *
-     * @return array CSS rules
+     * @return string[] CSS rules
      */
-    protected function createPixelDensityCss(array $srcsetImages)
+    protected function createPixelDensityCss(array $srcsetImages): array
     {
         $css = [];
 
@@ -248,14 +229,60 @@ class CssViewHelper extends MediaViewHelper
     }
 
     /**
+     * Wrap a CSS properties into the given selector, making it a CSS rule
+     *
+     * @param string $css CSS properties
+     *
+     * @return string CSS rule
+     */
+    protected function wrapCssRule(string $css): string
+    {
+        return $this->arguments['selector']." { $css }";
+    }
+
+    /**
+     * Wrap CSS rules into a media query
+     *
+     * @param string $css                CSS rules
+     * @param string[]|string $condition Media query condition(s)
+     *
+     * @return string Media query
+     */
+    protected function wrapMediaQuery(string $css, $condition): string
+    {
+        return '@media '.(is_array($condition) ? implode(', ', $condition) : $condition)." { $css }";
+    }
+
+    /**
+     * Create a pixel density CSS media query
+     *
+     * @param float $density              Pixel density
+     * @param array $additionalConditions Additional conditions
+     *
+     * @return string[] Media query
+     */
+    protected function createPixelDensityMediaQuery(float $density, array $additionalConditions = []): array
+    {
+        $densityConditions = [
+            '(-webkit-min-device-pixel-ratio: '.$density.')',
+            '(min-resolution: '.round(91 * $density).'dpi)',
+            '(min-resolution: '.$density.'dppx)',
+        ];
+
+        return array_map(function($densityCondition) use ($additionalConditions) {
+            return implode(' and ', array_merge(['screen', $densityCondition], $additionalConditions));
+        }, $densityConditions);
+    }
+
+    /**
      * Create CSS based on width descriptors
      *
      * @param ProcessedFile[] $srcsetImages Image candidates
      * @param int $referenceWidth           Reference width
      *
-     * @return array CSS rules
+     * @return string[] CSS rules
      */
-    protected function createWidthCss(array $srcsetImages, $referenceWidth)
+    protected function createWidthCss(array $srcsetImages, int $referenceWidth): array
     {
         $css         = [];
         $sizeQueries = strtolower($this->arguments['sizes']);
@@ -278,7 +305,7 @@ class CssViewHelper extends MediaViewHelper
             list($defaultTarget, $defaultConditions) = $this->parseSizeQuery($defaultSizeQuery);
 //            if (count($defaultConditions)) {
             if ($defaultConditions) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     sprintf('Default size query "%s" must not have a media feature condition', $defaultSizeQuery),
                     1522421765
                 );
@@ -291,7 +318,7 @@ class CssViewHelper extends MediaViewHelper
                 $filesAtConditions
             );
 
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             return ['/* '.$e->getMessage().' */'];
         }
 
@@ -300,7 +327,7 @@ class CssViewHelper extends MediaViewHelper
             list($target, $conditions) = $this->parseSizeQuery($sizeQuery);
 //            if (!count($conditions)) {
             if (!$conditions) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     sprintf('Size query "%s" must have a valid media feature condition', $sizeQuery),
                     1522425426
                 );
@@ -321,88 +348,18 @@ class CssViewHelper extends MediaViewHelper
     }
 
     /**
-     * Create the CSS rules for a particular target size and a list of densities
-     *
-     * @param array $targetProperties       Target properties
-     * @param string $conditions            Media feature conditions
-     * @param ProcessedFile[] $srcsetImages Image candidates
-     * @param array $densities              Device densities
-     * @param array $filesAtConditions      Files and media query condition associations
-     */
-    protected function createTargetCssForDensities(
-        array $targetProperties,
-        $conditions,
-        array $srcsetImages,
-        array $densities,
-        array &$filesAtConditions
-    ) {
-        // If the target size is absolute
-        if ($targetProperties['absolute']) {
-            foreach ($densities as $density) {
-                $this->findBestMatchingImageForAbsoluteSizeAndDensity(
-                    $targetProperties['value'],
-                    $conditions,
-                    $density,
-                    $srcsetImages,
-                    $filesAtConditions
-                );
-            }
-        } else {
-
-        }
-    }
-
-    /**
-     * Find the best matching file for an absolute size and device density
-     *
-     * @param int $targetSize               Pixel target size
-     * @param string $conditions            Media feature conditions
-     * @param float $density                Device density
-     * @param ProcessedFile[] $srcsetImages Image candidates
-     * @param array $filesAtConditions      Files and media query condition associations
-     */
-    protected function findBestMatchingImageForAbsoluteSizeAndDensity(
-        $targetSize,
-        $conditions,
-        $density,
-        array $srcsetImages,
-        array &$filesAtConditions
-    ) {
-        $densityTargetSize = $targetSize * $density;
-
-        // Run through all image candidates
-        foreach ($srcsetImages as $srcsetImage) {
-            if ($srcsetImage->getProperty('width') >= $densityTargetSize) {
-                break;
-            }
-        }
-
-        // Register the filename
-        $imageFilename = $this->getImageService()->getImageUri($srcsetImage);
-        if (!array_key_exists($imageFilename, $filesAtConditions)) {
-            $filesAtConditions[$imageFilename] = [];
-        }
-
-        // Register the appropriate media query
-        $filesAtConditions[$imageFilename] = array_merge(
-            $filesAtConditions[$imageFilename],
-            ($density == 1) ? ['screen'] : $this->createPixelDensityMediaQuery($density, array_filter([$conditions]))
-        );
-    }
-
-    /**
      * Parse a single size query
      *
      * @param string $sizeQuery Size query
      *
      * @return array Size query target and conditions
-     * @throws \InvalidArgumentException If the size query is invalid
+     * @throws InvalidArgumentException If the size query is invalid
      */
-    protected function parseSizeQuery($sizeQuery)
+    protected function parseSizeQuery(string $sizeQuery): array
     {
         // Match the size query
         if (!preg_match(self::PCRE_SIZE, trim($sizeQuery), $sizeQueryMatch)) {
-            throw new \InvalidArgumentException(sprintf('Invalid size query "%s"', $sizeQuery), 1522419613);
+            throw new InvalidArgumentException(sprintf('Invalid size query "%s"', $sizeQuery), 1522419613);
         }
 
         // Determine the size conditions
@@ -435,27 +392,133 @@ class CssViewHelper extends MediaViewHelper
     }
 
     /**
-     * Parse a density descriptor and return it as floating point number
-     *
-     * @param string $density Density descriptor
-     *
-     * @return float|int Density factor
-     */
-    protected function parseDensityDescriptor($density)
-    {
-        return preg_match('/^(\d+(?:\.\d+)?)x$/i', $density, $densityMatch) ? floatval($densityMatch[1]) : 0;
-    }
-
-    /**
      * Return whether a CSS unit is absolute
      *
      * @param string $unit CSS unit
      *
      * @return bool Is absolute unit
      */
-    protected function isAbsoluteUnit($unit)
+    protected function isAbsoluteUnit(string $unit): bool
     {
         return in_array($unit, ['px', 'em', 'rem']);
+    }
+
+    /**
+     * Create the CSS rules for a particular target size and a list of densities
+     *
+     * @param array $targetProperties       Target properties
+     * @param string $conditions            Media feature conditions
+     * @param ProcessedFile[] $srcsetImages Image candidates
+     * @param array $densities              Device densities
+     * @param array $filesAtConditions      Files and media query condition associations
+     */
+    protected function createTargetCssForDensities(
+        array $targetProperties,
+        string $conditions,
+        array $srcsetImages,
+        array $densities,
+        array &$filesAtConditions
+    ): void {
+        // If the target size is absolute
+        if ($targetProperties['absolute']) {
+            foreach ($densities as $density) {
+                $this->findBestMatchingImageForAbsoluteSizeAndDensity(
+                    $targetProperties['value'],
+                    $conditions,
+                    $density,
+                    $srcsetImages,
+                    $filesAtConditions
+                );
+            }
+        }
+    }
+
+    /**
+     * Find the best matching file for an absolute size and device density
+     *
+     * @param int $targetSize               Pixel target size
+     * @param string $conditions            Media feature conditions
+     * @param float $density                Device density
+     * @param ProcessedFile[] $srcsetImages Image candidates
+     * @param array $filesAtConditions      Files and media query condition associations
+     */
+    protected function findBestMatchingImageForAbsoluteSizeAndDensity(
+        int $targetSize,
+        string $conditions,
+        float $density,
+        array $srcsetImages,
+        array &$filesAtConditions
+    ): void {
+        $densityTargetSize = $targetSize * $density;
+
+        // Run through all image candidates
+        foreach ($srcsetImages as $srcsetImage) {
+            if ($srcsetImage->getProperty('width') >= $densityTargetSize) {
+                break;
+            }
+        }
+
+        // Register the filename
+        $imageFilename = $this->getImageService()->getImageUri($srcsetImage);
+        if (!array_key_exists($imageFilename, $filesAtConditions)) {
+            $filesAtConditions[$imageFilename] = [];
+        }
+
+        // Register the appropriate media query
+        $filesAtConditions[$imageFilename] = array_merge(
+            $filesAtConditions[$imageFilename],
+            ($density == 1) ? ['screen'] : $this->createPixelDensityMediaQuery($density, array_filter([$conditions]))
+        );
+    }
+
+    /**
+     * Render a simple <img> element
+     *
+     * @param FileInterface $image Image reference
+     * @param string $width        Image width
+     * @param string $height       Image height
+     *
+     * @return string Rendered <img> element
+     * @throws Exception
+     */
+    protected function renderSimpleImage(FileInterface $image, string $width, string $height): string
+    {
+        // Return a regular image
+        $cropVariant            = $this->arguments['cropVariant'] ?: 'default';
+        $cropString             = $image instanceof FileReference ? $image->getProperty('crop') : '';
+        $cropVariantCollection  = CropVariantCollection::create((string)$cropString);
+        $cropArea               = $cropVariantCollection->getCropArea($cropVariant);
+        $processingInstructions = [
+            'width'  => $width,
+            'height' => $height,
+            'crop'   => $cropArea->isEmpty() ? null : $cropArea->makeAbsoluteBasedOnFile($image),
+        ];
+        $processedImage         = $this->getImageService()
+                                       ->applyProcessingInstructions($image, $processingInstructions);
+
+        // If the image should be inlined: Create a data URI
+        if ($this->arguments['inline']) {
+            $imageUri = $this->getResponsiveImagesUtility()->getDataUri(
+                $processedImage->getMimeType(),
+                $processedImage->getForLocalProcessing()
+            );
+        } else {
+            $imageUri = $this->getImageService()->getImageUri($processedImage);
+        }
+
+        return $this->wrapCssRule('background-image: url("'.$imageUri.'")');
+    }
+
+    /**
+     * Parse a density descriptor and return it as floating point number
+     *
+     * @param string $density Density descriptor
+     *
+     * @return float|int Density factor
+     */
+    protected function parseDensityDescriptor(string $density): float
+    {
+        return preg_match('/^(\d+(?:\.\d+)?)x$/i', $density, $densityMatch) ? floatval($densityMatch[1]) : 0;
     }
 
     /**
@@ -466,70 +529,11 @@ class CssViewHelper extends MediaViewHelper
      *
      * @return int Sort order
      */
-    protected function sortByPixelDensityDescriptor($d1, $d2)
+    protected function sortByPixelDensityDescriptor(string $d1, string $d2): int
     {
         $dn1 = floatval(substr($d1, 0, -1));
         $dn2 = floatval(substr($d2, 0, -1));
 
         return ($dn1 == $dn2) ? 0 : (($dn1 > $dn2) ? 1 : -1);
-    }
-
-    /**
-     * Create a pixel density CSS media query
-     *
-     * @param float $density Pixel density
-     *
-     * @return string Media query
-     */
-    protected function createPixelDensityMediaQuery($density, array $additionalConditions = [])
-    {
-        $densityConditions = [
-            '(-webkit-min-device-pixel-ratio: '.$density.')',
-            '(min-resolution: '.round(91 * $density).'dpi)',
-            '(min-resolution: '.$density.'dppx)',
-        ];
-
-        return array_map(function($densityCondition) use ($additionalConditions) {
-            return implode(' and ', array_merge(['screen', $densityCondition], $additionalConditions));
-        }, $densityConditions);
-    }
-
-    /**
-     * Wrap a CSS properties into the given selector, making it a CSS rule
-     *
-     * @param sting $css CSS properties
-     *
-     * @return string CSS rule
-     */
-    protected function wrapCssRule($css)
-    {
-        return $this->arguments['selector']." { $css }";
-    }
-
-    /**
-     * Wrap CSS rules into a media query
-     *
-     * @param string $css                CSS rules
-     * @param string[]|string $condition Media query condition(s)
-     *
-     * @return string Media query
-     */
-    protected function wrapMediaQuery($css, $condition)
-    {
-        return '@media '.(is_array($condition) ? implode(', ', $condition) : $condition)." { $css }";
-    }
-
-    /**
-     * Return an instance of ImageService
-     *
-     * @return ImageService
-     */
-    protected function getImageService()
-    {
-        if (!($this->imageService instanceof ImageService)) {
-            $this->imageService = $this->objectManager->get(ImageService::class);
-        }
-
-        return $this->imageService;
     }
 }
