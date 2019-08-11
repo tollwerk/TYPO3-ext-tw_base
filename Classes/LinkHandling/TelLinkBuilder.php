@@ -50,13 +50,13 @@ class TelLinkBuilder
      * Render a tel:// link preview
      *
      * @param array $linkData                    Link data
-     * @param $linkParts                         Link parts
+     * @param string[] $linkParts                Link parts
      * @param array $data                        Data
      * @param InputLinkElement $inputLinkElement Input link element
      *
      * @return array
      */
-    public function getFormData(array $linkData, $linkParts, array $data, InputLinkElement $inputLinkElement)
+    public function getFormData(array $linkData, array $linkParts, array $data, InputLinkElement $inputLinkElement)
     {
         return [
             'text' => $linkData['value'],

@@ -121,10 +121,12 @@ class TelLinkHandler extends AbstractLinkHandler implements LinkHandlerInterface
 
         $this->view->assign('number', !empty($this->linkParts) ? $this->linkParts['url']['number'] : '');
 
-        return $this->view->render('Tel');
+        return $this->view->render();
     }
 
     /**
+     * Return the body tag attributes
+     *
      * @return string[] Array of body-tag attributes
      */
     public function getBodyTagAttributes()
