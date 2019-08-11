@@ -3,18 +3,18 @@
 /**
  * tollwerk
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Service
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -46,9 +46,10 @@ abstract class AbstractLqipService extends AbstractService
     /**
      * Create a low-quality image preview
      *
-     * @param string $imageUri Source image URL
+     * @param string $imageUri     Source image URL
      * @param array $configuration Service configuration
+     *
      * @return string LQIP URI
      */
-    abstract public function getImageLqip($imageUri, array $configuration = []);
+    abstract public function getImageLqip(string $imageUri, array $configuration = []): string;
 }

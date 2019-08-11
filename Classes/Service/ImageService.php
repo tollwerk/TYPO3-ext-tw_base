@@ -3,8 +3,8 @@
 /**
  * tollwerk
  *
- * @category   Jkphl
- * @package    Jkphl\Rdfalite
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Service
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
@@ -14,7 +14,7 @@
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@kuphal.net> / @jkphl
+ *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -36,7 +36,6 @@
 
 namespace Tollwerk\TwBase\Service;
 
-use Tollwerk\TwBase\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ProcessedFile;
@@ -82,7 +81,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      *
      * @param ProcessedFileRepository $processedFileRepository
      */
-    public function injectProcessedFileRepository(ProcessedFileRepository $processedFileRepository)
+    public function injectProcessedFileRepository(ProcessedFileRepository $processedFileRepository): void
     {
         $this->processedFileRepository = $processedFileRepository;
     }
@@ -94,20 +93,19 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      * @param array $processingInstructions
      *
      * @return ProcessedFile Processed file
+     * @throws Exception
      * @api
      */
     public function applyProcessingInstructions($image, array $processingInstructions): ProcessedFile
     {
+        // Get the original file from the file reference (if available)
         if (is_callable([$image, 'getOriginalFile'])) {
-            // Get the original file from the file reference
             $image = $image->getOriginalFile();
         }
 
         // Enable file compression
         $processingInstructions['compress'] = $this->hasCompressorEnabled($image) ?
-            ArrayUtility::recursivelyFalsify(
-                $this->getImageSettings('images.compress.'.$image->getExtension())
-            ) : false;
+            !empty($this->getImageSettings('images.compress.'.$image->getExtension())) : false;
 
         // Process the image
         $processedImage = $image->process(self::CONTEXT_IMAGECROPSCALEMASKCOMPRESS, $processingInstructions);
@@ -123,7 +121,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      *
      * @return bool Compressor is available
      */
-    protected function hasCompressorEnabled(FileInterface $file)
+    protected function hasCompressorEnabled(FileInterface $file): bool
     {
         $fileExtension  = strtolower($file->getExtension());
         $fileCompressor = GeneralUtility::makeInstanceService('filecompress', $fileExtension);
@@ -132,11 +130,11 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
     }
 
     /**
-     * Extract and return the image settings
+     * Extract and return an single image settings or the settings in general
      *
-     * @param null $key
+     * @param null $key Optional: Key
      *
-     * @return string $key Optional: Key
+     * @return array|string $key Setting(s)
      * @throws Exception
      */
     public function getImageSettings($key = null)
@@ -175,7 +173,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      * @return ProcessedFile Processed file
      * @api
      */
-    public function convert($image, $converter, array $config = [])
+    public function convert($image, $converter, array $config = []): ProcessedFile
     {
         unset($config['_typoScriptNodeValue']);
         $config = [
@@ -186,6 +184,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
 
         // If a processed file should be converted: Reconstitute as regular file
         if (is_callable([$image, 'getOriginalFile'])) {
+            // @TODO: Method is unknown on $image
             $config = array_replace($image->getProcessingConfiguration(), $config);
 
             $originalFile = $image->getOriginalFile();

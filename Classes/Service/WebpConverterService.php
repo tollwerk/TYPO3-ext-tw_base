@@ -3,12 +3,12 @@
 /**
  * tollwerk
  *
- * @category Jkphl
- * @package Jkphl\Rdfalite
+ * @category   Jkphl
+ * @package    Jkphl\Rdfalite
  * @subpackage Tollwerk\TwBase\Service
- * @author Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
@@ -58,9 +58,10 @@ class WebpConverterService extends AbstractFileConverterService
      * Check whether this converer accepts a particular file for conversion
      *
      * @param FileInterface $image File
+     *
      * @return bool File is accepted for conversion
      */
-    public function acceptsFile(FileInterface $image)
+    public function acceptsFile(FileInterface $image): bool
     {
         return in_array(strtolower($image->getExtension()), ResponsiveImagesUtility::SRCSET_FILE_EXTENSIONS);
     }
@@ -68,14 +69,15 @@ class WebpConverterService extends AbstractFileConverterService
     /**
      * Process a file
      *
-     * @param TaskInterface $task Image processing task
+     * @param TaskInterface $task  Image processing task
      * @param array $configuration Service configuration
-     * @return array Result
+     *
+     * @return array|null Result
      */
-    public function processFile(TaskInterface $task, array $configuration = [])
+    public function processFile(TaskInterface $task, array $configuration = []): ?array
     {
         /** @var File $sourceFile */
-        $sourceFile = $task->getSourceFile();
+        $sourceFile     = $task->getSourceFile();
         $sourceFilePath = $sourceFile->getForLocalProcessing();
         $this->registerTempFile($sourceFilePath);
 
