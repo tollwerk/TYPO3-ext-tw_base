@@ -43,6 +43,7 @@ use TYPO3\CMS\Core\Resource\ProcessedFile;
 use TYPO3\CMS\Core\Resource\ProcessedFileRepository;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
@@ -95,7 +96,7 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
      * @return ProcessedFile Processed file
      * @api
      */
-    public function applyProcessingInstructions($image, $processingInstructions)
+    public function applyProcessingInstructions($image, array $processingInstructions): ProcessedFile
     {
         if (is_callable([$image, 'getOriginalFile'])) {
             // Get the original file from the file reference
@@ -133,8 +134,10 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
     /**
      * Extract and return the image settings
      *
+     * @param null $key
+     *
      * @return string $key Optional: Key
-     * @return array Image settings
+     * @throws Exception
      */
     public function getImageSettings($key = null)
     {
