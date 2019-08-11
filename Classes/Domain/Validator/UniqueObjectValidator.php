@@ -75,13 +75,13 @@ class UniqueObjectValidator extends AbstractValidator
      *
      * @param mixed $value
      *
-     * @return bool
+     * @return bool Whether the value is valid
      */
     public function isValid($value)
     {
         // Short-circuit if value is skiped
         if (isset(self::$skip[$this->calculateValueHash($value)])) {
-            return;
+            return true;
         }
         $connection   = GeneralUtility::makeInstance(ConnectionPool::class)
                                       ->getConnectionForTable($this->options['table']);
@@ -101,7 +101,11 @@ class UniqueObjectValidator extends AbstractValidator
                     1547075816
                 )
             );
+
+            return false;
         }
+
+        return true;
     }
 
     /**
@@ -123,9 +127,6 @@ class UniqueObjectValidator extends AbstractValidator
      */
     protected function calculateValueHash($value): string
     {
-        $options          = $this->options;
-        $options['value'] = $value;
-
         return md5(serialize($value));
     }
 }
