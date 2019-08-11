@@ -39,6 +39,7 @@ namespace Tollwerk\TwBase\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -79,6 +80,7 @@ class StandaloneRenderer
      * Constructor
      *
      * @throws InvalidConfigurationTypeException
+     * @throws Exception
      */
     public function __construct()
     {
@@ -105,6 +107,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
+     * @throws Exception
      */
     public function render(
         string $templateName,
@@ -126,6 +129,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
+     * @throws Exception
      */
     public function renderTemplate(
         string $templateName,
@@ -145,34 +149,6 @@ class StandaloneRenderer
     }
 
     /**
-     * Render a Fluid partial
-     *
-     * @param string $partialName   Partial name
-     * @param array $parameters     Parameters
-     * @param string $format        Optional: Template format
-     * @param string|null $section  Optional: template section
-     * @param string|null $language Optional: language suffix
-     *
-     * @return string Rendered template
-     */
-    public function renderPartial(
-        string $partialName,
-        array $parameters = [],
-        string $format = 'html',
-        string $section = null,
-        string $language = null
-    ): string {
-        return $this->renderWithRootPath(
-            $this->partialRootPath,
-            $partialName,
-            $parameters,
-            $format,
-            $section,
-            $language
-        );
-    }
-
-    /**
      * Render a Fluid template or partial
      *
      * @param string $rootPath      Root path
@@ -183,6 +159,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
+     * @throws Exception
      */
     protected function renderWithRootPath(
         string $rootPath,
@@ -211,5 +188,34 @@ class StandaloneRenderer
         $view->assignMultiple($parameters);
 
         return $section ? $view->renderSection($section, $parameters) : $view->render();
+    }
+
+    /**
+     * Render a Fluid partial
+     *
+     * @param string $partialName   Partial name
+     * @param array $parameters     Parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
+     *
+     * @return string Rendered template
+     * @throws Exception
+     */
+    public function renderPartial(
+        string $partialName,
+        array $parameters = [],
+        string $format = 'html',
+        string $section = null,
+        string $language = null
+    ): string {
+        return $this->renderWithRootPath(
+            $this->partialRootPath,
+            $partialName,
+            $parameters,
+            $format,
+            $section,
+            $language
+        );
     }
 }

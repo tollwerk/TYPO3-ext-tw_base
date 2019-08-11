@@ -45,12 +45,6 @@ namespace Tollwerk\TwBase\Utility;
 class CurlUtility
 {
     /**
-     * SSL certificate validation
-     *
-     * @var boolean
-     */
-    protected static $_verify = true;
-    /**
      * GET request
      *
      * @var string
@@ -74,6 +68,12 @@ class CurlUtility
      * @var string
      */
     const PUT = 'PUT';
+    /**
+     * SSL certificate validation
+     *
+     * @var boolean
+     */
+    protected static $_verify = true;
 
     /**
      * Enable / disable the SSL certificate validation
@@ -96,19 +96,19 @@ class CurlUtility
      * @param array $header   Header
      * @param string $method  Method
      * @param string $body    Body
-     * @param boolean $debug  Output debugging information
+     * @param bool $debug     Output debugging information
      * @param int $httpStatus HTTP status code
      *
      * @return string Result
      */
     public static function httpRequest(
-        $url,
+        string $url,
         array $header = [],
-        $method = self::GET,
-        $body = null,
-        $debug = false,
-        &$httpStatus = 0
-    ) {
+        string $method = self::GET,
+        string $body = null,
+        bool $debug = false,
+        int &$httpStatus = 0
+    ): string {
         $httpStatus = 0;
         $curl       = curl_init();
 
@@ -131,14 +131,14 @@ class CurlUtility
 
         $data       = curl_exec($curl);
         $info       = curl_getinfo($curl);
-        $httpStatus = $info['http_code'];
+        $httpStatus = (int)$info['http_code'];
 
-        // Ggf. Debugging-Ausgabe
+        // Debugging output
         if ($debug) {
             $info['method'] = $method;
             $info['body']   = strval($body);
-            print_r($header);
-            print_r($info);
+            debug($header);
+            debug($info);
         }
 
         curl_close($curl);

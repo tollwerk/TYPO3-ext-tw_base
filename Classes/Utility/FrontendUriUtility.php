@@ -37,6 +37,7 @@
 namespace Tollwerk\TwBase\Utility;
 
 use RuntimeException;
+use TYPO3\CMS\Core\Domain\Repository\PageRepository;
 use TYPO3\CMS\Core\Error\Http\ServiceUnavailableException;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Site\Entity\Site;
@@ -44,13 +45,13 @@ use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\TimeTracker\TimeTracker;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Frontend URI utility
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Utility
+ * @todo       Needs refactoring! Probably doesn't work anymore
  */
 class FrontendUriUtility
 {
@@ -69,7 +70,6 @@ class FrontendUriUtility
      * @param int $pageType Page type
      *
      * @return string Frontend URL
-     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      */
     public static function build(int $pageUid, array $params = [], int $pageType = 0): string
@@ -95,7 +95,6 @@ class FrontendUriUtility
      *
      * @return TypoScriptFrontendController TypoScript frontend controller
      * @throws SiteNotFoundException
-     * @throws ServiceUnavailableException
      */
     public static function getTypoScriptFrontendController(
         int $pageUid,
@@ -124,7 +123,6 @@ class FrontendUriUtility
                 );
 
                 $GLOBALS['TSFE']->sys_page = GeneralUtility::makeInstance(PageRepository::class);
-                $GLOBALS['TSFE']->sys_page->init(true);
                 $GLOBALS['TSFE']->connectToDB();
                 $GLOBALS['TSFE']->initFEuser();
                 $GLOBALS['TSFE']->determineId();

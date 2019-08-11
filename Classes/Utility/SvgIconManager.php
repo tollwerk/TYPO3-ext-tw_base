@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\Utility;
 
+use DOMDocument;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -60,13 +61,25 @@ class SvgIconManager
     protected static $uses = [];
 
     /**
+     * Register a SVG source for sprite output and return the use reference key
+     *
+     * @param string $svgSource SVG source file path
+     *
+     * @return string|null Use reference key
+     */
+    public static function useIconReference(string $svgSource): ?string
+    {
+        return self::useIcon($svgSource) ? self::getUseKey($svgSource) : null;
+    }
+
+    /**
      * Return an unique use key for the given SVG source
      *
      * @param string $svgSource SVG source file path
      *
-     * @return \DOMDocument SVG usage
+     * @return DOMDocument SVG usage
      */
-    public static function useIcon($svgSource): \DOMDocument
+    public static function useIcon(string $svgSource): DOMDocument
     {
         // Create a unique use key
         if (empty(self::$uses[$svgSource])) {
@@ -77,31 +90,6 @@ class SvgIconManager
     }
 
     /**
-     * Register a SVG source for sprite output and return the use reference key
-     *
-     * @param string $svgSource SVG source file path
-     *
-     * @return string|null Use reference key
-     */
-    public static function useIconReference($svgSource)
-    {
-        return self::useIcon($svgSource) ? self::getUseKey($svgSource) : null;
-    }
-
-    /**
-     * Create and return a unique use reference hash for a SVG file
-     *
-     * @param string $svgSource SVG source file path
-     *
-     * @return string
-     */
-    protected static function getUseKey($svgSource)
-    {
-        return strtolower(pathinfo($svgSource, PATHINFO_FILENAME))
-               .substr(md5_file($svgSource), 0, 8);
-    }
-
-    /**
      * Prepare and return a single sprite SVG
      *
      * @param string $filename Filename
@@ -109,13 +97,13 @@ class SvgIconManager
      *
      * @return string Sprite SVG
      */
-    protected static function getUseSource($filename, $useKey)
+    protected static function getUseSource(string $filename, string $useKey): string
     {
         $width  = $height = 0;
         $svgDom = self::getIcon($filename, $width, $height);
         $svgDom->documentElement->setAttribute('id', $useKey);
         self::$sources[$filename] = $svgDom->saveXML($svgDom->documentElement);
-        $svgUse                   = new \DOMDocument();
+        $svgUse                   = new DOMDocument();
         $svgUse->loadXML('<svg viewBox="0 0 '.$width.' '.$height.'" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="#'.$useKey.'" /></svg>');
 
         return $svgUse;
@@ -128,11 +116,11 @@ class SvgIconManager
      * @param int $width       Icon width
      * @param int $height      Icon height
      *
-     * @return \DOMDocument Icon DOM
+     * @return DOMDocument Icon DOM
      */
-    public static function getIcon(string $filename, int &$width = 0, int &$height = 0): \DOMDocument
+    public static function getIcon(string $filename, int &$width = 0, int &$height = 0): DOMDocument
     {
-        $svgDom = new \DOMDocument();
+        $svgDom = new DOMDocument();
         $svgDom->load($filename);
 
         // Create the viewBox
@@ -159,6 +147,18 @@ class SvgIconManager
         return $svgDom;
     }
 
+    /**
+     * Create and return a unique use reference hash for a SVG file
+     *
+     * @param string $svgSource SVG source file path
+     *
+     * @return string Use reference key
+     */
+    protected static function getUseKey(string $svgSource): string
+    {
+        return strtolower(pathinfo($svgSource, PATHINFO_FILENAME))
+               .substr(md5_file($svgSource), 0, 8);
+    }
 
     /**
      * Inject an SVG sprite
@@ -166,7 +166,7 @@ class SvgIconManager
      * @param array $params
      * @param TypoScriptFrontendController $tsfe TypoScript Frontend Controller
      */
-    public function injectSvgSprite(array $params, TypoScriptFrontendController $tsfe)
+    public function injectSvgSprite(array $params, TypoScriptFrontendController $tsfe): void
     {
         // If sprite SVGs have been registered
         if (count(self::$sources)) {

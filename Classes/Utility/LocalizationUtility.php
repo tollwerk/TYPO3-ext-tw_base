@@ -59,12 +59,12 @@ class LocalizationUtility extends \TYPO3\CMS\Extbase\Utility\LocalizationUtility
      * @return string The value from LOCAL_LANG or null if no translation was found.
      */
     public static function translate(
-        $key,
-        $extensionName = null,
-        $arguments = null,
+        string $key,
+        ?string $extensionName = null,
+        array $arguments = null,
         string $languageKey = null,
         array $alternativeLanguageKeys = null
-    ) {
+    ): ?string {
         $localization = parent::translate($key, $extensionName, $arguments, $languageKey, $alternativeLanguageKeys);
         if (strlen($localization)) {
             return $localization;

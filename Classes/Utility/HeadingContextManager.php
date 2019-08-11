@@ -47,6 +47,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class HeadingContextManager implements SingletonInterface
 {
     /**
+     * Visual headline types
+     */
+    const VISUAL_TYPE_XXLARGE = 'xx-large';
+    const VISUAL_TYPE_XLARGE = 'x-large';
+    const VISUAL_TYPE_LARGE = 'large';
+    const VISUAL_TYPE_MEDIUM = 'medium';
+    const VISUAL_TYPE_SMALL = 'small';
+    const VISUAL_TYPE_XSMALL = 'x-small';
+    const VISUAL_TYPES = [
+        1 => self::VISUAL_TYPE_XXLARGE,
+        2 => self::VISUAL_TYPE_XLARGE,
+        3 => self::VISUAL_TYPE_LARGE,
+        4 => self::VISUAL_TYPE_MEDIUM,
+        5 => self::VISUAL_TYPE_SMALL,
+        6 => self::VISUAL_TYPE_XSMALL,
+    ];
+    /**
      * Current headline level
      *
      * @var int
@@ -66,33 +83,15 @@ class HeadingContextManager implements SingletonInterface
     protected $contexts = [];
 
     /**
-     * Visual headline types
-     */
-    const VISUAL_TYPE_XXLARGE = 'xx-large';
-    const VISUAL_TYPE_XLARGE = 'x-large';
-    const VISUAL_TYPE_LARGE = 'large';
-    const VISUAL_TYPE_MEDIUM = 'medium';
-    const VISUAL_TYPE_SMALL = 'small';
-    const VISUAL_TYPE_XSMALL = 'x-small';
-    const VISUAL_TYPES = [
-        1 => self::VISUAL_TYPE_XXLARGE,
-        2 => self::VISUAL_TYPE_XLARGE,
-        3 => self::VISUAL_TYPE_LARGE,
-        4 => self::VISUAL_TYPE_MEDIUM,
-        5 => self::VISUAL_TYPE_SMALL,
-        6 => self::VISUAL_TYPE_XSMALL,
-    ];
-
-    /**
      * Set up a new headline context
      *
      * @param int $level      Desired headline level
      * @param int $visualType Visual headline type
-     * @param string $contetn Heading content (for logging purposes only)
+     * @param string $content Heading content (for logging purposes only)
      *
      * @return HeadingContext Heading context
      */
-    public function setupContext($level = null, $visualType = null, string $content = '')
+    public function setupContext($level = null, $visualType = null, string $content = ''): HeadingContext
     {
         $level      = intval($level);
         $afterLevel = max(1, $this->currentLevel);
@@ -131,7 +130,7 @@ class HeadingContextManager implements SingletonInterface
         }
 
         $this->currentLevel = $level;
-        $headlineContext    = GeneralUtility::makeInstance(
+        $headingContext     = GeneralUtility::makeInstance(
             HeadingContext::class,
             $level,
             $visualType,
@@ -139,19 +138,19 @@ class HeadingContextManager implements SingletonInterface
             $hidden,
             $error
         );
-        $this->contexts[]   = $headlineContext;
+        $this->contexts[]   = $headingContext;
 
-        return $headlineContext;
+        return $headingContext;
     }
 
     /**
      * Tear down the last headline context
      *
-     * @param HeadingContext $headlineContext Heading context to tear down
+     * @param HeadingContext $headingContext Heading context to tear down
      */
-    public function tearDownContext(HeadingContext $headlineContext)
+    public function tearDownContext(HeadingContext $headingContext): void
     {
-        $this->currentLevel = $headlineContext->getAfterLevel();
+        $this->currentLevel = $headingContext->getAfterLevel();
     }
 
     /**

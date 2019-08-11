@@ -95,7 +95,7 @@ class HeadingContext
      *
      * @return int Heading level
      */
-    public function getLevel()
+    public function getLevel(): int
     {
         return $this->level;
     }
@@ -105,7 +105,7 @@ class HeadingContext
      *
      * @return string Visual headline type
      */
-    public function getVisualType()
+    public function getVisualType(): string
     {
         return $this->visualType;
     }
@@ -115,7 +115,7 @@ class HeadingContext
      *
      * @return int Follow-up headline level
      */
-    public function getAfterLevel()
+    public function getAfterLevel(): int
     {
         return $this->afterLevel;
     }
@@ -125,7 +125,7 @@ class HeadingContext
      *
      * @return bool Heading is hidden
      */
-    public function isHidden()
+    public function isHidden(): bool
     {
         return $this->hidden;
     }
@@ -135,7 +135,7 @@ class HeadingContext
      *
      * @return bool Heading error
      */
-    public function isError()
+    public function isError(): bool
     {
         return $this->error;
     }

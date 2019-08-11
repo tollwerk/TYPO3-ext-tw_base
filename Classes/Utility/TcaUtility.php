@@ -39,8 +39,8 @@ namespace Tollwerk\TwBase\Utility;
 use TYPO3\CMS\Core\TypoScript\Parser\TypoScriptParser;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\BackendConfigurationManager;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * TCA utility
@@ -254,34 +254,6 @@ class TcaUtility
     ];
 
     /**
-     * Pre-processor for breakpoint specification presets
-     *
-     * @param array $config Select configuration
-     *
-     * @return array Modified select Configuration
-     */
-    public function responsiveImagesBreakpointsSpecifications(array $config)
-    {
-        /** @var ObjectManager $objectManager */
-        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        /** @var BackendConfigurationManager $configurationManager */
-        $configurationManager = $objectManager->get(BackendConfigurationManager::class);
-        $setup = $configurationManager->getTypoScriptSetup();
-        list(, $conf) = GeneralUtility::makeInstance(TypoScriptParser::class)
-            ->getVal('lib.contentElement.settings.media.breakpoints.presets', $setup);
-
-        // Run through all defined presets
-        foreach ((array)$conf as $key => $configs) {
-            $config['items'][] = [
-                sprintf('%s (%s)', ucfirst($key), implode(', ', GeneralUtility::trimExplode(',', $configs, true))),
-                $key,
-            ];
-        }
-
-        return $config;
-    }
-
-    /**
      * Creates the string for TCA['types'][...]['showitem']
      *
      * @param array $showitem       Array of divs, fields and palletes to show<p>
@@ -312,7 +284,7 @@ class TcaUtility
     public static function createShowitemString(array $showitem = []): string
     {
         $showitemArray = [];
-        $divCounter = 0;
+        $divCounter    = 0;
 
         // Run through all defined items
         foreach ($showitem as $divName => $divFields) {
@@ -326,5 +298,36 @@ class TcaUtility
         }
 
         return implode(','.PHP_EOL, $showitemArray);
+    }
+
+    /**
+     * Pre-processor for breakpoint specification presets
+     *
+     * @param array $config Select configuration
+     *
+     * @return array Modified select Configuration
+     * @throws Exception
+     */
+    public function responsiveImagesBreakpointsSpecifications(array $config): array
+    {
+        /**
+         * @var ObjectManager $objectManager
+         * @var BackendConfigurationManager $configurationManager
+         */
+        $objectManager        = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager = $objectManager->get(BackendConfigurationManager::class);
+        $setup                = $configurationManager->getTypoScriptSetup();
+        list(, $conf) = GeneralUtility::makeInstance(TypoScriptParser::class)
+                                      ->getVal('lib.contentElement.settings.media.breakpoints.presets', $setup);
+
+        // Run through all defined presets
+        foreach ((array)$conf as $key => $configs) {
+            $config['items'][] = [
+                sprintf('%s (%s)', ucfirst($key), implode(', ', GeneralUtility::trimExplode(',', $configs, true))),
+                $key,
+            ];
+        }
+
+        return $config;
     }
 }

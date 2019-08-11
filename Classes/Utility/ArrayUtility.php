@@ -51,7 +51,7 @@ class ArrayUtility
      *
      * @return array Modified array
      */
-    public static function recursivelyFalsify(array $array)
+    public static function recursivelyFalsify(array $array): array
     {
         foreach ($array as $key => $value) {
             if (is_array($value)) {

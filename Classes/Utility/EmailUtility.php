@@ -36,10 +36,10 @@
 
 namespace Tollwerk\TwBase\Utility;
 
-use Html2Text\Html2Text;
-use Html2Text\Html2TextException;
-use Swift_Image;
-use Swift_SwiftException;
+use Soundasleep\Html2Text;
+use Soundasleep\Html2TextException;
+use Symfony\Component\Mime\Exception\RuntimeException;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Mail\MailMessage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -88,7 +88,7 @@ class EmailUtility
      * @param array|string|null $replyTo Reply-To recipient
      *
      * @return int Number of successfully sent emails
-     * @throws Swift_SwiftException If the email would be empty
+     * @throws RuntimeException If the email would be empty
      */
     public function send(
         array $recipients,
@@ -102,28 +102,30 @@ class EmailUtility
         $html  = trim($html);
         $plain = trim($plain);
         if (!strlen($html) && !strlen($plain)) {
-            throw new Swift_SwiftException('Cowardly refusing to send empty email', 1547713437);
+            throw new RuntimeException('Cowardly refusing to send empty email', 1547713437);
         }
 
         /** @var MailMessage $mail */
         $mail = GeneralUtility::makeInstance(MailMessage::class);
-        $mail->setSubject($subject)
-             ->setFrom([$this->senderAddress => $this->senderName])
+        $mail->setFrom([$this->senderAddress => $this->senderName])
              ->setTo($recipients)
              ->setCc($cc)
              ->setBcc($bcc)
              ->setReplyTo($replyTo);
+        $mail->setSubject($subject);
 
         // If there's HTML content
         if (strlen($html)) {
-            // Embed images
+            // Replace images with a temporary content ID (CID), will be processed further by mail transport
             if (preg_match_all('/<img\s+.*?src=(\042|\047)(.+?)\1/', $html, $images)) {
-                foreach ($images[2] as $index => $image) {
-                    $cid  = $mail->embed(Swift_Image::fromPath(PATH_site.$image));
-                    $html = str_replace($image, $cid, $html);
+                foreach ($images[2] as $image) {
+                    $imagePath      = Environment::getPublicPath().'/'.$image;
+                    $imageContentId = md5($imagePath);
+                    $html           = str_replace($image, "cid:$imageContentId", $html);
+                    $mail->embedFromPath($imagePath, $imageContentId);
                 }
             }
-            $mail->setBody($html, 'text/html');
+            $mail->html($html);
 
             // If no plaintext content is given: derive from HTML
             if (!strlen($plain)) {
@@ -132,11 +134,11 @@ class EmailUtility
                 } catch (Html2TextException $e) {
                     $plain = nl2br(strip_tags($html));
                 }
-                $mail->addPart($plain, 'text/plain');
             }
-        } else {
-            $mail->setBody($plain, 'text/plain');
         }
+
+        // Set the plaintext content
+        $mail->text($plain);
 
         return $mail->send();
     }
