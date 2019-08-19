@@ -73,4 +73,14 @@ class LocalizationUtility extends \TYPO3\CMS\Extbase\Utility\LocalizationUtility
 
         return array_pop($key);
     }
+
+    /**
+     * Reset the extension language cache for a particular extension
+     *
+     * @param string $extensionName Extension name
+     */
+    public static function resetExtensionLanguageCache($extensionName)
+    {
+        unset(static::$LOCAL_LANG[$extensionName]);
+    }
 }

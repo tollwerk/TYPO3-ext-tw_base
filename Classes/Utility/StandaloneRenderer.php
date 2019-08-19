@@ -38,8 +38,8 @@ namespace Tollwerk\TwBase\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
-use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException;
-use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException as InvalidConfigurationTypeExceptionAlias;
+use TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -75,23 +75,34 @@ class StandaloneRenderer
      * @var string
      */
     protected $templateRootPath;
+    /**
+     * Controller extension name
+     *
+     * @var string
+     */
+    protected $controllerExtensionName;
 
     /**
      * Constructor
      *
-     * @throws InvalidConfigurationTypeException
-     * @throws Exception
+     * @param string $controllerExtensionName Controller Extension Name
+     *
+     * @throws InvalidConfigurationTypeExceptionAlias
      */
-    public function __construct()
+    public function __construct(string $controllerExtensionName = null)
     {
-        $this->objectManager    = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager   = $this->objectManager->get(ConfigurationManager::class);
-        $this->configuration    = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK);
-        $this->partialRootPath  = rtrim(
+        $this->controllerExtensionName = $controllerExtensionName;
+        $this->objectManager           = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager          = $this->objectManager->get(ConfigurationManager::class);
+        $this->configuration           = $configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK,
+            $this->controllerExtensionName
+        );
+        $this->partialRootPath         = rtrim(
             GeneralUtility::getFileAbsFileName($this->configuration['view']['partialRootPath']),
             '/'
         );
-        $this->templateRootPath = rtrim(
+        $this->templateRootPath        = rtrim(
             GeneralUtility::getFileAbsFileName($this->configuration['view']['templateRootPath']),
             '/'
         );
@@ -107,7 +118,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
-     * @throws Exception
+     * @throws InvalidExtensionNameException
      */
     public function render(
         string $templateName,
@@ -129,7 +140,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
-     * @throws Exception
+     * @throws InvalidExtensionNameException
      */
     public function renderTemplate(
         string $templateName,
@@ -149,6 +160,35 @@ class StandaloneRenderer
     }
 
     /**
+     * Render a Fluid partial
+     *
+     * @param string $partialName   Partial name
+     * @param array $parameters     Parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
+     *
+     * @return string Rendered template
+     * @throws InvalidExtensionNameException
+     */
+    public function renderPartial(
+        string $partialName,
+        array $parameters = [],
+        string $format = 'html',
+        string $section = null,
+        string $language = null
+    ): string {
+        return $this->renderWithRootPath(
+            $this->partialRootPath,
+            $partialName,
+            $parameters,
+            $format,
+            $section,
+            $language
+        );
+    }
+
+    /**
      * Render a Fluid template or partial
      *
      * @param string $rootPath      Root path
@@ -159,7 +199,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
-     * @throws Exception
+     * @throws InvalidExtensionNameException
      */
     protected function renderWithRootPath(
         string $rootPath,
@@ -182,40 +222,21 @@ class StandaloneRenderer
             if (file_exists($localizedTemplatePathAndFilename)) {
                 $templatePathAndFilename = $localizedTemplatePathAndFilename;
             }
+            if (!empty($GLOBALS['BE_USER']->uc)) {
+                $GLOBALS['BE_USER']->uc['lang'] = $language;
+            }
         }
+
+        // Set the controller extension name (if available)
+        if ($this->controllerExtensionName) {
+            $view->getRequest()->setControllerExtensionName($this->controllerExtensionName);
+            LocalizationUtility::resetExtensionLanguageCache($this->controllerExtensionName);
+        }
+
         $view->setTemplatePathAndFilename($templatePathAndFilename);
         $parameters['settings'] = $this->configuration['settings'];
         $view->assignMultiple($parameters);
 
         return $section ? $view->renderSection($section, $parameters) : $view->render();
-    }
-
-    /**
-     * Render a Fluid partial
-     *
-     * @param string $partialName   Partial name
-     * @param array $parameters     Parameters
-     * @param string $format        Optional: Template format
-     * @param string|null $section  Optional: template section
-     * @param string|null $language Optional: language suffix
-     *
-     * @return string Rendered template
-     * @throws Exception
-     */
-    public function renderPartial(
-        string $partialName,
-        array $parameters = [],
-        string $format = 'html',
-        string $section = null,
-        string $language = null
-    ): string {
-        return $this->renderWithRootPath(
-            $this->partialRootPath,
-            $partialName,
-            $parameters,
-            $format,
-            $section,
-            $language
-        );
     }
 }
