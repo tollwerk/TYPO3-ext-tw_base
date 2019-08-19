@@ -148,7 +148,8 @@ call_user_func(
                 \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Configuration\ExtensionConfiguration::class)
                                                       ->get('tw_base', 'globalNSPrefix') :
                 unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['tw_base'])['globalNSPrefix']
-        );
+        ) ?: 'base';
+//        die($globalNSPrefix);
         if (strlen($globalNSPrefix)) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces'][$globalNSPrefix] = ['Tollwerk\\TwBase\\ViewHelpers'];
         }

@@ -178,19 +178,23 @@ class HeadingContextManager implements SingletonInterface
      *
      * @param string $restoreContext Heading context descriptor
      * @param bool $restoreRoot      Restore the root level if requested
+     *
+     * @return string|null Current heading context
      */
-    public function restoreContext(string $restoreContext, bool $restoreRoot = false): void
+    public function restoreContext(string $restoreContext, bool $restoreRoot = false): ?string
     {
         $restoreContext = trim($restoreContext);
         if (!strlen($restoreContext)) {
             $this->currentLevel = $restoreRoot ? 0 : 1;
             $this->contexts     = [];
 
-            return;
+            return null;
         }
 
         while (count($this->contexts) && (spl_object_hash($this->contexts[count($this->contexts) - 1]) != $restoreContext)) {
             $this->currentLevel = array_pop($this->contexts)->getAfterLevel();
         }
+
+        return $this->currentLevel;
     }
 }

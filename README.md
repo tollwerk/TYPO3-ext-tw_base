@@ -71,3 +71,8 @@ These services don't work out of the box and require particular software to be a
 * Fluid Standalone template renderer
 * Email notification tool (HTML emails & plaintext)
 * Helper traits for repositories (for debugging SQL queries and for generally ignoring storage PIDs)
+
+## To-do
+
+* [ ] Test inline images in emails
+* [x] Install simplexml for wyrihaximus/html-compress
