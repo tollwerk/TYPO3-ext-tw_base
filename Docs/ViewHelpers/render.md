@@ -1,6 +1,6 @@
-# tw_base
+# TYPO3 extension: tw_base
 
-> Basic building blocks for TYPO3 projects
+> Collection of building blocks and viewhelpers for TYPO3 projects by tollwerk
 
 ## `render` viewhelper
 

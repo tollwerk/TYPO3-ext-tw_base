@@ -149,7 +149,7 @@ call_user_func(
                                                       ->get('tw_base', 'globalNSPrefix') :
                 unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['tw_base'])['globalNSPrefix']
         ) ?: 'base';
-//        die($globalNSPrefix);
+        // die($globalNSPrefix);
         if (strlen($globalNSPrefix)) {
             $GLOBALS['TYPO3_CONF_VARS']['SYS']['fluid']['namespaces'][$globalNSPrefix] = ['Tollwerk\\TwBase\\ViewHelpers'];
         }

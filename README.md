@@ -1,6 +1,6 @@
 # TYPO3 extension: tw_base
 
-> Collection of building blocks and viewhelpers for TYPO3 projects made by tollwerk
+> Collection of building blocks and viewhelpers for TYPO3 projects by tollwerk
 
 ## Domain objects
 
@@ -40,6 +40,7 @@ These services don't work out of the box and require particular software to be a
 
 * [`heading` viewhelper](Docs/ViewHelpers/heading.md) for semantic document structuring
 * [`render` viewhelper](Docs/ViewHelpers/render.md) for rendering partials & sections with heading context awareness
+* [`image` viewhelper](Docs/ViewHelpers/image.md) for rendering compressed images
 * [`media` viewhelper](Docs/ViewHelpers/media.md) for responsive images
 * [`uniqid` viewhelper](Docs/ViewHelpers/uniqid.md)
 * Viewhelpers for preparing / refining lists of HTML element attributes (empty / non-empty, data attributes, binary attributes)
