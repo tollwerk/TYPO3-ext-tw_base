@@ -40,8 +40,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManager;
 use TYPO3\CMS\Extbase\Configuration\Exception\InvalidConfigurationTypeException as InvalidConfigurationTypeExceptionAlias;
 use TYPO3\CMS\Extbase\Mvc\Exception\InvalidExtensionNameException;
+use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3Fluid\Fluid\View\Exception\InvalidTemplateResourceException;
 
 /**
  * Standalone Renderer
@@ -64,17 +66,23 @@ class StandaloneRenderer
      */
     protected $configuration;
     /**
-     * Partial root path
+     * Partial root paths
      *
-     * @var string
+     * @var string[]
      */
-    protected $partialRootPath;
+    protected $partialRootPaths;
     /**
-     * Template root path
+     * Template root paths
      *
-     * @var string
+     * @var string[]
      */
-    protected $templateRootPath;
+    protected $templateRootPaths;
+    /**
+     * Layout root paths
+     *
+     * @var string[]
+     */
+    protected $layoutRootPaths;
     /**
      * Controller extension name
      *
@@ -88,6 +96,7 @@ class StandaloneRenderer
      * @param string $controllerExtensionName Controller Extension Name
      *
      * @throws InvalidConfigurationTypeExceptionAlias
+     * @throws Exception
      */
     public function __construct(string $controllerExtensionName = null)
     {
@@ -98,14 +107,36 @@ class StandaloneRenderer
             ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK,
             $this->controllerExtensionName
         );
-        $this->partialRootPath         = rtrim(
-            GeneralUtility::getFileAbsFileName($this->configuration['view']['partialRootPath']),
-            '/'
-        );
-        $this->templateRootPath        = rtrim(
-            GeneralUtility::getFileAbsFileName($this->configuration['view']['templateRootPath']),
-            '/'
-        );
+
+        // Partial root paths
+        $partialRootPaths       = empty($this->configuration['view']['partialRootPaths']) ?
+            (empty($this->configuration['view']['partialRootPath']) ? [] : [$this->configuration['view']['partialRootPath']]) :
+            (array)$this->configuration['view']['partialRootPaths'];
+        $this->partialRootPaths = array_map([$this, 'prepareRootPath'], $partialRootPaths);
+
+        // Template root paths
+        $templateRootPaths       = empty($this->configuration['view']['templateRootPaths']) ?
+            (empty($this->configuration['view']['templateRootPath']) ? [] : [$this->configuration['view']['templateRootPath']]) :
+            (array)$this->configuration['view']['templateRootPaths'];
+        $this->templateRootPaths = array_map([$this, 'prepareRootPath'], $templateRootPaths);
+
+        // Layout root paths
+        $layoutRootPaths       = empty($this->configuration['view']['layoutRootPaths']) ?
+            (empty($this->configuration['view']['layoutRootPath']) ? [] : [$this->configuration['view']['layoutRootPath']]) :
+            (array)$this->configuration['view']['layoutRootPaths'];
+        $this->layoutRootPaths = array_map([$this, 'prepareRootPath'], $layoutRootPaths);
+    }
+
+    /**
+     * Refine and prepare a root path
+     *
+     * @param string $rootPath Root path
+     *
+     * @return string Refined root path
+     */
+    protected function prepareRootPath(string $rootPath): string
+    {
+        return rtrim(GeneralUtility::getFileAbsFileName($rootPath), '/');
     }
 
     /**
@@ -118,6 +149,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
+     * @throws Exception
      * @throws InvalidExtensionNameException
      */
     public function render(
@@ -140,6 +172,7 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
+     * @throws Exception
      * @throws InvalidExtensionNameException
      */
     public function renderTemplate(
@@ -150,37 +183,8 @@ class StandaloneRenderer
         string $language = null
     ): string {
         return $this->renderWithRootPath(
-            $this->templateRootPath,
+            $this->templateRootPaths,
             $templateName,
-            $parameters,
-            $format,
-            $section,
-            $language
-        );
-    }
-
-    /**
-     * Render a Fluid partial
-     *
-     * @param string $partialName   Partial name
-     * @param array $parameters     Parameters
-     * @param string $format        Optional: Template format
-     * @param string|null $section  Optional: template section
-     * @param string|null $language Optional: language suffix
-     *
-     * @return string Rendered template
-     * @throws InvalidExtensionNameException
-     */
-    public function renderPartial(
-        string $partialName,
-        array $parameters = [],
-        string $format = 'html',
-        string $section = null,
-        string $language = null
-    ): string {
-        return $this->renderWithRootPath(
-            $this->partialRootPath,
-            $partialName,
             $parameters,
             $format,
             $section,
@@ -191,7 +195,7 @@ class StandaloneRenderer
     /**
      * Render a Fluid template or partial
      *
-     * @param string $rootPath      Root path
+     * @param array $rootPaths      Root path
      * @param string $name          Template or partial name
      * @param array $parameters     Parameters
      * @param string $format        Optional: Template format
@@ -199,10 +203,12 @@ class StandaloneRenderer
      * @param string|null $language Optional: language suffix
      *
      * @return string Rendered template
+     * @throws Exception
      * @throws InvalidExtensionNameException
+     * @throws InvalidTemplateResourceException
      */
     protected function renderWithRootPath(
-        string $rootPath,
+        array $rootPaths,
         string $name,
         array $parameters,
         string $format,
@@ -211,20 +217,41 @@ class StandaloneRenderer
     ): string {
         $view = $this->objectManager->get(StandaloneView::class);
         $view->setFormat($format);
-        $view->setTemplateRootPaths($this->configuration['view']['templateRootPaths']);
-        $view->setLayoutRootPaths($this->configuration['view']['layoutRootPaths']);
-        $view->setPartialRootPaths($this->configuration['view']['partialRootPaths']);
+        $view->setTemplateRootPaths($this->templateRootPaths);
+        $view->setLayoutRootPaths($this->layoutRootPaths);
+        $view->setPartialRootPaths($this->partialRootPaths);
 
-        // Try localized template path
-        $templatePathAndFilename = $rootPath.'/'.trim($name, '/').'.'.$format;
-        if ($language) {
-            $localizedTemplatePathAndFilename = $rootPath.'/'.trim($name.'.'.strtolower($language), '/').'.'.$format;
-            if (file_exists($localizedTemplatePathAndFilename)) {
-                $templatePathAndFilename = $localizedTemplatePathAndFilename;
+        // Find the first matching root path, potentially considering the given language
+        $name                    = trim($name, '/');
+        $language                = strtolower($language);
+        $templatePathAndFilename = null;
+        foreach (array_reverse($rootPaths) as $rootPath) {
+            // Test whether a localized template is available
+            if ($language) {
+                $localizedPath = "$rootPath/$name.$language.$format";
+                if (file_exists($localizedPath)) {
+                    $templatePathAndFilename = $localizedPath;
+                    if (!empty($GLOBALS['BE_USER']->uc)) {
+                        $GLOBALS['BE_USER']->uc['lang'] = $language;
+                    }
+                    break;
+                }
             }
-            if (!empty($GLOBALS['BE_USER']->uc)) {
-                $GLOBALS['BE_USER']->uc['lang'] = $language;
+
+            // Else: test whether the template is available
+            $path = "$rootPath/$name.$format";
+            if (file_exists($path)) {
+                $templatePathAndFilename = $path;
+                break;
             }
+        }
+
+        // Throw an error if the template resource isn't available
+        if (empty($templatePathAndFilename)) {
+            throw new InvalidTemplateResourceException(
+                "The Fluid template file \"$name.$format\" could not be loaded.",
+                1569768850
+            );
         }
 
         // Set the controller extension name (if available)
@@ -238,5 +265,35 @@ class StandaloneRenderer
         $view->assignMultiple($parameters);
 
         return $section ? $view->renderSection($section, $parameters) : $view->render();
+    }
+
+    /**
+     * Render a Fluid partial
+     *
+     * @param string $partialName   Partial name
+     * @param array $parameters     Parameters
+     * @param string $format        Optional: Template format
+     * @param string|null $section  Optional: template section
+     * @param string|null $language Optional: language suffix
+     *
+     * @return string Rendered template
+     * @throws Exception
+     * @throws InvalidExtensionNameException
+     */
+    public function renderPartial(
+        string $partialName,
+        array $parameters = [],
+        string $format = 'html',
+        string $section = null,
+        string $language = null
+    ): string {
+        return $this->renderWithRootPath(
+            $this->partialRootPaths,
+            $partialName,
+            $parameters,
+            $format,
+            $section,
+            $language
+        );
     }
 }
