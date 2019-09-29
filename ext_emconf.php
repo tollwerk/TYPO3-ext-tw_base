@@ -10,13 +10,13 @@
  * "version" and "dependencies" must not be touched!
  ***************************************************************/
 
-$EM_CONF[$_EXTKEY] = [
+$EM_CONF['tw_base'] = [
     'title'            => 'tollwerk Base',
     'description'      => 'Collection of building blocks and view helpers for TYPO3 projects made by tollwerk',
     'category'         => 'misc',
     'author'           => 'Joschi Kuphal',
     'author_email'     => 'joschi@tollwerk.de',
-    'state'            => 'beta',
+    'state'            => 'stable',
     'internal'         => '',
     'uploadfolder'     => '0',
     'createDirs'       => '',
@@ -24,7 +24,7 @@ $EM_CONF[$_EXTKEY] = [
     'version'          => '3.0.0',
     'constraints'      => [
         'depends'   => [
-            'typo3' => '9.5.0-',
+            'typo3' => '10.0.0-',
         ],
         'conflicts' => [],
         'suggests'  => [
