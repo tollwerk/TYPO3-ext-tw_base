@@ -97,7 +97,7 @@ class SvgIconManager
      *
      * @return string Sprite SVG
      */
-    protected static function getUseSource(string $filename, string $useKey): string
+    protected static function getUseSource(string $filename, string $useKey): DOMDocument
     {
         $width  = $height = 0;
         $svgDom = self::getIcon($filename, $width, $height);
