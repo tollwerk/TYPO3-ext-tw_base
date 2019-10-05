@@ -52,6 +52,22 @@ $fields = [
             'maxitems'   => 1
         ],
     ],
+    'tx_twbase_subnav_hide'    => [
+        'label'   => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:pages.tx_twbase_subnav_hide',
+        'exclude' => 1,
+        'config'  => [
+            'type'       => 'check',
+            'renderType' => 'checkboxToggle',
+            'default'    => 1,
+            'items'      => [
+                [
+                    0                    => '',
+                    1                    => '',
+                    'invertStateDisplay' => true
+                ]
+            ],
+        ]
+    ],
 ];
 
 // Add new fields to pages:
@@ -62,4 +78,11 @@ $fields = [
     'title',
     'tx_twbase_title_language',
     'after:title'
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
+    'pages',
+    'visibility',
+    'tx_twbase_subnav_hide',
+    'after:nav_hide'
 );

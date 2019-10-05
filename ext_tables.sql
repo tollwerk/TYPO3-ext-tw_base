@@ -5,7 +5,8 @@
 #
 CREATE TABLE pages
 (
-    tx_twbase_title_language VARCHAR(16) DEFAULT '' NOT NULL
+    tx_twbase_title_language VARCHAR(16)         DEFAULT ''  NOT NULL,
+    tx_twbase_subnav_hide    TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL
 );
 
 #

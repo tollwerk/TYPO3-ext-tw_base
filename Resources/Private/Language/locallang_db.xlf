@@ -121,6 +121,9 @@
             <trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
 				<source>Page title language</source>
 			</trans-unit>
+            <trans-unit id="pages.tx_twbase_subnav_hide" xml:space="preserve">
+				<source>Subpages enabled in menus</source>
+			</trans-unit>
             <trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
 				<source>--- Current page language ---</source>
 			</trans-unit>
