@@ -38,6 +38,7 @@ namespace Tollwerk\TwBase\Domain\Validator;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Extbase\Validation\Error;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
@@ -66,8 +67,9 @@ class UniqueObjectValidator extends AbstractValidator
     protected $supportedOptions = [
         'table'     => [null, 'The table', 'string'],
         'fieldname' => [null, 'The table field name', 'string'],
+        'errorMessage' => [null, 'Custom error message for frontend', 'string'],
     ];
-
+ 
     /**
      * /**
      * Check if $value is valid. If it is not valid, needs to add an error to result.
@@ -96,7 +98,7 @@ class UniqueObjectValidator extends AbstractValidator
         if ($result->rowCount()) {
             $this->result->addError(
                 new Error(
-                    LocalizationUtility::translate('validator.uniqueObject.error', 'TwBase'),
+                    isset($this->options['errorMessage']) ? $this->options['errorMessage'] : LocalizationUtility::translate('validator.uniqueObject.error', 'TwBase'),
                     1547075816
                 )
             );
