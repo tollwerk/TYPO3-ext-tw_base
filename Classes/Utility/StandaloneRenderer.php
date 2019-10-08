@@ -98,6 +98,7 @@ class StandaloneRenderer
             ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK,
             $this->controllerExtensionName
         );
+
         $this->partialRootPath         = rtrim(
             GeneralUtility::getFileAbsFileName($this->configuration['view']['partialRootPath']),
             '/'
