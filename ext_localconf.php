@@ -156,5 +156,8 @@ call_user_func(
 
         // Register a hook for injecting an SVG sprite
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = \Tollwerk\TwBase\Utility\SvgIconManager::class.'->injectSvgSprite';
+
+        // Register a custom JavaScript resource compressor
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['jsConcatenateHandler'] = \Tollwerk\TwBase\Utility\ConcatenateUtility::class.'->concatenateJs';
     }
 );

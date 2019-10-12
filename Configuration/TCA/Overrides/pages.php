@@ -86,3 +86,9 @@ $fields = [
     'tx_twbase_subnav_hide',
     'after:nav_hide'
 );
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerPageTSConfigFile(
+    'tw_base',
+    'Configuration/TypoScript/Main/TSconfig/page.tsconfig',
+    'Page Settings'
+);

@@ -3,6 +3,7 @@
 # customsubcategory=images=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:images
 # customsubcategory=compressors=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors
 # customsubcategory=converters=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters
+# customsubcategory=javascript=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript
 
 plugin.tx_twbase {
     view {
@@ -60,4 +61,11 @@ plugin.tx_twbase {
             iconRootPath =
         }
     }
+}
+
+plugin.tx_twbase_javascript {
+    # cat=plugin.tx_twbase_javascript/javascript/a; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.polyfills
+    polyfills = 1
+    # cat=plugin.tx_twbase_javascript/javascript/b; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.featureDetection
+    featureDetection = 1
 }

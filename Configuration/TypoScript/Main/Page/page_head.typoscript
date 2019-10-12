@@ -1,0 +1,26 @@
+# JAVASCRIPT
+page.includeJS {
+    base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
+}
+
+[{$plugin.tx_twbase_javascript.polyfills} == 1]
+    page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
+    page.includeJS.base_polyfills.section = base
+[END]
+
+[{$plugin.tx_twbase_javascript.featureDetection} == 1]
+    page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
+    page.includeJS.base_polyfills.section = base
+    page.includeJS.base_featureDetection = EXT:tw_base/Resources/Public/JavaScript/_010_FeatureDetection.default.min.js#base
+    page.includeJS.base_featureDetection.section = base
+[END]
+
+page.includeJSFooter {
+#    jquery = https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js
+#    jquery {
+#        external = 1
+#        forceOnTop = 1
+#        disableCompression = 1
+#        excludeFromConcatenation = 1
+#    }
+}

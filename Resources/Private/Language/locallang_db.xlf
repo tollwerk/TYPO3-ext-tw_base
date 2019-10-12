@@ -49,6 +49,15 @@
             <trans-unit id="images.srcset" xml:space="preserve">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			</trans-unit>
+            <trans-unit id="javascript" xml:space="preserve">
+				<source>JavaScript</source>
+			</trans-unit>
+            <trans-unit id="javascript.polyfills" xml:space="preserve">
+				<source>Include polyfills</source>
+			</trans-unit>
+            <trans-unit id="javascript.featureDetection" xml:space="preserve">
+				<source>Include feature detection</source>
+			</trans-unit>
             <trans-unit id="images.densities" xml:space="preserve">
 				<source>Display Densities for Responsive Images: Comma-separated list of display density descriptors (e. g. "1x, 2x") for the creation of media queries</source>
 			</trans-unit>
