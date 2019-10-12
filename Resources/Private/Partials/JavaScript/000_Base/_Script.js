@@ -5,4 +5,4 @@
  *
  * @type {Object}
  */
-const Tollwerk = window.Tollwerk || {};
+const Tollwerk = window.Tollwerk || { has: {} };

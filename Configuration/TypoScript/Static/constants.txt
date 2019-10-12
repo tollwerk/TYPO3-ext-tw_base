@@ -68,4 +68,12 @@ plugin.tx_twbase_javascript {
     polyfills = 1
     # cat=plugin.tx_twbase_javascript/javascript/b; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.featureDetection
     featureDetection = 1
+    # cat=plugin.tx_twbase_javascript/javascript/c; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.initializer
+    initializer = 0
+    # cat=plugin.tx_twbase_javascript/javascript/d; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.observer
+    observer = 0
+    # cat=plugin.tx_twbase_javascript/javascript/e; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.breakpointManager
+    breakpointManager = 0
+    # cat=plugin.tx_twbase_javascript/javascript/f; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.lazyLoading
+    lazyLoading = 0
 }

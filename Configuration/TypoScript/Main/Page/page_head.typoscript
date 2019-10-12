@@ -1,18 +1,33 @@
 # JAVASCRIPT
-page.includeJS {
-    base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
-}
-
 [{$plugin.tx_twbase_javascript.polyfills} == 1]
+    page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
     page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
-    page.includeJS.base_polyfills.section = base
 [END]
 
 [{$plugin.tx_twbase_javascript.featureDetection} == 1]
+    page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
     page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
-    page.includeJS.base_polyfills.section = base
     page.includeJS.base_featureDetection = EXT:tw_base/Resources/Public/JavaScript/_010_FeatureDetection.default.min.js#base
-    page.includeJS.base_featureDetection.section = base
+[END]
+
+[{$plugin.tx_twbase_javascript.initializer} == 1]
+    page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
+    page.includeJS.base_initializer = EXT:tw_base/Resources/Public/JavaScript/_015_Initializer.default.min.js#base
+[END]
+
+[{$plugin.tx_twbase_javascript.observer} == 1]
+    page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
+    page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
+    page.includeJS.base_observer = EXT:tw_base/Resources/Public/JavaScript/_020_Observer.default.min.js#base
+[END]
+
+[{$plugin.tx_twbase_javascript.breakpointManager} == 1]
+    page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
+    page.includeJS.base_breakpointManager = EXT:tw_base/Resources/Public/JavaScript/_025_BreakpointManager.default.min.js#base
+[END]
+
+[{$plugin.tx_twbase_javascript.lazyLoading} == 1]
+    page.includeJS.base_lazyLoading = EXT:tw_base/Resources/Public/JavaScript/_030_LazyLoading.default.min.js#base
 [END]
 
 page.includeJSFooter {

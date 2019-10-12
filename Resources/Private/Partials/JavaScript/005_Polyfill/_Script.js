@@ -1,6 +1,5 @@
-'use strict';
-
 (function (w, e, s, svg) {
+    'use strict';
 
     // NodeList.forEach
     if (window.NodeList && !NodeList.prototype.forEach) {
