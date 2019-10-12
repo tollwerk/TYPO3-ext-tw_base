@@ -17,15 +17,3 @@ TCEFORM.tt_content.header_layout {
         102 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.hidden-insignificant
     }
 }
-
-# Add tel link handler
-TCEMAIN.linkHandler {
-    tel {
-        handler = Tollwerk\TwBase\LinkHandling\TelLinkHandler
-        label = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:linkbrowse.tel
-        displayAfter = mail
-        scanBefore = url
-    }
-
-    url.scanAfter = tel
-}
