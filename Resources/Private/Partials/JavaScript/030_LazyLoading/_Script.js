@@ -5,7 +5,6 @@
 
     // Enable native lazyloading
     if (w.Tollwerk.has.lazyload) {
-        console.debug('native lazy loading');
         w.Tollwerk.Observer.register(`img[loading=lazy][src][data-src]`, img => {
             img.src = img.dataset.src;
             img.removeAttribute('data-src');
@@ -16,7 +15,6 @@
             img.removeAttribute('data-srcset');
         });
     } else {
-        console.debug('non-native lazy loading');
         let lazysizes = null;
         const libDir = '/typo3conf/ext/tw_base/Resources/Public/JavaScript/Lib/';
 

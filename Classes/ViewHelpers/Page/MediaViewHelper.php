@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Attributes
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Page
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,18 +34,22 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Collection;
+namespace Tollwerk\TwBase\ViewHelpers\Page;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3\CMS\Core\Resource\FileRepository;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Merge view helper
+ * Page Media ViewHelper
  *
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Collection
+ * @package    Tollwerk\TwTollwerk
+ * @subpackage Tollwerk\TwTollwerk\ViewHelpers
  */
-class MergeViewHelper extends AbstractViewHelper
+class MediaViewHelper extends AbstractViewHelper
 {
     /**
      * Initialize all arguments. You need to override this method and call
@@ -57,37 +61,30 @@ class MergeViewHelper extends AbstractViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('a', 'mixed', 'The base argument to merge over values', true);
-        $this->registerArgument('b', 'mixed', 'The second argument with values to merge over the first argument', true);
+        $this->registerArgument('pageUid', 'int', 'Page ID', true);
     }
 
     /**
-     * Merge two arrays and return the result
+     * Default implementation of static rendering; useful API method if your ViewHelper
+     * when compiled is able to render itself statically to increase performance. This
+     * default implementation will simply delegate to the ViewHelperInvoker.
      *
-     * @return array Resulting array
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return mixed
+     * @throws Exception
      */
-    public function render(): array
-    {
-        return array_replace($this->purge($this->arguments['a']), $this->purge($this->arguments['b']));
-    }
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $objectManager  = GeneralUtility::makeInstance(ObjectManager::class);
+        $fileRepository = $objectManager->get(FileRepository::class);
+        $media          = $fileRepository->findByRelation('pages', 'media', $arguments['pageUid']);
 
-    /**
-     * Cast an argument to an array and purge empty values
-     *
-     * @param mixed $array String or array
-     *
-     * @return array Purged array
-     */
-    protected function purge($array): array
-    {
-        // Convert domain object into array
-        if ($array instanceof AbstractDomainObject) {
-            $array = $array->_getCleanProperties();
-        }
-
-        // Filter and trim array values
-        return array_filter(array_map(function($item) {
-            return is_string($item) ? trim($item) : $item;
-        }, (array)$array));
+        return $media;
     }
 }
