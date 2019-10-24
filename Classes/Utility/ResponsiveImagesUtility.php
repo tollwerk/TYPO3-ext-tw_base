@@ -319,7 +319,7 @@ class ResponsiveImagesUtility implements SingletonInterface
             }
             $tag->addAttribute('src',
                 $this->getDataUri('image/svg+xml', Environment::getPublicPath().'/'.$lqipUri));
-            $tag->addAttribute('class', 'lazyload');
+            $tag->addAttribute('loading', 'lazy');
 
             $tag = new TagSequenceBuilder([$tag, new TagBuilder('noscript', $fallbackTag->render())]);
         } elseif (strlen($srcset)) {

@@ -124,18 +124,9 @@ call_user_func(
             'className' => \Tollwerk\TwBase\Service\Resource\Processing\LocalImageProcessor::class,
         ];
 
-        // Register the tel link builder
-        $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['linkHandler']['tel'] = \Tollwerk\TwBase\LinkHandling\TelLinkBuilder::class;
-
         // Override language files
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']['EXT:form/Resources/Private/Language/Database.xlf'][] = 'EXT:tw_base/Resources/Private/Language/form_editor.xlf';
 
-        // Register an icon for the tel links
-        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
-            'tx-base-tel',
-            \TYPO3\CMS\Core\Imaging\IconProvider\BitmapIconProvider::class,
-            ['source' => 'EXT:tw_base/Resources/Public/Icons/tel.png']
-        );
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
             'tx-base-formfield-clock',
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
@@ -156,5 +147,8 @@ call_user_func(
 
         // Register a hook for injecting an SVG sprite
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = \Tollwerk\TwBase\Utility\SvgIconManager::class.'->injectSvgSprite';
+
+        // Register a custom JavaScript resource compressor
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['jsConcatenateHandler'] = \Tollwerk\TwBase\Utility\ConcatenateUtility::class.'->concatenateJs';
     }
 );
