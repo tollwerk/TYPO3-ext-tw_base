@@ -39,12 +39,12 @@ namespace Tollwerk\TwBase\ViewHelpers\Collection;
 use Tollwerk\TwBase\ViewHelpers\Collection\AbstractCollectionViewHelper;
 
 /**
- * Merge view helper
+ * Push view helper
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers\Collection
  */
-class MergeViewHelper extends AbstractCollectionViewHelper
+class PushViewHelper extends AbstractCollectionViewHelper
 {
     /**
      * Initialize all arguments. You need to override this method and call
@@ -56,17 +56,24 @@ class MergeViewHelper extends AbstractCollectionViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('a', 'mixed', 'The base argument to merge over values', true);
-        $this->registerArgument('b', 'mixed', 'The second argument with values to merge over the first argument', true);
+        $this->registerArgument('a', 'mixed', 'The base argument to push new value to', true);
+        $this->registerArgument('b', 'mixed',
+            'The second argument with values to push to the end of the first argument', true);
     }
 
     /**
-     * Merge two arrays and return the result
+     * Append the elements of an array to the end of another array
      *
      * @return array Resulting array
      */
     public function render(): array
     {
-        return array_replace($this->purge($this->arguments['a']), $this->purge($this->arguments['b']));
+        $array  = $this->purge($this->arguments['a']);
+        $append = $this->purge($this->arguments['b']);
+        if (count($append)) {
+            array_push($array, ...$append);
+        }
+
+        return $array;
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * tollwerk
+ * RWS Relaunch
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Attributes
+ * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -36,37 +36,34 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Collection;
 
-use Tollwerk\TwBase\ViewHelpers\Collection\AbstractCollectionViewHelper;
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Merge view helper
+ * Collection view helper base
  *
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Collection
+ * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
  */
-class MergeViewHelper extends AbstractCollectionViewHelper
+abstract class AbstractCollectionViewHelper extends AbstractViewHelper
 {
     /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
+     * Cast an argument to an array and purge empty values
      *
-     * @return void
-     * @api
+     * @param mixed $array String or array
+     *
+     * @return array Purged array
      */
-    public function initializeArguments()
+    protected function purge($array): array
     {
-        parent::initializeArguments();
-        $this->registerArgument('a', 'mixed', 'The base argument to merge over values', true);
-        $this->registerArgument('b', 'mixed', 'The second argument with values to merge over the first argument', true);
-    }
+        // Convert domain object into array
+        if ($array instanceof AbstractDomainObject) {
+            $array = $array->_getCleanProperties();
+        }
 
-    /**
-     * Merge two arrays and return the result
-     *
-     * @return array Resulting array
-     */
-    public function render(): array
-    {
-        return array_replace($this->purge($this->arguments['a']), $this->purge($this->arguments['b']));
+        // Filter and trim array values
+        return array_filter(array_map(function($item) {
+            return is_string($item) ? trim($item) : $item;
+        }, (array)$array));
     }
 }
