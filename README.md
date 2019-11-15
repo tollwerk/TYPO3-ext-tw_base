@@ -61,6 +61,10 @@ These services don't work out of the box and require particular software to be a
 
 * [Unique object validator](Classes/Domain/Validator/UniqueObjectValidator.php) for testing whether a unique value is already taken (e.g. for use with the Form Framework)
 
+## TCA field evaluations
+
+* [NumberEvaluation](Classes/Domain/Evaluation/NumberEvaluation.php) for numbers with any number of decimals positions and converts `,` to `.`.
+
 ## Console Commands
 
 * `cleanup:processedfiles` for truncating the table of processed files and deleting the corresponding files from the file system
