@@ -150,5 +150,8 @@ call_user_func(
 
         // Register a custom JavaScript resource compressor
         $GLOBALS['TYPO3_CONF_VARS']['FE']['jsConcatenateHandler'] = \Tollwerk\TwBase\Utility\ConcatenateUtility::class.'->concatenateJs';
+
+        // Register classes to be available in 'eval' of TCA
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Tollwerk\TwBase\Evaluation\NumberEvaluation::class] = '';
     }
 );
