@@ -55,7 +55,6 @@ class NumberEvaluation {
     public function returnFieldJS()
     {
         return '
-            return value;
             value = value.replace(/,/g,\'.\');
             parts = value.split(\'.\');
             if(parts.length > 1){
