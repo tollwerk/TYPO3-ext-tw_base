@@ -63,7 +63,7 @@ These services don't work out of the box and require particular software to be a
 
 ## TCA field evaluations
 
-* [NumberEvaluation](Classes/Domain/Evaluation/NumberEvaluation.php) for numbers with any number of decimals positions and converts `,` to `.`.
+* [NumberEvaluation](Classes/Evaluation/NumberEvaluation.php) for numbers with any number of decimals positions and converts `,` to `.`.
 
 ## Console Commands
 
