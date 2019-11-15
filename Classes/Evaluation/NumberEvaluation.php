@@ -56,6 +56,7 @@ class NumberEvaluation {
     {
         return '
             value = value.replace(/,/g,\'.\');
+            value = value.replace(/[^\d.-]/g, \'\');
             parts = value.split(\'.\');
             if(parts.length > 1){
                 return parts[0] + \'.\' + parts[1];
@@ -75,6 +76,7 @@ class NumberEvaluation {
     public function evaluateFieldValue($value, $is_in, &$set)
     {
         $value =  str_replace(',', '.', $value);
+        $value = preg_replace('/[^0-9.]/', '', $value);
         $parts = GeneralUtility::trimExplode('.', $value);
         if(count($parts) > 1){
             return $parts[0].'.'.$parts[1];
@@ -91,6 +93,7 @@ class NumberEvaluation {
     public function deevaluateFieldValue(array $parameters)
     {
         $value =  str_replace(',', '.', $parameters['value']);
+        $value = preg_replace('/[^0-9.]/', '', $value);
         $parts = GeneralUtility::trimExplode('.', $value);
         if(count($parts) > 1){
             return $parts[0].'.'.$parts[1];
