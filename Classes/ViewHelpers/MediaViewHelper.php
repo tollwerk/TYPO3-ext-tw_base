@@ -123,6 +123,7 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
         $this->registerArgument('lazyload', 'bool', 'Use lazyloading', false, false);
         $this->registerArgument('inline', 'bool', 'Inline the image using a data URI', false, false);
         $this->registerArgument('skipConverter', 'mixed', 'File converters that should be skipped', false, []);
+        $this->registerArgument('noTitle', 'bool', 'Don\'t add a title attribute', false, false);
     }
 
     /**
@@ -137,6 +138,14 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
      */
     protected function renderImage(FileInterface $image, $width, $height)
     {
+        // Disable the title attribute if necessary
+        if ($this->arguments['noTitle']) {
+            $tag = new TagBuilder($this->tagName);
+            $tag->ignoreAttribute('title', true);
+            $tag->addAttributes($this->tag->getAttributes());
+            $this->setTagBuilder($tag);
+        }
+
         // If the image shouldn't be inlined
         if (!$this->arguments['inline']) {
             $activeConverters = $this->getActiveConverters($image);
