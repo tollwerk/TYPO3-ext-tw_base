@@ -1,4 +1,4 @@
-<INCLUDE_TYPOSCRIPT: source="FILE:EXT:tw_base/Configuration/TypoScript/Main/10_main.t3s">
+<INCLUDE_TYPOSCRIPT: source="FILE:EXT:tw_base/Configuration/TypoScript/Main/10_main.typoscript">
 
 # Prefer this extensions Fluid templates for content element rendering
 lib.contentElement {
@@ -99,5 +99,3 @@ plugin.tx_twbase {
         }
     }
 }
-
-

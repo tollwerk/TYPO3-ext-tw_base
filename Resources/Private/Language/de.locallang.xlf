@@ -1,10 +1,73 @@
 <?xml version='1.0' encoding='utf-8'?>
 <xliff version="1.0">
-    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z" product-name="tw_base">
+    <file source-language="en" datatype="plaintext" original="messages" date="2016-12-08T10:17:19Z"
+          product-name="tw_base">
         <header/>
         <body>
             <trans-unit id="validator.uniqueObject.error" approved="no">
-                <source>Unique value already taken</source> <target state="needs-translation">Eindeutiger Wert bereits belegt</target></trans-unit>
+                <source>Unique value already taken</source>
+                <target state="needs-translation">Eindeutiger Wert bereits belegt</target>
+            </trans-unit>
+            <trans-unit id="age.right_now">
+                <source>Right now</source>
+                <target>Gerade eben</target>
+            </trans-unit>
+            <trans-unit id="age.second">
+                <source>One second ago</source>
+                <target>Vor einer Sekunde</target>
+            </trans-unit>
+            <trans-unit id="age.seconds">
+                <source>%s seconds ago</source>
+                <target>Vor %s Sekunden</target>
+            </trans-unit>
+            <trans-unit id="age.minute">
+                <source>A minute ago</source>
+                <target>Vor einer Minute</target>
+            </trans-unit>
+            <trans-unit id="age.minutes">
+                <source>%s minutes ago</source>
+                <target>Vor %s Minuten</target>
+            </trans-unit>
+            <trans-unit id="age.hour">
+                <source>One hour ago</source>
+                <target>Vor einer Stunde</target>
+            </trans-unit>
+            <trans-unit id="age.hours">
+                <source>%s hours ago</source>
+                <target>Vor %s Stunden</target>
+            </trans-unit>
+            <trans-unit id="age.day">
+                <source>One day ago</source>
+                <target>Vor einem Tag</target>
+            </trans-unit>
+            <trans-unit id="age.days">
+                <source>%s days ago</source>
+                <target>Vor %s Tagen</target>
+            </trans-unit>
+            <trans-unit id="age.week">
+                <source>One week ago</source>
+                <target>Vor einer Woche</target>
+            </trans-unit>
+            <trans-unit id="age.weeks">
+                <source>%s weeks ago</source>
+                <target>Vor %s Wochen</target>
+            </trans-unit>
+            <trans-unit id="age.month">
+                <source>One month ago</source>
+                <target>Vor einem Monat</target>
+            </trans-unit>
+            <trans-unit id="age.months">
+                <source>%s months ago</source>
+                <target>Vor %s Monaten</target>
+            </trans-unit>
+            <trans-unit id="age.year">
+                <source>One year ago</source>
+                <target>Vor einem Jahr</target>
+            </trans-unit>
+            <trans-unit id="age.years">
+                <source>%s years ago</source>
+                <target>Vor %s Jahren</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

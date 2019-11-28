@@ -37,50 +37,51 @@
 namespace Tollwerk\TwBase\ViewHelpers;
 
 /**
- * Tag sequence builder
+ * Custom Tag Builder
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  */
-class TagSequenceBuilder extends TagBuilder
+class TagBuilder extends \TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder
 {
     /**
-     * Contained tags
+     * Ignore attributes
      *
-     * @var TagBuilder[]
+     * @var string[]
      */
-    protected $tags;
+    protected $ignoreAttributes = [];
 
     /**
-     * Constructor
+     * Ignore a particular attribute
      *
-     * @param TagBuilder[] $tags Contained tags
+     * @param string $attributeName Attribute name
+     * @param bool $ignore          Ignore attribute
      */
-    public function __construct(array $tags)
+    public function ignoreAttribute(string $attributeName, bool $ignore): void
     {
-        $this->tags = $tags;
-    }
-
-    /**
-     * Add another tag to the sequence
-     *
-     * @param TagBuilder $tag Tag
-     */
-    public function addTag(TagBuilder $tag): void
-    {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * Renders and returns the tag sequence
-     *
-     * @return string Rendered tag sequence
-     */
-    public function render(): string
-    {
-        $sequence = '';
-        /** @var TagBuilder $tag */
-        foreach ($this->tags as $tag) {
-            $sequence .= $tag->render();
+        $attributeName = strtolower(trim($attributeName));
+        if (strlen($attributeName)) {
+            $this->ignoreAttributes[$attributeName] = $ignore;
         }
+    }
 
-        return $sequence;
+    /**
+     * Adds an attribute to the $attributes-collection
+     *
+     * Respects attribute ignore list
+     *
+     * @inheritDoc
+     */
+    public function addAttribute($attributeName, $attributeValue, $escapeSpecialCharacters = true)
+    {
+        $ignoreAttribute = strtolower(trim($attributeName));
+        if (strlen($attributeName) && !empty($this->ignoreAttributes[$ignoreAttribute])) {
+            return;
+        }
+        parent::addAttribute(
+            $attributeName,
+            $attributeValue,
+            $escapeSpecialCharacters
+        );
     }
 }

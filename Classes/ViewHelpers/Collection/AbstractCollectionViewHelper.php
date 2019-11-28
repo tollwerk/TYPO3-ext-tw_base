@@ -1,11 +1,11 @@
 <?php
 
 /**
- * tollwerk
+ * RWS Relaunch
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,36 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers;
+namespace Tollwerk\TwBase\ViewHelpers\Collection;
+
+use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Tag sequence builder
+ * Collection view helper base
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
  */
-class TagSequenceBuilder extends TagBuilder
+abstract class AbstractCollectionViewHelper extends AbstractViewHelper
 {
     /**
-     * Contained tags
+     * Cast an argument to an array and purge empty values
      *
-     * @var TagBuilder[]
-     */
-    protected $tags;
-
-    /**
-     * Constructor
+     * @param mixed $array String or array
      *
-     * @param TagBuilder[] $tags Contained tags
+     * @return array Purged array
      */
-    public function __construct(array $tags)
+    protected function purge($array): array
     {
-        $this->tags = $tags;
-    }
-
-    /**
-     * Add another tag to the sequence
-     *
-     * @param TagBuilder $tag Tag
-     */
-    public function addTag(TagBuilder $tag): void
-    {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * Renders and returns the tag sequence
-     *
-     * @return string Rendered tag sequence
-     */
-    public function render(): string
-    {
-        $sequence = '';
-        /** @var TagBuilder $tag */
-        foreach ($this->tags as $tag) {
-            $sequence .= $tag->render();
+        // Convert domain object into array
+        if ($array instanceof AbstractDomainObject) {
+            $array = $array->_getCleanProperties();
         }
 
-        return $sequence;
+        // Filter and trim array values
+        return array_filter(array_map(function($item) {
+            return is_string($item) ? trim($item) : $item;
+        }, (array)$array));
     }
 }

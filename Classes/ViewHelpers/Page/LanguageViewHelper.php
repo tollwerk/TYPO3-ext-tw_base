@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\LinkHandling
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Page
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,36 +34,46 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\LinkHandling;
+namespace Tollwerk\TwBase\ViewHelpers\Page;
 
-use TYPO3\CMS\Backend\Form\Element\InputLinkElement;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
+use Closure;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Link builder for tel links
+ * Return the current language
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Page
  */
-class TelLinkBuilder
+class LanguageViewHelper extends AbstractViewHelper
 {
     /**
-     * Render a tel:// link preview
-     *
-     * @param array $linkData                    Link data
-     * @param string[] $linkParts                Link parts
-     * @param array $data                        Data
-     * @param InputLinkElement $inputLinkElement Input link element
-     *
-     * @return array
+     * Enable static rendering
      */
-    public function getFormData(array $linkData, array $linkParts, array $data, InputLinkElement $inputLinkElement)
-    {
-        return [
-            'text' => $linkData['value'],
-            'icon' => GeneralUtility::makeInstance(IconFactory::class)->getIcon(
-                'tx-base-tel',
-                Icon::SIZE_SMALL
-            )->render()
-        ];
+    use CompileWithRenderStatic;
+
+    /**
+     * Render
+     *
+     * @param array $arguments                            Arguments
+     * @param Closure $renderChildrenClosure              Children rendering closure
+     * @param RenderingContextInterface $renderingContext Rendering context
+     *
+     * @return array Link information
+     * @throws AspectNotFoundException
+     */
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $context = GeneralUtility::makeInstance(Context::class);
+
+        return $context->getPropertyFromAspect('language', 'id');
     }
 }

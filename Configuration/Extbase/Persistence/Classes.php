@@ -5,7 +5,6 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +33,11 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers;
+use Tollwerk\TwBase\Domain\Model\Country;
 
-/**
- * Tag sequence builder
- */
-class TagSequenceBuilder extends TagBuilder
-{
-    /**
-     * Contained tags
-     *
-     * @var TagBuilder[]
-     */
-    protected $tags;
-
-    /**
-     * Constructor
-     *
-     * @param TagBuilder[] $tags Contained tags
-     */
-    public function __construct(array $tags)
-    {
-        $this->tags = $tags;
-    }
-
-    /**
-     * Add another tag to the sequence
-     *
-     * @param TagBuilder $tag Tag
-     */
-    public function addTag(TagBuilder $tag): void
-    {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * Renders and returns the tag sequence
-     *
-     * @return string Rendered tag sequence
-     */
-    public function render(): string
-    {
-        $sequence = '';
-        /** @var TagBuilder $tag */
-        foreach ($this->tags as $tag) {
-            $sequence .= $tag->render();
-        }
-
-        return $sequence;
-    }
-}
+return [
+    Country::class => [
+        'tableName'  => 'static_countries',
+        'properties' => [],
+    ],
+];

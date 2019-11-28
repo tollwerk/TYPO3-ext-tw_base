@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Attributes
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,46 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers;
+namespace Tollwerk\TwBase\ViewHelpers\Collection;
+
+use Tollwerk\TwBase\ViewHelpers\Collection\AbstractCollectionViewHelper;
 
 /**
- * Tag sequence builder
+ * Push view helper
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Collection
  */
-class TagSequenceBuilder extends TagBuilder
+class PushViewHelper extends AbstractCollectionViewHelper
 {
     /**
-     * Contained tags
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
      *
-     * @var TagBuilder[]
+     * @return void
+     * @api
      */
-    protected $tags;
-
-    /**
-     * Constructor
-     *
-     * @param TagBuilder[] $tags Contained tags
-     */
-    public function __construct(array $tags)
+    public function initializeArguments()
     {
-        $this->tags = $tags;
+        parent::initializeArguments();
+        $this->registerArgument('a', 'mixed', 'The base argument to push new value to', true);
+        $this->registerArgument('b', 'mixed',
+            'The second argument with values to push to the end of the first argument', true);
     }
 
     /**
-     * Add another tag to the sequence
+     * Append the elements of an array to the end of another array
      *
-     * @param TagBuilder $tag Tag
+     * @return array Resulting array
      */
-    public function addTag(TagBuilder $tag): void
+    public function render(): array
     {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * Renders and returns the tag sequence
-     *
-     * @return string Rendered tag sequence
-     */
-    public function render(): string
-    {
-        $sequence = '';
-        /** @var TagBuilder $tag */
-        foreach ($this->tags as $tag) {
-            $sequence .= $tag->render();
+        $array  = $this->purge($this->arguments['a']);
+        $append = $this->purge($this->arguments['b']);
+        if (count($append)) {
+            array_push($array, ...$append);
         }
 
-        return $sequence;
+        return $array;
     }
 }

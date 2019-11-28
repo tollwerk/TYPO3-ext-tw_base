@@ -1,0 +1,2 @@
+<INCLUDE_TYPOSCRIPT: source="DIR:./Page" extensions="typoscript">
+<INCLUDE_TYPOSCRIPT: source="DIR:./Plugins" extensions="typoscript">
