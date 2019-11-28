@@ -30,6 +30,13 @@
     page.includeJS.base_lazyLoading = EXT:tw_base/Resources/Public/JavaScript/_030_LazyLoading.default.min.js#base
 [END]
 
+[{$plugin.tx_twbase_javascript.hitArea} == 1]
+    page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
+    page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
+    page.includeJS.base_observer = EXT:tw_base/Resources/Public/JavaScript/_020_Observer.default.min.js#base
+    page.includeJS.base_hitArea = EXT:tw_base/Resources/Public/JavaScript/_035_HitArea.default.min.js#base
+[END]
+
 page.includeJSFooter {
 #    jquery = https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js
 #    jquery {

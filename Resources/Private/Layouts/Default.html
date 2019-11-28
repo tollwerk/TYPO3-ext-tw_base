@@ -5,7 +5,7 @@
         <f:then>
             <f:alias map="{
                 tagName: '{f:if(condition: \'{data.header} || {data.subheader}\', then: \'section\', else: \'div\')}',
-                className: 'frame frame-{data.frame_class} frame-type-{data.CType} frame-layout-{data.layout}{f:if(condition:
+                className: 'ContentElement ContentElement--{data.CType} frame frame-{data.frame_class} frame-type-{data.CType} frame-layout-{data.layout}{f:if(condition:
             data.space_before_class, then: \' frame-space-before-{data.space_before_class}\')}{f:if(condition:
             data.space_after_class, then: \' frame-space-after-{data.space_after_class}\')}'
             }">

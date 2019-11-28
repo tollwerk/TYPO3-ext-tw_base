@@ -70,6 +70,9 @@
             <trans-unit id="javascript.lazyLoading" xml:space="preserve">
 				<source>Image Lazy Loading</source>
 			</trans-unit>
+            <trans-unit id="javascript.hitArea" xml:space="preserve">
+				<source>Link hit area extension</source>
+			</trans-unit>
             <trans-unit id="images.densities" xml:space="preserve">
 				<source>Display Densities for Responsive Images: Comma-separated list of display density descriptors (e. g. "1x, 2x") for the creation of media queries</source>
 			</trans-unit>

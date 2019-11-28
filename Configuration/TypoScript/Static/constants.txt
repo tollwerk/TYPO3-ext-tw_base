@@ -76,4 +76,6 @@ plugin.tx_twbase_javascript {
     breakpointManager = 0
     # cat=plugin.tx_twbase_javascript/javascript/f; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.lazyLoading
     lazyLoading = 0
+    # cat=plugin.tx_twbase_javascript/javascript/g; type=boolean; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:javascript.hitArea
+    hitArea = 0
 }
