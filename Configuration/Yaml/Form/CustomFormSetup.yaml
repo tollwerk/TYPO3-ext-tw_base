@@ -69,3 +69,38 @@ TYPO3:
                     templateName: 'Inspector-TextEditor'
                     label: 'Test'
                     propertyPath: 'properties.test'
+
+            CallToAction:
+
+              # Inherit the default rendering and properties like "Label" and "Description"
+              # see SYSEXT:form/Configuration/Yaml/FormEditorSetup.yaml
+              __inheritances:
+                10: 'TYPO3.CMS.Form.mixins.formElementMixins.FormElementMixin'
+
+              # Title shown on summary page and above the form
+              formEditor:
+                # TODO: Get label from translation file
+                label: 'formEditor.elements.callToAction.label'
+                group: html5
+                groupSorting: 501
+
+                # This icon is registerd inside ext_localconf.php
+                iconIdentifier: 'tx-base-formfield-call-to-action'
+
+                # Default values for defined properties. Todo: Remove or implement
+                predefinedDefaults:
+                  properties:
+                    test: ''
+
+                # Additional properties can be defined here
+                editors:
+                  # 200 gets inherited from FormElementMixin and contains the property "Label"
+                  # 230 gets inherited from FormElementMixin and contains the property  "Description"
+                  # 700 contains the column dimensions for xs, sm, ... when inserted into a row element
+                  # 800 is the "required" checkbox
+                  # 300 TODO: Remove or implement
+                  300:
+                    identifier: 'callToAction'
+                    templateName: 'Inspector-TextEditor'
+                    label: 'CallToAction'
+                    propertyPath: 'properties.callToAction'
