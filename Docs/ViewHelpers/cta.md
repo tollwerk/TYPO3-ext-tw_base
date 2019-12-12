@@ -5,7 +5,9 @@
 ## Cta view helper
 
 ```html
-<base:cta cta-type="link" cta-style="opaque" cta-invert="0" cta-theme="default"/>
+<base:cta cta-type="link" cta-style="opaque" cta-invert="0" cta-theme="default">
+    <!-- Your link- or button-text -->
+</base:cta>
 ```
 
 The cta view helper renders a `<button>` or `<a>` tag with certain standardized CSS classes. The following
