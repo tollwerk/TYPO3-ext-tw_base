@@ -38,7 +38,7 @@ These services don't work out of the box and require particular software to be a
 
 ## Viewhelpers
 
-* [`heading` viewhelper](Docs/ViewHelpers/cta.md) for rendering CallToAction `<a>` or `<button>` tags
+* [`cta` viewhelper](Docs/ViewHelpers/cta.md) for rendering CallToAction `<a>` or `<button>` tags
 * [`heading` viewhelper](Docs/ViewHelpers/heading.md) for semantic document structuring
 * [`render` viewhelper](Docs/ViewHelpers/render.md) for rendering partials & sections with heading context awareness
 * [`image` viewhelper](Docs/ViewHelpers/image.md) for rendering compressed images
