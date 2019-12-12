@@ -127,10 +127,16 @@ call_user_func(
         // Override language files
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']['EXT:form/Resources/Private/Language/Database.xlf'][] = 'EXT:tw_base/Resources/Private/Language/form_editor.xlf';
 
+        // Register icons
         \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
             'tx-base-formfield-clock',
             \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
             ['source' => 'EXT:tw_base/Resources/Public/Icons/Clock.svg']
+        );
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
+            'tx-base-formfield-call-to-action',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:tw_base/Resources/Public/Icons/Link.svg']
         );
 
         // Register the global Fluid viewhelper namespace (if specified)
