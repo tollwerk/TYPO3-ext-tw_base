@@ -110,8 +110,10 @@ class EmailUtility
         $mail->setFrom([$this->senderAddress => $this->senderName])
              ->setTo($recipients)
              ->setCc($cc)
-             ->setBcc($bcc)
-             ->setReplyTo($replyTo);
+             ->setBcc($bcc);
+        if($replyTo) {
+            $mail->setReplyTo($replyTo);
+        }
         $mail->setSubject($subject);
 
         // If there's HTML content
