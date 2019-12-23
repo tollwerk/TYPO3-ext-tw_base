@@ -64,6 +64,8 @@ abstract class AbstractCollectionViewHelper extends AbstractViewHelper
         // Filter and trim array values
         return array_filter(array_map(function($item) {
             return is_string($item) ? trim($item) : $item;
-        }, (array)$array));
+        }, (array)$array), function($item) {
+            return is_numeric($item) || !empty($item);
+        });
     }
 }
