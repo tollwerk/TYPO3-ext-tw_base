@@ -48,6 +48,19 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 abstract class AbstractCollectionViewHelper extends AbstractViewHelper
 {
     /**
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
+     *
+     * @return void
+     * @api
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('zero', 'bool', 'Allow numeric zero values', false, false);
+    }
+
+    /**
      * Cast an argument to an array and purge empty values
      *
      * @param mixed $array String or array
@@ -61,11 +74,13 @@ abstract class AbstractCollectionViewHelper extends AbstractViewHelper
             $array = $array->_getCleanProperties();
         }
 
+        $allowZero = boolval($this->arguments['zero']);
+
         // Filter and trim array values
         return array_filter(array_map(function($item) {
             return is_string($item) ? trim($item) : $item;
-        }, (array)$array), function($item) {
-            return is_numeric($item) || !empty($item);
+        }, (array)$array), function($item) use ($allowZero) {
+            return ($allowZero && is_numeric($item)) || !empty($item);
         });
     }
 }
