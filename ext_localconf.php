@@ -159,5 +159,14 @@ call_user_func(
 
         // Register classes to be available in 'eval' of TCA
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Tollwerk\TwBase\Evaluation\NumberEvaluation::class] = '';
+
+        // Register a custom Query Factory
+        $extbaseObjectContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Extbase\Object\Container\Container::class
+        );
+        $extbaseObjectContainer->registerImplementation(
+            \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class,
+            \Tollwerk\TwBase\Persistence\Generic\Storage\Typo3DbQueryParser::class
+        );
     }
 );
