@@ -16,7 +16,7 @@
     }
   },
   "replace": {
-    "tw_base": "self.version",
+    "tollwerk/tw-base": "self.version",
     "typo3-ter/tw_base": "self.version"
   },
   "keywords": [
