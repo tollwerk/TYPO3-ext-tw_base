@@ -50,6 +50,25 @@ class ConcatenateUtility extends ResourceCompressor
     /**
      * Concatenate JavaScript resources
      *
+     * @param array $cssFiles
+     */
+    public function concatenateCssFiles(array $cssFiles): void
+    {
+        foreach (['cssFiles'] as $section) {
+            $sectionBundles      = $this->splitBundles($cssFiles[$section]);
+
+            $sectionConcatenates = [];
+            foreach ($sectionBundles as $bundleResources) {
+                $sectionConcatenates += parent::concatenateCssFiles($bundleResources);
+            }
+
+            $cssFiles[$section] = $this->replaceFonts($sectionConcatenates);
+        }
+    }
+ 
+    /**
+     * Concatenate JavaScript resources
+     *
      * @param array $params              Parameters
      * @param PageRenderer $pageRenderer Page renderer
      */
