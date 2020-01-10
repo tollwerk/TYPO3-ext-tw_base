@@ -17,3 +17,19 @@ TCEFORM.tt_content.header_layout {
         102 = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type.hidden-insignificant
     }
 }
+
+mod.wizards.newContentElement.wizardItems.tollwerk {
+    header = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tollwerk
+    elements {
+        twbase_video {
+            iconIdentifier = base-video
+            title = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_video.wizard.title
+            description = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_video.wizard.description
+            tt_content_defValues {
+                CType = twbase_video
+            }
+        }
+    }
+
+    show := addToList(twbase_video)
+}

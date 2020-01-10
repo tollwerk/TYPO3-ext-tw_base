@@ -52,6 +52,9 @@
             <trans-unit id="age.years">
                 <source>%s years ago </source>
             </trans-unit>
+            <trans-unit id="video.fallback">
+                <source>Your browser doesn't support HTML5 video. You may &lt;a href="%s"&gt;download the video&lt;/a&gt; and view it offline instead.</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
