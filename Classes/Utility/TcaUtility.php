@@ -256,7 +256,7 @@ class TcaUtility
     /**
      * Creates the string for TCA['types'][...]['showitem']
      *
-     * @param array $showitem       Array of divs, fields and palletes to show<p>
+     * @param array $showitem Array of divs, fields and palletes to show<p>
      *                              The first level is the name of the div, so use "General", "Access" etc. here.
      *                              The second level can be a string for a single field like "title" or "crdate" or an
      *                              array for rendering a palette. If you want to render a palette on the second level
@@ -284,20 +284,35 @@ class TcaUtility
     public static function createShowitemString(array $showitem = []): string
     {
         $showitemArray = [];
-        $divCounter    = 0;
+        $divCounter = 0;
 
         // Run through all defined items
         foreach ($showitem as $divName => $divFields) {
-            $showitemArray[] = '--div--;'.($divCounter++ ? $divName : 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general');
+            $showitemArray[] = '--div--;' . ($divCounter++ ? $divName : 'LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general');
 
             // Run through all fields
             foreach ($divFields as $field) {
                 // Array type means it's a palette
-                $showitemArray[] = is_array($field) ? '--palette--;'.(count($field) > 1 ? $field[1] : '').';'.$field[0] : $field;
+                $showitemArray[] = is_array($field) ? '--palette--;' . (count($field) > 1 ? $field[1] : '') . ';' . $field[0] : $field;
             }
         }
 
-        return implode(','.PHP_EOL, $showitemArray);
+        return implode(',' . PHP_EOL, $showitemArray);
+    }
+
+    /**
+     * Get timezones
+     */
+    public static function getTimezones()
+    {
+        $timezones = \DateTimeZone::listIdentifiers();
+        foreach($timezones as $identifier) {
+            $return[] = [
+                $identifier, // TODO: Return localized label?
+                $identifier,
+            ];
+        }
+        return $return;
     }
 
     /**
@@ -314,11 +329,11 @@ class TcaUtility
          * @var ObjectManager $objectManager
          * @var BackendConfigurationManager $configurationManager
          */
-        $objectManager        = GeneralUtility::makeInstance(ObjectManager::class);
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $configurationManager = $objectManager->get(BackendConfigurationManager::class);
-        $setup                = $configurationManager->getTypoScriptSetup();
+        $setup = $configurationManager->getTypoScriptSetup();
         list(, $conf) = GeneralUtility::makeInstance(TypoScriptParser::class)
-                                      ->getVal('lib.contentElement.settings.media.breakpoints.presets', $setup);
+            ->getVal('lib.contentElement.settings.media.breakpoints.presets', $setup);
 
         // Run through all defined presets
         foreach ((array)$conf as $key => $configs) {
