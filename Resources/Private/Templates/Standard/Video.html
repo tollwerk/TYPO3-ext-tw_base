@@ -13,29 +13,6 @@
     <f:layout name="Default"/>
 
     <f:section name="Main">
-        <video controls preload="metadata" {f:if(condition: poster, then: ' poster="{poster.0.publicUrl}"')}>
-        <f:for each="{sources}" as="source">
-            <f:variable name="latestSource" value="{source.publicUrl}"/>
-            <source src="{latestSource}" type="{source.mimeType}">
-        </f:for>
-        <f:for each="{tracks}" as="track">
-            <f:variable name="label" value="{f:if(
-                condition: track.file.0.originalFile.metaData.title,
-                then: track.file.0.originalFile.metaData.title,
-                else: '{track.data.kind} ({track.data.language})'
-                )}"/>
-            <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}" srclang="{track.data.language}"/>
-        </f:for>
-        <f:if condition="{data.bodytext}">
-            <f:then>
-                <f:format.html>{data.bodytext}</f:format.html>
-            </f:then>
-            <f:else>
-                <p>
-                    <f:translate key="video.fallback" arguments="{0: latestSource}"/>
-                </p>
-            </f:else>
-        </f:if>
-        </video>
+        <f:render partial="Media/Rendering/Videoplus" arguments="{_all}"/>
     </f:section>
 </html>
