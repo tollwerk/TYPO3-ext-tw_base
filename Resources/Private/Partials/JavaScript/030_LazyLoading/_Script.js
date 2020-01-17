@@ -5,14 +5,22 @@
 
     // Enable native lazyloading
     if (w.Tollwerk.has.lazyload) {
-        w.Tollwerk.Observer.register(`img[loading=lazy][src][data-src]`, img => {
-            img.src = img.dataset.src;
-            img.removeAttribute('data-src');
+        const replaceSrc = function(el) {
+            el.src = el.dataset.src;
+            el.removeAttribute('data-src');
+        };
+        w.Tollwerk.Observer.register('img[loading=lazy][src][data-src]', img => {
+            replaceSrc(img);
+            img.parentNode.querySelectorAll('source[data-src]').forEach(replaceSrc);
         });
-        w.Tollwerk.Observer.register(`img[loading=lazy][data-srcset]`, img => {
-            img.srcset = img.dataset.srcset;
-            img.removeAttribute('src');
-            img.removeAttribute('data-srcset');
+        const replaceSrcset = function(el) {
+            el.srcset = el.dataset.srcset;
+            el.removeAttribute('src');
+            el.removeAttribute('data-srcset');
+        };
+        w.Tollwerk.Observer.register('img[loading=lazy][data-srcset]', img => {
+            replaceSrcset(img);
+            img.parentNode.querySelectorAll('source[data-srcset]').forEach(replaceSrcset);
         });
     } else {
         let lazysizes = null;
@@ -32,7 +40,7 @@
             return script;
         }
 
-        w.Tollwerk.Observer.register(`img[loading=lazy]`, img => {
+        w.Tollwerk.Observer.register('img[loading=lazy]', img => {
             img.classList.add('lazyload');
             if (!lazysizes) {
                 lazysizes = requireScript(`${libDir}lazysizes.min.js`) &&

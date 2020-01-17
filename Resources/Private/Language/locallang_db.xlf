@@ -137,11 +137,35 @@
 				<source>Skip converters</source>
 			</trans-unit>
             <trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
-				<source>WebP</source>
+                <source>WebP</source>
+			</trans-unit>
+            <trans-unit id="tt_content.tx_twbase_video_tracks" xml:space="preserve">
+				<source>Tracks</source>
+			</trans-unit>
+            <trans-unit id="tt_content.tx_twbase_video_tracks.addFileReference" xml:space="preserve">
+				<source>Add track file</source>
 			</trans-unit>
             <trans-unit id="tt_content.palette.imageadvanced" xml:space="preserve">
 				<source>Responsivity &amp; converters</source>
 			</trans-unit>
+            <trans-unit id="tollwerk">
+                <source>Tollwerk</source>
+            </trans-unit>
+            <trans-unit id="twbase_video">
+                <source>Video</source>
+            </trans-unit>
+            <trans-unit id="twbase_video.wizard.title">
+                <source>Video</source>
+            </trans-unit>
+            <trans-unit id="twbase_video.wizard.description">
+                <source>A video with multiple sources, poster image and captions</source>
+            </trans-unit>
+            <trans-unit id="twbase_video.poster_image">
+                <source>Poster image</source>
+            </trans-unit>
+            <trans-unit id="twbase_video.bodytext">
+                <source>Fallback text</source>
+            </trans-unit>
             <trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
 				<source>Page title language</source>
 			</trans-unit>
@@ -156,6 +180,33 @@
 			</trans-unit>
             <trans-unit id="linkbrowse.number" xml:space="preserve">
 				<source>Telecom number</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track" xml:space="preserve">
+				<source>Video Track</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind" xml:space="preserve">
+				<source>Kind</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.subtitles" xml:space="preserve">
+				<source>Subtitles</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.captions" xml:space="preserve">
+				<source>Closed Captions</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.descriptions" xml:space="preserve">
+				<source>Descriptions</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.chapters" xml:space="preserve">
+				<source>Chapters</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.file" xml:space="preserve">
+				<source>File</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.file.addFileReference" xml:space="preserve">
+				<source>Add track file</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.language" xml:space="preserve">
+				<source>Language</source>
 			</trans-unit>
         </body>
     </file>

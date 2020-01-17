@@ -43,6 +43,13 @@ call_user_func(
             ],
         ];
 
+        // Register video content element icon
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
+            'base-video',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:tw_base/Resources/Public/Icons/Track.svg']
+        );
+
         // Register the Primitive LQIP service
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             'tw_base',
@@ -159,5 +166,14 @@ call_user_func(
 
         // Register classes to be available in 'eval' of TCA
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Tollwerk\TwBase\Evaluation\NumberEvaluation::class] = '';
+
+        // Register a custom Query Factory
+        $extbaseObjectContainer = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(
+            \TYPO3\CMS\Extbase\Object\Container\Container::class
+        );
+        $extbaseObjectContainer->registerImplementation(
+            \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class,
+            \Tollwerk\TwBase\Persistence\Generic\Storage\Typo3DbQueryParser::class
+        );
     }
 );

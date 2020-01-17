@@ -1,0 +1,5 @@
+lib.contentElement {
+    templateRootPaths.20 = EXT:tw_base/Resources/Private/Templates/
+    layoutRootPaths.20 = EXT:tw_base/Resources/Private/Layouts/
+    partialRootPaths.20 = EXT:tw_base/Resources/Private/Partials/
+}

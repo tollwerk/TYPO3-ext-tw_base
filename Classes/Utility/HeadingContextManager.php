@@ -99,6 +99,8 @@ class HeadingContextManager implements SingletonInterface
         $level      = ($level >= 100) ? 0 : $level;
         $error      = null;
 
+//        debug([$level, $this->currentLevel], 'Setup context');
+
         // If a particular headline level was given
         if ($level > 0) {
             // If headline levels are skipped: Warning
@@ -151,6 +153,7 @@ class HeadingContextManager implements SingletonInterface
     public function tearDownContext(HeadingContext $headingContext): void
     {
         $this->currentLevel = $headingContext->getAfterLevel();
+//        debug($this->currentLevel, 'Tear down');
     }
 
     /**
@@ -184,6 +187,7 @@ class HeadingContextManager implements SingletonInterface
     public function restoreContext(string $restoreContext, bool $restoreRoot = false): ?string
     {
         $restoreContext = trim($restoreContext);
+        $restoreRoot    = $restoreRoot || !$this->currentLevel;
         if (!strlen($restoreContext)) {
             $this->currentLevel = $restoreRoot ? 0 : 1;
             $this->contexts     = [];
