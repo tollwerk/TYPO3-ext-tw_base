@@ -1,11 +1,11 @@
 <?php
 
 /**
- * RWS Relaunch
+ * tollwerk
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Page
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,67 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Collection;
+namespace Tollwerk\TwBase\ViewHelpers\Page;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3\CMS\Core\Page\PageRenderer;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
- * Collection view helper base
+ * Meta element viewhelper
  *
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Page
  */
-abstract class AbstractCollectionViewHelper extends AbstractViewHelper
+class MetaViewHelper extends AbstractTagBasedViewHelper
 {
     /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
+     * Element name
+     *
+     * @var    string
+     */
+    protected $tagName = 'meta';
+
+    /**
+     * Provides a shared (singleton) instance of PageRenderer
+     *
+     * @return PageRenderer
+     */
+    protected function getPageRenderer()
+    {
+        return GeneralUtility::makeInstance(PageRenderer::class);
+    }
+
+    /**
+     * Arguments initialization
      *
      * @return void
-     * @api
      */
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('zero', 'bool', 'Allow numeric zero values', false, false);
+        $this->registerTagAttribute('name', 'string', 'Name property of meta tag');
+        $this->registerTagAttribute('property', 'string', 'Property of meta tag');
+        $this->registerTagAttribute('content', 'string', 'Content of meta tag');
+        $this->registerTagAttribute('http-equiv', 'string', 'Property: http-equiv');
+        $this->registerTagAttribute('scheme', 'string', 'Property: scheme');
+        $this->registerTagAttribute('lang', 'string', 'Property: lang');
+        $this->registerTagAttribute('dir', 'string', 'Property: dir');
     }
 
     /**
-     * Cast an argument to an array and purge empty values
+     * Add a meta tag
      *
-     * @param mixed $array String or array
-     *
-     * @return array Purged array
+     * @return string Rendered page URI
      */
-    protected function purge($array): array
+    public function render()
     {
-        // Convert domain object into array
-        if ($array instanceof AbstractDomainObject) {
-            $array = $array->_getCleanProperties();
+        $content = trim($this->arguments['content'] ?: $this->renderChildren());
+        if (strlen($content)) {
+            $this->tag->addAttribute('content', $content);
+            $this->getPageRenderer()->addHeaderData($this->tag->render());
         }
 
-        $allowZero = boolval($this->arguments['zero']);
-
-        // Filter and trim array values
-        return array_filter(array_map(function($item) {
-            return is_string($item) ? trim($item) : $item;
-        }, (array)$array), function($item) use ($allowZero) {
-            return ($allowZero && is_numeric($item)) || !empty($item);
-        });
+        return '';
     }
 }

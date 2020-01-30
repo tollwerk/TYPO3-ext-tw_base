@@ -1,11 +1,11 @@
 <?php
 
 /**
- * RWS Relaunch
+ * tollwerk
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
+ * @subpackage Tollwerk\TwBase\Utility
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,53 +34,55 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Collection;
+namespace Tollwerk\TwBase\Utility;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use Tollwerk\TwBase\Domain\Repository\Traits\DebuggableRepositoryTrait;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
- * Collection view helper base
+ * Extended Debug Utility
  *
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
+ * @subpackage Tollwerk\TwBase\Utility
  */
-abstract class AbstractCollectionViewHelper extends AbstractViewHelper
+class DebugUtility extends \TYPO3\CMS\Core\Utility\DebugUtility
 {
+    use DebuggableRepositoryTrait;
     /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
+     * Object manager
      *
-     * @return void
-     * @api
+     * @var ObjectManager
      */
-    public function initializeArguments()
+    protected $objectManager;
+
+    /**
+     * Debug Utility constructor
+     */
+    public function __construct()
     {
-        parent::initializeArguments();
-        $this->registerArgument('zero', 'bool', 'Allow numeric zero values', false, false);
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
     }
 
     /**
-     * Cast an argument to an array and purge empty values
+     * Debug
      *
-     * @param mixed $array String or array
+     * Directly echos out debug information as HTML (or plain in CLI context)
      *
-     * @return array Purged array
+     * @param string $var
+     * @param string $header
+     * @param string $group
      */
-    protected function purge($array): array
+    public static function debug($var = '', $header = 'Debug', $group = 'Debug')
     {
-        // Convert domain object into array
-        if ($array instanceof AbstractDomainObject) {
-            $array = $array->_getCleanProperties();
+        if ($var instanceof QueryInterface) {
+            $instance = new self();
+            $instance->debugQuery($var);
+
+            return;
         }
 
-        $allowZero = boolval($this->arguments['zero']);
-
-        // Filter and trim array values
-        return array_filter(array_map(function($item) {
-            return is_string($item) ? trim($item) : $item;
-        }, (array)$array), function($item) use ($allowZero) {
-            return ($allowZero && is_numeric($item)) || !empty($item);
-        });
+        return parent::debug($var, $header, $group);
     }
 }

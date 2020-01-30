@@ -130,6 +130,17 @@ if (!defined('TYPO3_MODE')) {
                 ],
             ],
         ],
+        'tx_twbase_video_tracks' => [
+            'label'   => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_video_tracks',
+            'exclude' => 1,
+            'config' => [
+                'type' => 'inline',
+                'foreign_table' => 'tx_twbase_domain_model_video_track',
+                'size' => 1,
+                'minitems' => 0,
+                'maxitems' => 9999,
+            ]
+        ],
     ]
 );
 
@@ -167,3 +178,55 @@ $GLOBALS['TCA']['tt_content']['palettes']['imageadvanced'] = [
     'textpic,image',
     'after:--palette--;;imagelinks'
 );
+
+
+/**
+ * Video content element
+ */
+
+// Adds the image content element to the "Type" dropdown
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTcaSelectItem(
+    "tt_content",
+    "CType",
+    [
+        'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_video',
+        'twbase_video',
+        'content-video'
+    ],
+    "textmedia",
+    "after"
+);
+
+// Configure the default backend fields for the video content element
+$GLOBALS['TCA']['tt_content']['types']['twbase_video'] = [
+    'showitem' => '
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:general,
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.general;general,
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.headers;headers,
+            bodytext;LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_video.bodytext,
+        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.media,
+            assets,
+            image;LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_video.poster_image,
+            tx_twbase_video_tracks,
+        --div--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:tabs.appearance,
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.frames;frames,
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.appearanceLinks;appearanceLinks,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:language,
+            --palette--;;language,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:access,
+            --palette--;;hidden,
+            --palette--;LLL:EXT:frontend/Resources/Private/Language/locallang_ttc.xlf:palette.access;access,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:categories,
+            categories,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:notes,
+            rowDescription,
+        --div--;LLL:EXT:core/Resources/Private/Language/Form/locallang_tabs.xlf:extended,
+    ',
+    'columnsOverrides' => [
+        'bodytext' => [
+            'config' => [
+                'enableRichtext' => true,
+            ]
+        ]
+    ]
+];

@@ -184,27 +184,11 @@ class ImageService extends \TYPO3\CMS\Extbase\Service\ImageService
 
         // If a processed file should be converted: Reconstitute as regular file
         if (is_callable([$image, 'getOriginalFile'])) {
-            // @TODO: Method is unknown on $image
-            $config = array_replace($image->getProcessingConfiguration(), $config);
-
-            $originalFile = $image->getOriginalFile();
-            $originalFile->setIdentifier($image->getIdentifier());
-            $image = $originalFile;
-
-//            $image  = new File([
-//                'uid'               => $image->getOriginalFile()->getUid(),
-//                'name'              => $image->getName(),
-//                'extension'         => $image->getExtension(),
-//                'identifier'        => $image->getIdentifier(),
-//                'identifier_hash'   => $image->getHashedIdentifier(),
-//                'mime_type'         => $image->getMimeType(),
-//                'url'               => $image->getPublicUrl(),
-//                'sha1'              => $image->getSha1(),
-//                'modification_date' => $image->getProperty('crdate'),
-//            ], $image->getOriginalFile()->getStorage(), [
-//                'width'  => $image->getProperty('width'),
-//                'height' => $image->getProperty('height'),
-//            ]);
+            $config                 = array_replace($image->getProcessingConfiguration(), $config);
+            $originalFile           = $image->getOriginalFile();
+            $originalFileIdentifier = $image->getIdentifier();
+            $image                  = clone $originalFile;
+            $image->setIdentifier($originalFileIdentifier);
         }
 
         // Convert the image

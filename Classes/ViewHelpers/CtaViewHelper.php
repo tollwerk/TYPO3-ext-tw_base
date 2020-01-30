@@ -54,13 +54,11 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
 
     // Call To action types
     const TYPE_LINK = 'link';
-    const TYPE_button = 'button';
-    const TYPES = [self::TYPE_LINK => 'a', self::TYPE_button => 'button'];
+    const TYPE_BUTTON = 'button';
+    const TYPES = [self::TYPE_LINK => 'a', self::TYPE_BUTTON => 'button'];
 
     // CTA styles
-    const STYLE_OPAQUE = 'opaque';
-    const STYLE_OUTLINE = 'outline';
-    const STYLES = [self::STYLE_OPAQUE, self::STYLE_OUTLINE];
+    const STYLE_DEFAULT = 'default';
 
     /**
      * Initialize arguments
@@ -72,11 +70,11 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
         parent::initializeArguments();
         $this->registerArgument('cta-type', 'string', 'Call To Action type (one of "link" or "button")', false,
             self::TYPE_LINK);
-        $this->registerArgument('cta-style', 'string',
-            'Call To Action style (one of "opaque", "outline" or "inline")',
-            false, self::STYLE_OPAQUE);
+        $this->registerArgument('cta-style', 'string', 'Call To Action style (e.g. "opaque", "outline" or "inline")',
+            false, self::STYLE_DEFAULT);
         $this->registerArgument('cta-invert', 'boolean', 'Invert the CTA colors for bright backgrounds', false, false);
         $this->registerArgument('cta-theme', 'string', 'Call To Action theme', false, 'default');
+        $this->registerArgument('disabled', 'bool', 'Specifies that the button is disabled', false, false);
         $this->registerTagAttribute('href', 'string', 'Link URL', false);
         $this->registerTagAttribute('type', 'string', 'Button type', false);
         $this->registerTagAttribute('name', 'string', 'Button name', false);
@@ -85,11 +83,6 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
             'autofocus',
             'string',
             'Specifies that a button should automatically get focus when the page loads'
-        );
-        $this->registerTagAttribute(
-            'disabled',
-            'string',
-            'Specifies that the input element should be disabled when the page loads'
         );
         $this->registerTagAttribute('form', 'string', 'Specifies one or more forms the button belongs to');
         $this->registerTagAttribute(
@@ -133,17 +126,22 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
         $type          = strtolower(trim($this->arguments['cta-type']));
         $type          = array_key_exists($type, self::TYPES) ? $type : self::TYPE_LINK;
         $style         = strtolower(trim($this->arguments['cta-style']));
-        $style         = in_array($style, self::STYLES) ? $style : self::STYLE_OPAQUE;
+        $style         = strlen($style) ? $style : self::STYLE_DEFAULT;
         $invert        = (boolean)$this->arguments['cta-invert'];
         $this->tagName = self::TYPES[$type];
         $this->tag->setTagName($this->tagName);
-
         $this->tag->addAttribute(
             'class',
             'CallToAction CallToAction--'.$style.' '.($invert ? 'CallToAction--inverted ' : '').'CallToAction--theme-'.$theme.$class
         );
+
+        if ($this->arguments['disabled'] && ($type == self::TYPE_BUTTON)) {
+            $this->tag->addAttribute('disabled', 'disabled');
+        }
+
         $this->tag->setContent(sprintf('<span class="CallToAction__content">%s</span>', $this->renderChildren()));
         $this->tag->forceClosingTag(true);
+
         return $this->tag->render();
     }
 }

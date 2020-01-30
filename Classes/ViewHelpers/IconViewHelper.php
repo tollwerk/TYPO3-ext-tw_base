@@ -101,9 +101,9 @@ class IconViewHelper extends AbstractTagBasedViewHelper
             $type     = strtolower(trim($this->arguments['type']));
             $type     = in_array($type, self::TYPES) ? $type : self::TYPE_INLINE;
             $icon     = ucfirst(pathinfo($this->arguments['icon'], PATHINFO_FILENAME)).'.svg';
-            $iconPath = $this->getIconFile($icon);
+            $iconFile = $this->getIconFile($icon);
 
-            $this->setIconProperties($this->getIconDom($iconPath));
+            $this->setIconProperties($this->getIconDom($iconFile));
             $this->tag->addAttribute('class', 'Icon Icon--'.$type.' Icon--theme-'.$theme.$class);
             $this->tag->addAttribute('aria-hidden', 'true');
             $this->tag->addAttribute('role', 'presentation');

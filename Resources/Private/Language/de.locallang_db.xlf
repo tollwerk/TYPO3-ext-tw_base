@@ -48,6 +48,30 @@
             <trans-unit id="images.srcset" xml:space="preserve" approved="yes">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			<target state="translated">Zusätzliche Bildgrößen für Responsive Bilder: Zusätzliche Bildgrößen, die für jedes Inhaltsbild erzeugt werden sollen (kommaseparierte Liste von Bildbreiten in Pixeln oder Auflösungsfaktoren, z.B. "2x")</target></trans-unit>
+            <trans-unit id="javascript" xml:space="preserve" approved="yes">
+				<source>JavaScript</source>
+			<target state="translated">JavaScript</target></trans-unit>
+            <trans-unit id="javascript.polyfills" xml:space="preserve" approved="yes">
+				<source>Include polyfills</source>
+			<target state="translated">Polyfills einschließen</target></trans-unit>
+            <trans-unit id="javascript.featureDetection" xml:space="preserve" approved="yes">
+				<source>Include feature detection</source>
+			<target state="translated">Feature-Erkennung einschließen</target></trans-unit>
+            <trans-unit id="javascript.initializer" xml:space="preserve" approved="yes">
+				<source>Initializer</source>
+			<target state="translated">Initializer</target></trans-unit>
+            <trans-unit id="javascript.observer" xml:space="preserve" approved="yes">
+				<source>Mutation Observer</source>
+			<target state="translated">Mutation-Observer</target></trans-unit>
+            <trans-unit id="javascript.breakpointManager" xml:space="preserve" approved="yes">
+				<source>Breakpoint Manager</source>
+			<target state="translated">Breakpoint-Manager</target></trans-unit>
+            <trans-unit id="javascript.lazyLoading" xml:space="preserve" approved="yes">
+				<source>Image Lazy Loading</source>
+			<target state="translated">Nachladen von Bildern</target></trans-unit>
+            <trans-unit id="javascript.hitArea" xml:space="preserve" approved="yes">
+				<source>Link hit area extension</source>
+			<target state="translated">Hit-Area-Erweiterung für Links</target></trans-unit>
             <trans-unit id="images.densities" xml:space="preserve" approved="yes">
 				<source>Display Densities for Responsive Images: Comma-separated list of display density descriptors (e. g. "1x, 2x") for the creation of media queries</source>
 			<target state="translated">Auflösungsfaktoren für Responsive Bilder: Kommaseparierte Liste von Auflösungsfaktoren (z.B. "1x", "2x") für die Erzeugung von Media Queries</target></trans-unit>
@@ -112,11 +136,33 @@
 				<source>Skip converters</source>
 			<target state="translated">Konverter unterdrücken</target></trans-unit>
             <trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve" approved="yes">
-				<source>WebP</source>
+                <source>WebP</source>
 			<target state="translated">WebP</target></trans-unit>
+            <trans-unit id="tt_content.tx_twbase_video_tracks" xml:space="preserve" approved="yes">
+				<source>Tracks</source>
+			<target state="translated">Tracks</target></trans-unit>
+            <trans-unit id="tt_content.tx_twbase_video_tracks.addFileReference" xml:space="preserve" approved="yes">
+				<source>Add track file</source>
+			<target state="translated">Track-Datei hinzufügen</target></trans-unit>
             <trans-unit id="tt_content.palette.imageadvanced" xml:space="preserve" approved="yes">
 				<source>Responsivity &amp; converters</source>
 			<target state="translated">Responsivität &amp; Konverter</target></trans-unit>
+            <trans-unit id="tollwerk" approved="yes">
+                <source>Tollwerk</source> <target state="translated">Tollwerk</target></trans-unit>
+            <trans-unit id="twbase_video" approved="yes">
+                <source>Video</source> <target state="translated">Video</target></trans-unit>
+            <trans-unit id="twbase_video.wizard.title" approved="yes">
+                <source>Video</source>
+            <target state="translated">Video</target></trans-unit>
+            <trans-unit id="twbase_video.wizard.description" approved="yes">
+                <source>A video with multiple sources, poster image and captions</source>
+            <target state="translated">Video mit mehreren Quellen, Vorschaubild und Untertiteln</target></trans-unit>
+            <trans-unit id="twbase_video.poster_image" approved="yes">
+                <source>Poster image</source>
+            <target state="translated">Vorschaubild</target></trans-unit>
+            <trans-unit id="twbase_video.bodytext" approved="yes">
+                <source>Fallback text</source>
+            <target state="translated">Ersatztext</target></trans-unit>
             <trans-unit id="pages.tx_twbase_title_language" xml:space="preserve" approved="yes">
 				<source>Page title language</source>
 			<target state="translated">Sprache der Seitentitel</target></trans-unit>
@@ -132,6 +178,33 @@
             <trans-unit id="linkbrowse.number" xml:space="preserve" approved="yes">
 				<source>Telecom number</source>
 			<target state="translated">Rufnummer</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track" xml:space="preserve" approved="yes">
+				<source>Video Track</source>
+			<target state="translated">Video-Track</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind" xml:space="preserve" approved="yes">
+				<source>Kind</source>
+			<target state="translated">Typ</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.subtitles" xml:space="preserve" approved="yes">
+				<source>Subtitles</source>
+			<target state="translated">Übersetzungen &amp; Hintergrundinfos</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.captions" xml:space="preserve" approved="yes">
+				<source>Closed Captions</source>
+			<target state="translated">Untertitel</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.descriptions" xml:space="preserve" approved="yes">
+				<source>Descriptions</source>
+			<target state="translated">Audiodeskription</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.chapters" xml:space="preserve" approved="yes">
+				<source>Chapters</source>
+			<target state="translated">Kapitel</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.file" xml:space="preserve" approved="yes">
+				<source>File</source>
+			<target state="translated">Datei</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.file.addFileReference" xml:space="preserve" approved="yes">
+				<source>Add track file</source>
+			<target state="translated">Track-Datei auswählen</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.language" xml:space="preserve" approved="yes">
+				<source>Language</source>
+			<target state="translated">Sprache</target></trans-unit>
         </body>
     </file>
 </xliff>
