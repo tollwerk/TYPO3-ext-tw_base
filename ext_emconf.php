@@ -25,11 +25,11 @@ $EM_CONF['tw_base'] = [
     'constraints'      => [
         'depends'   => [
             'typo3' => '10.0.0-',
+            'form'  => '*'
         ],
         'conflicts' => [],
         'suggests'  => [
             'static_info_tables' => '*',
-            'form'               => '*'
         ],
     ],
 ];

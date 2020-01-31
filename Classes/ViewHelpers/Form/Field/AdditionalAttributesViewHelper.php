@@ -36,9 +36,13 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Form\Field;
 
+use Tollwerk\TwBase\Domain\Validator\ValidationErrorMapper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Error\Result;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
+use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
+use TYPO3\CMS\Form\Service\TranslationService;
+use TYPO3\CMS\Form\ViewHelpers\RenderRenderableViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
@@ -102,7 +106,40 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
             $additionalAttributes['aria-invalid'] = 'false';
         }
 
-        debug($additionalAttributes);
+        $elementValidators = [];
+        foreach ($element->getValidators() as $validatorInstance) {
+            $elementValidators[get_class($validatorInstance)] = true;
+        }
+
+        if (count($elementValidators)) {
+            /** @var FormRuntime $formRuntime */
+            $formRuntime = $renderingContext
+                ->getViewHelperVariableContainer()
+                ->get(RenderRenderableViewHelper::class, 'formRuntime');
+
+            // Run through all  element validators
+            foreach (array_keys($elementValidators) as $validatorClass) {
+                // Run through all potential constraints
+                foreach (ValidationErrorMapper::getInverseMap($validatorClass) as $constraint => $errorCodes) {
+                    // Run through all associated Extbase error codes
+                    foreach ($errorCodes as $errorCode) {
+                        // Try to get a translated error message
+                        $errorMessage = TranslationService::getInstance()->translateFormElementError(
+                            $element,
+                            $errorCode,
+                            [],
+                            'default',
+                            $formRuntime
+                        );
+                        // Add as constraint error message attribute
+                        if (strlen($errorMessage)) {
+                            $additionalAttributes['data-errormsg-'.$constraint] = $errorMessage;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
 
         return $additionalAttributes;
     }
