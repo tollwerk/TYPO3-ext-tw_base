@@ -58,19 +58,6 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
     use CompileWithRenderStatic;
 
     /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     *
-     * @return void
-     * @api
-     */
-    public function initializeArguments()
-    {
-        $this->registerArgument('element', GenericFormElement::class, 'Form element', true);
-        $this->registerArgument('validationResults', Result::class, 'Validation results', false, null);
-    }
-
-    /**
      * Compile a list of additional attributes for a form field
      *
      * @param array $arguments
@@ -89,22 +76,18 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
         /** @var Result $validationResults */
         $validationResults = $arguments['validationResults'];
 
-        $properties                                = $element->getProperties();
-        $additionalAttributes                      = $properties['fluidAdditionalAttributes'] ?? [];
+        $properties = $element->getProperties();
+        $additionalAttributes = $properties['fluidAdditionalAttributes'] ?? [];
         $additionalAttributes['aria-errormessage'] = $element->getUniqueIdentifier().'-error';
+        $ariaDescribedBy = GeneralUtility::trimExplode(' ',
+            $additionalAttributes['aria-describedby'] ?? '', true);
+        $ariaDescribedBy[] = $additionalAttributes['aria-errormessage'];
+        $additionalAttributes['aria-describedby'] = implode(' ', $ariaDescribedBy);
         if ($element->isRequired()) {
-            $additionalAttributes['required']      = 'required';
+            $additionalAttributes['required'] = 'required';
             $additionalAttributes['aria-required'] = 'true';
         }
-        if ($validationResults->hasErrors()) {
-            $ariaDescribedBy                          = GeneralUtility::trimExplode(' ',
-                $additionalAttributes['aria-describedby'] ?? '', true);
-            $ariaDescribedBy[]                        = $additionalAttributes['aria-errormessage'];
-            $additionalAttributes['aria-describedby'] = implode(' ', $ariaDescribedBy);
-            $additionalAttributes['aria-invalid']     = 'true';
-        } else {
-            $additionalAttributes['aria-invalid'] = 'false';
-        }
+        $additionalAttributes['aria-invalid'] = $validationResults->hasErrors() ? 'true' : 'false';
 
         $elementValidators = [];
         foreach ($element->getValidators() as $validatorInstance) {
@@ -142,5 +125,18 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
         }
 
         return $additionalAttributes;
+    }
+
+    /**
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
+     *
+     * @return void
+     * @api
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('element', GenericFormElement::class, 'Form element', true);
+        $this->registerArgument('validationResults', Result::class, 'Validation results', false, null);
     }
 }
