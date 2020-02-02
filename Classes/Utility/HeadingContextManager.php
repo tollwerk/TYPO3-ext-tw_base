@@ -91,7 +91,7 @@ class HeadingContextManager implements SingletonInterface
      *
      * @return HeadingContext Heading context
      */
-    public function setupContext($level = null, $visualType = null, string $content = ''): HeadingContext
+    public function setupContext(int $level = null, int $visualType = null, string $content = ''): HeadingContext
     {
         $level      = intval($level);
         $afterLevel = max(1, $this->currentLevel);
@@ -99,7 +99,7 @@ class HeadingContextManager implements SingletonInterface
         $level      = ($level >= 100) ? 0 : $level;
         $error      = null;
 
-//        debug([$level, $this->currentLevel], 'Setup context');
+        // debug([$level, $this->currentLevel], 'Setup context');
 
         // If a particular headline level was given
         if ($level > 0) {

@@ -72,7 +72,7 @@ class HeadingViewHelper extends AbstractTagBasedViewHelper
      */
     public function render(): string
     {
-        $level   = $this->arguments['level'];
+        $level = $this->arguments['level'];
         $type    = $this->arguments['type'];
         $content = trim($this->arguments['content']);
 
