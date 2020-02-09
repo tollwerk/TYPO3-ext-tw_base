@@ -66,22 +66,32 @@ class AjaxController extends ActionController
      *
      * @return string
      */
-    private function createJsonResponse(string $status, $result = null, \Exception $exception = null)
+    private function createJsonResponse(string $status, $result = null, \Exception $exception = null, \Error $error= null)
     {
         $return = [
             'status' => intval($status),
             'result' => $result
         ];
 
-        if ($exception) {
+        if ($exception || $error) {
             $devIpMask = GeneralUtility::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']);
             if (in_array($_SERVER['REMOTE_ADDR'], $devIpMask)) {
-                $return['exception'] = [
-                    'message' => $exception->getMessage(),
-                    'code' => $exception->getCode(),
-                    'file' => $exception->getFile(),
-                    'line' => $exception->getLine(),
-                ];
+                if($exception) {
+                    $return['exception'] = [
+                        'message' => $exception->getMessage(),
+                        'code' => $exception->getCode(),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                    ];
+                }
+                if($error) {
+                    $return['error'] = [
+                        'message' => $error->getMessage(),
+                        'code' => $error->getCode(),
+                        'file' => $error->getFile(),
+                        'line' => $error->getLine(),
+                    ];
+                }
             }
         }
 
@@ -132,8 +142,10 @@ class AjaxController extends ActionController
                 };
             }
             return $this->createJsonResponse(self::STATUS_NO_METHOD);
-        } catch (\Exception $e) {
-            return $this->createJsonResponse(self::STATUS_ERROR, null, $e);
+        } catch (\Exception $exception) {
+            return $this->createJsonResponse(self::STATUS_ERROR, null, $exception);
+        } catch (\Error $error) {
+            return $this->createJsonResponse(self::STATUS_ERROR, null, null, $error);
         }
     }
 }
