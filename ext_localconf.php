@@ -122,6 +122,16 @@ call_user_func(
             )
         );
 
+        // Add plugin for generic ajax calls. Add array to SC_OPTIONS for registering callable ajax functions
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax'] = [];
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'TwBase',
+            'Ajax',
+            [\Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch'],
+            [ \Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch']
+        );
+
+
         // Register additional image processing tasks
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.CropScaleMaskCompress'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageCropScaleMaskCompressTask::class;
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.Convert']               = \Tollwerk\TwBase\Service\Resource\Processing\ImageConvertTask::class;

@@ -75,6 +75,9 @@ These services don't work out of the box and require particular software to be a
 
 * Custom video content element with multiple sources, poster image and subtitles / captions
 
+## AjaxController
+A ready-to-us controller and plugin for handling ajax requests via ?type=4000. See `dispatchAction()` inside [AjaxController](Classes/Controller/AjaxController.php) 
+
 ## Miscellaneous
 
 * Image lazyloading with automatic SVG based preview images (like [SQIP](https://github.com/technopagan/sqip); requires particular software on the server)
