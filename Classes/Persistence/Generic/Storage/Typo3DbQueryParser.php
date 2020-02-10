@@ -50,7 +50,7 @@ use TYPO3\CMS\Extbase\Persistence\QueryInterface;
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Persistence\Generic\Storage
- * @see https://forge.typo3.org/issues/90013
+ * @see        https://forge.typo3.org/issues/90013
  */
 class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser
 {

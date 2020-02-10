@@ -99,6 +99,7 @@ class CleanupProcessedFilesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->processedFileRepository->removeAll();
+
         return 0;
     }
 }

@@ -68,6 +68,7 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
     public function initializeArguments(): void
     {
         parent::initializeArguments();
+        $this->registerArgument('target', 'string', 'Link target', false, false);
         $this->registerArgument('cta-type', 'string', 'Call To Action type (one of "link" or "button")', false,
             self::TYPE_LINK);
         $this->registerArgument('cta-style', 'string', 'Call To Action style (e.g. "opaque", "outline" or "inline")',
@@ -122,6 +123,7 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
     public function render(): string
     {
         $class         = empty($this->arguments['class']) ? '' : ' '.trim($this->arguments['class']);
+        $target        = empty($this->arguments['target']) ? '' : ' '.trim($this->arguments['target']);
         $theme         = strtolower(trim($this->arguments['cta-theme'])) ?: 'default';
         $type          = strtolower(trim($this->arguments['cta-type']));
         $type          = array_key_exists($type, self::TYPES) ? $type : self::TYPE_LINK;
@@ -134,6 +136,10 @@ class CtaViewHelper extends AbstractTagBasedViewHelper
             'class',
             'CallToAction CallToAction--'.$style.' '.($invert ? 'CallToAction--inverted ' : '').'CallToAction--theme-'.$theme.$class
         );
+
+        if ($target && ($type == self::TYPE_LINK)) {
+            $this->tag->addAttribute('target', $target);
+        }
 
         if ($this->arguments['disabled'] && ($type == self::TYPE_BUTTON)) {
             $this->tag->addAttribute('disabled', 'disabled');

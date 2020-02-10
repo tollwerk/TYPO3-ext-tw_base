@@ -40,7 +40,7 @@ use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceCompressor;
 
 /**
- * Custom JavaScript concatenation utility
+ * Custom concatenation utility
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Utility
@@ -48,24 +48,23 @@ use TYPO3\CMS\Core\Resource\ResourceCompressor;
 class ConcatenateUtility extends ResourceCompressor
 {
     /**
-     * Concatenate JavaScript resources
+     * Concatenate CSS resources
      *
-     * @param array $cssFiles
+     * @param array $cssFiles CSS resources
      */
     public function concatenateCssFiles(array $cssFiles): void
     {
         foreach (['cssFiles'] as $section) {
             $sectionBundles      = $this->splitBundles($cssFiles[$section]);
-
             $sectionConcatenates = [];
             foreach ($sectionBundles as $bundleResources) {
                 $sectionConcatenates += parent::concatenateCssFiles($bundleResources);
             }
 
-            $cssFiles[$section] = $this->replaceFonts($sectionConcatenates);
+            $cssFiles[$section] = $sectionConcatenates;
         }
     }
- 
+
     /**
      * Concatenate JavaScript resources
      *
