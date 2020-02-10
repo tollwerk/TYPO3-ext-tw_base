@@ -1,9 +1,10 @@
 <html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:base="http://typo3.org/ns/Tollwerk/TwBase/ViewHelpers"
       xmlns:formvh="http://typo3.org/ns/TYPO3/CMS/Form/ViewHelpers" data-namespace-typo3-fluid="true">
+
     <formvh:renderRenderable renderable="{element}">
         <div class="FormField FormCallToAction">
-            <base:cta href="{element.properties.href}" cta-theme="{element.properties.theme}" cta-invert="{element.properties.invert}" title="{formvh:translateElementProperty(element: element, property: 'title')}">
+            <base:cta cta-type="{element.properties.cta-type}" name="{element.properties.name}" type="{element.properties.type}" value="{element.properties.value}" href="{element.properties.href}" cta-style="{element.properties.style}" cta-theme="{element.properties.theme}" cta-invert="{element.properties.invert}" title="{formvh:translateElementProperty(element: element, property: 'title')}">
                 {formvh:translateElementProperty(element: element, property: 'label')}
             </base:cta>
         </div>
