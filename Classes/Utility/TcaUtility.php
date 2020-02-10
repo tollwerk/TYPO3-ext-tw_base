@@ -254,6 +254,17 @@ class TcaUtility
     ];
 
     /**
+     * Add track languages
+     *
+     * @param array $config
+     */
+    public function trackLanguages(array &$config)
+    {
+        $config['items'] = self::$languages;
+        unset($config['items'][0]);
+    }
+
+    /**
      * Creates the string for TCA['types'][...]['showitem']
      *
      * @param array $showitem       Array of divs, fields and palletes to show<p>
@@ -298,6 +309,18 @@ class TcaUtility
         }
 
         return implode(','.PHP_EOL, $showitemArray);
+    }
+
+    /**
+     * Return a list of timezone identifiers
+     *
+     * @return array[] Timezone identifiers
+     */
+    public static function timezones(): array
+    {
+        return array_map(function(string $timezone) {
+            return [$timezone, $timezone];
+        }, \DateTimeZone::listIdentifiers());
     }
 
     /**

@@ -1,20 +1,20 @@
 <?php
 
 /**
- * RWS Relaunch
+ * tollwerk
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Form\Field
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,19 +34,46 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Collection;
+namespace Tollwerk\TwBase\ViewHelpers\Form;
 
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
+use Tollwerk\TwBase\Error\Constraint;
+use TYPO3\CMS\Extbase\Error\Error;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Collection view helper base
- *
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Collection
+ * Mapped Errors view helper
  */
-abstract class AbstractCollectionViewHelper extends AbstractViewHelper
+class ConstraintsViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
+    /**
+     * Compile a list of additional attributes for a form field
+     *
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return mixed
+     */
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $constraints = [];
+
+        /** @var Error $error */
+        foreach ($arguments['errors'] as $error) {
+            $constraint = Constraint::fromError($error);
+            $constraints[get_class($error).':'.$error->getCode()] = $constraint;
+        }
+
+        return array_values($constraints);
+    }
+
     /**
      * Initialize all arguments. You need to override this method and call
      * $this->registerArgument(...) inside this method, to register all your arguments.
@@ -56,31 +83,6 @@ abstract class AbstractCollectionViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        parent::initializeArguments();
-        $this->registerArgument('zero', 'bool', 'Allow numeric zero values', false, false);
-    }
-
-    /**
-     * Cast an argument to an array and purge empty values
-     *
-     * @param mixed $array String or array
-     *
-     * @return array Purged array
-     */
-    protected function purge($array): array
-    {
-        // Convert domain object into array
-        if ($array instanceof AbstractDomainObject) {
-            $array = $array->_getCleanProperties();
-        }
-
-        $allowZero = boolval($this->arguments['zero']);
-
-        // Filter and trim array values
-        return array_filter(array_map(function($item) {
-            return is_string($item) ? trim($item) : $item;
-        }, (array)$array), function($item) use ($allowZero) {
-            return ($allowZero && is_numeric($item)) || !empty($item);
-        });
+        $this->registerArgument('errors', 'array', 'Form validation errors', true);
     }
 }

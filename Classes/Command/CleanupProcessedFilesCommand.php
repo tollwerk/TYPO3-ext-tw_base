@@ -93,9 +93,13 @@ class CleanupProcessedFilesCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
+     * @return int Status
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->processedFileRepository->removeAll();
+
+        return 0;
     }
 }

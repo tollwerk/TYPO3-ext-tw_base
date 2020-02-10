@@ -14,7 +14,7 @@
                         <a name="c{data._LOCALIZED_UID}" class="anchor"></a>
                     </f:if>
                     <f:render section="Before" optional="true">
-                        <f:render partial="DropIn/Before/All" arguments="{_all}"/>
+                        <f:render partial="DropIn/Before/All" optional="true" arguments="{_all}"/>
                     </f:render>
                     <f:alias map="{headingContext: '{base:heading.context.get()}'}">
                         <f:render section="Header" optional="true">
@@ -43,7 +43,7 @@
                 <div class="frame-space-before-{data.space_before_class}"></div>
             </f:if>
             <f:render section="Before" optional="true">
-                <f:render partial="DropIn/Before/All" arguments="{_all}"/>
+                <f:render partial="DropIn/Before/All" optional="true" arguments="{_all}"/>
             </f:render>
             <f:alias map="{headingContext: '{base:heading.context.get()}'}">
                 <f:render section="Header" optional="true">

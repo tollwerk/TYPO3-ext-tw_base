@@ -1,0 +1,57 @@
+tt_content {
+    twbase_video < lib.contentElement
+    twbase_video {
+        templateName = Video.html
+
+        # Remove the standard header
+        10 >
+
+        # Configure data processing
+        dataProcessing {
+            10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+            10 {
+                references.fieldName = assets
+                as = sources
+            }
+            20 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+            20 {
+                references.fieldName = image
+                as = poster
+            }
+            30 = TYPO3\CMS\Frontend\DataProcessing\DatabaseQueryProcessor
+            30 {
+                # regular if syntax
+                if.isTrue.field = tx_twbase_video_tracks
+
+                # the table name from which the data is fetched from
+                # + stdWrap
+                table = tx_twbase_domain_model_video_track
+
+                # All properties from .select can be used directly
+                # + stdWrap
+                uidInList.field = tx_twbase_video_tracks
+
+                # The target variable to be handed to the ContentObject again, can
+                # be used in Fluid e.g. to iterate over the objects. defaults to
+                # "records" when not defined
+                # + stdWrap
+                as = tracks
+
+                # The fetched records can also be processed by DataProcessors.
+                # All configured processors are applied to every row of the result.
+                dataProcessing {
+                    10 = TYPO3\CMS\Frontend\DataProcessing\FilesProcessor
+                    10 {
+                        references.fieldName = file
+                        as = file
+                    }
+                }
+            }
+        }
+
+        settings.media < plugin.tx_twbase.settings.images
+        settings.media.dimensions.width = {$styles.content.textmedia.maxW}
+
+        extbase.controllerExtensionName = tw_base
+    }
+}

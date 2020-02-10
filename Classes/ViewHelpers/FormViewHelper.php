@@ -5,16 +5,16 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Domain\Model
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,33 +34,24 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\Domain\Model;
+namespace Tollwerk\TwBase\ViewHelpers;
 
-use SJBR\StaticInfoTables\Domain\Model\Country as StaticCountry;
-use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
-use TYPO3\CMS\Extbase\DomainObject\AbstractDomainObject;
-
-// If the Static Info Tables extension is loaded: Declare an extended country model
-if (ExtensionManagementUtility::isLoaded('static_info_tables')) {
+/**
+ * Custom form view helper
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
+ */
+class FormViewHelper extends \TYPO3\CMS\Form\ViewHelpers\FormViewHelper
+{
     /**
-     * Country
-     *
-     * @package    Tollwerk\TwBase
-     * @subpackage Tollwerk\TwBase\Domain\Model
+     * Initialization
      */
-    class Country extends StaticCountry
+    public function initialize()
     {
+        parent::initialize();
 
-    }
-} else {
-    /**
-     * Country
-     *
-     * @package    Tollwerk\TwBase
-     * @subpackage Tollwerk\TwBase\Domain\Model
-     */
-    class Country extends AbstractDomainObject
-    {
-
+        // The novalidate attribute must not be set until enabled!
+        $this->tag->removeAttribute('novalidate');
     }
 }

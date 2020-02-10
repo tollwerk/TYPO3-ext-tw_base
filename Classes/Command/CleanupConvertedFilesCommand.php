@@ -96,6 +96,8 @@ class CleanupConvertedFilesCommand extends Command
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
+     * @return int Status
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -119,6 +121,8 @@ class CleanupConvertedFilesCommand extends Command
                         $processedFile->delete(true);
                     }
                 }
+
+                return 0;
             } catch (\Exception $e) {
                 $output->writeln(
                     sprintf(
@@ -128,7 +132,11 @@ class CleanupConvertedFilesCommand extends Command
                         $e->getMessage()
                     )
                 );
+
+                return $e->getCode();
             }
         }
+
+        return 0;
     }
 }

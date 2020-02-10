@@ -111,7 +111,7 @@ class EmailUtility
              ->setTo($recipients)
              ->setCc($cc)
              ->setBcc($bcc);
-        if($replyTo) {
+        if ($replyTo) {
             $mail->setReplyTo($replyTo);
         }
         $mail->setSubject($subject);

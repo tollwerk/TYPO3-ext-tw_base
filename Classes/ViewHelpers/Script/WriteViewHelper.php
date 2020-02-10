@@ -55,6 +55,15 @@ class WriteViewHelper extends AbstractTagBasedViewHelper
     protected $tagName = 'script';
 
     /**
+     * Arguments initialization
+     */
+    public function initializeArguments(): void
+    {
+        parent::initializeArguments();
+        $this->registerArgument('condition', 'string', 'JavaScript condition to be met', false, null);
+    }
+
+    /**
      * Render the script
      *
      * @return string Rendered icon
@@ -69,7 +78,10 @@ class WriteViewHelper extends AbstractTagBasedViewHelper
             return '';
         }
 
-        $this->tag->setContent('document.write(\''.addcslashes($html, "'").'\')');
+        $condition = trim($this->arguments['condition']);
+        $condition = strlen($condition) ? "if($condition)" : '';
+
+        $this->tag->setContent($condition.'document.write(\''.addcslashes($html, "'").'\')');
 
         return $this->tag->render();
     }
