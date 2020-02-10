@@ -75,7 +75,7 @@ class AjaxController extends ActionController
 
         if ($exception || $error) {
             $devIpMask = GeneralUtility::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']);
-            if (in_array($_SERVER['REMOTE_ADDR'], $devIpMask)) {
+            if (in_array($_SERVER['REMOTE_ADDR'], $devIpMask) || in_array('*', $devIpMask)) {
                 if($exception) {
                     $return['exception'] = [
                         'message' => $exception->getMessage(),
@@ -95,7 +95,6 @@ class AjaxController extends ActionController
             }
         }
 
-        $GLOBALS['TSFE']->setContentType('text/json');
         return json_encode($return);
     }
 
