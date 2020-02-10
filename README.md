@@ -49,6 +49,8 @@ These services don't work out of the box and require particular software to be a
 * `form.page.elementsByIdentifier` viewhelper (returns an array of all renderable elements of a form page by their identifier)
 * Link info viewhelper (returns detailed information about a link target)
 * SVG icon & icon sprite viewhelpers (returns detailed information about a link target)
+* `format.age` viewhelper for returning a human readable age string
+* `format.leadingZeroes` viewhelper for returning a formatted number string
 
 ## Utilities
 
