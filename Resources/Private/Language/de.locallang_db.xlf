@@ -201,6 +201,9 @@
             <trans-unit id="tx_twbase_domain_model_video_track.kind.chapters" xml:space="preserve" approved="yes">
 				<source>Chapters</source>
 			<target state="translated">Kapitel</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.transcript" xml:space="preserve" approved="yes">
+				<source>Transcript</source>
+			<target state="translated">Transkript</target></trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track.file" xml:space="preserve" approved="yes">
 				<source>File</source>
 			<target state="translated">Datei</target></trans-unit>
@@ -210,6 +213,9 @@
             <trans-unit id="tx_twbase_domain_model_video_track.language" xml:space="preserve" approved="yes">
 				<source>Language</source>
 			<target state="translated">Sprache</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.transcript" xml:space="preserve" approved="yes">
+				<source>Transcript</source>
+			<target state="translated">Trankskript</target></trans-unit>
         </body>
     </file>
 </xliff>

@@ -1,0 +1,43 @@
+<f:comment><!--
+
+    Render video transcripts
+
+    @param string name           Transcript name
+    @param array[] transcripts   Transcripts
+
+--></f:comment>
+<html data-namespace-typo3-fluid="true">
+    <f:if condition="{f:count(subject: transcripts)} == 1">
+        <f:then>
+            <f:render section="Transcript" arguments="{transcript: transcripts.0, name: name}"/>
+        </f:then>
+        <f:else>
+            <ul class="MediaVideo__transcript-list">
+                <f:for each="{transcripts}" as="transcript">
+                    <li class="MediaVideo_transcript-item">
+                        <f:render section="Transcript" arguments="{transcript: transcript, name: name}"/>
+                    </li>
+                </f:for>
+            </ul>
+        </f:else>
+    </f:if>
+
+    <f:comment><!--
+
+        Render video transcripts
+
+        @param string name          Transcript name
+        @param array transcript     Transcript
+
+    --></f:comment>
+    <f:section name="Transcript">
+        <details class="MediaVideo_transcript">
+            <summary class="MediaVideo_transcript-toggle">
+                {name} ()
+            </summary>
+            <div class="MediaVideo_transcript-body">
+                <f:format.html>{transcript.transcript}</f:format.html>
+            </div>
+        </details>
+    </f:section>
+</html>
