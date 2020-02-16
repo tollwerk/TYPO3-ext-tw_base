@@ -35,6 +35,7 @@ CREATE TABLE tx_twbase_domain_model_video_track
     kind      varchar(12)          DEFAULT ''  NOT NULL,
     file      int(11) unsigned     DEFAULT '0' NOT NULL,
     language  VARCHAR(16)          DEFAULT ''  NOT NULL,
+    transcript  TEXT,
 
     tstamp    int(11) unsigned     DEFAULT '0' NOT NULL,
     crdate    int(11) unsigned     DEFAULT '0' NOT NULL,

@@ -9,19 +9,25 @@
     @param array settings           Settings
 
 --></f:comment>
-<html xmlns:base="http://typo3.org/ns/Tollwerk/TwBase/ViewHelpers" data-namespace-typo3-fluid="true">
-    <video controls preload="metadata" {f:if(condition: poster, then: ' poster="{poster.0.publicUrl}"')}>
+<html data-namespace-typo3-fluid="true">
+    <video controls preload="metadata" {f:if(condition: poster, then:
+    ' poster="{poster.0.publicUrl}"')}>
     <f:for each="{sources}" as="source">
         <f:variable name="latestSource" value="{source.publicUrl}"/>
         <source src="{latestSource}" type="{source.mimeType}">
     </f:for>
     <f:for each="{tracks}" as="track">
-        <f:variable name="label" value="{f:if(
-                condition: track.file.0.originalFile.metaData.title,
-                then: track.file.0.originalFile.metaData.title,
-                else: '{track.data.kind} ({track.data.language})'
-                )}"/>
-        <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}" srclang="{track.data.language}"/>
+        <f:if condition="{track.data.kind} == 'transcript'">
+            <f:else>
+                <f:variable name="label" value="{f:if(
+                        condition: track.file.0.originalFile.metaData.title,
+                        then: track.file.0.originalFile.metaData.title,
+                        else: '{track.data.kind} ({track.data.language})'
+                        )}"/>
+                <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}"
+                       srclang="{track.data.language}"/>
+            </f:else>
+        </f:if>
     </f:for>
     <f:if condition="{data.bodytext}">
         <f:then>
@@ -34,4 +40,11 @@
         </f:else>
     </f:if>
     </video>
+    <f:variable name="transcripts" value="{}"/>
+    <f:for each="{tracks}" as="track">
+        <f:if condition="{track.data.kind} == 'transcript'">
+            <f:variable name="transcripts" value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
+        </f:if>
+    </f:for>
+    <f:render partial="Media/Rendering/Transcripts" arguments="{transcripts: transcripts, name: data.header}"/>
 </html>
