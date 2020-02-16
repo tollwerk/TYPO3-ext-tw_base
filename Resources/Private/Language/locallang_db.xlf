@@ -91,6 +91,9 @@
             <trans-unit id="images.lazyload.lqipblur" xml:space="preserve">
 				<source>Lazyload preview image blur: Standard deviation for the Gaussian Blur filter (0 = no blur effect)</source>
 			</trans-unit>
+            <trans-unit id="tt_content.tx_twbase_heading_language" xml:space="preserve">
+				<source>Heading language</source>
+			</trans-unit>
             <trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve">
 				<source>Visual display</source>
 			</trans-unit>

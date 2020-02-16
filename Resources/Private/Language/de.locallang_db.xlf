@@ -90,6 +90,9 @@
             <trans-unit id="images.lazyload.lqipblur" xml:space="preserve" approved="yes">
 				<source>Lazyload preview image blur: Standard deviation for the Gaussian Blur filter (0 = no blur effect)</source>
 			<target state="translated">Vorschaubilder Weichzeichner: Standard-Deviation für den Gaußschen Weichzeichner (0 = kein Weichzeichner)</target></trans-unit>
+            <trans-unit id="tt_content.tx_twbase_heading_language" xml:space="preserve" approved="yes">
+				<source>Heading language</source>
+			<target state="translated">Überschriftensprache</target></trans-unit>
             <trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve" approved="yes">
 				<source>Visual display</source>
 			<target state="translated">Darstellung</target></trans-unit>
@@ -148,9 +151,11 @@
 				<source>Responsivity &amp; converters</source>
 			<target state="translated">Responsivität &amp; Konverter</target></trans-unit>
             <trans-unit id="tollwerk" approved="yes">
-                <source>Tollwerk</source> <target state="translated">Tollwerk</target></trans-unit>
+                <source>Tollwerk</source>
+            <target state="translated">Tollwerk</target></trans-unit>
             <trans-unit id="twbase_video" approved="yes">
-                <source>Video</source> <target state="translated">Video</target></trans-unit>
+                <source>Video</source>
+            <target state="translated">Video</target></trans-unit>
             <trans-unit id="twbase_video.wizard.title" approved="yes">
                 <source>Video</source>
             <target state="translated">Video</target></trans-unit>

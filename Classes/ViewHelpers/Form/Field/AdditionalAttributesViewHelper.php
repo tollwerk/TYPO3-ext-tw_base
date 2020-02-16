@@ -76,15 +76,19 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
         /** @var Result $validationResults */
         $validationResults = $arguments['validationResults'];
 
-        $properties = $element->getProperties();
+        $properties           = $element->getProperties();
         $additionalAttributes = $properties['fluidAdditionalAttributes'] ?? [];
+
+        // Skipped as JAWS reads both the error message AND the aria-describedby attribute
+        // All other screenreaders only read the aria-describedby attribute
         $additionalAttributes['aria-errormessage'] = $element->getUniqueIdentifier().'-error';
-        $ariaDescribedBy = GeneralUtility::trimExplode(' ',
+
+        $ariaDescribedBy                          = GeneralUtility::trimExplode(' ',
             $additionalAttributes['aria-describedby'] ?? '', true);
-        $ariaDescribedBy[] = $additionalAttributes['aria-errormessage'];
+        $ariaDescribedBy[]                        = $element->getUniqueIdentifier().'-error';
         $additionalAttributes['aria-describedby'] = implode(' ', $ariaDescribedBy);
         if ($element->isRequired()) {
-            $additionalAttributes['required'] = 'required';
+            $additionalAttributes['required']      = 'required';
             $additionalAttributes['aria-required'] = 'true';
         }
         $additionalAttributes['aria-invalid'] = $validationResults->hasErrors() ? 'true' : 'false';
