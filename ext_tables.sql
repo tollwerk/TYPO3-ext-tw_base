@@ -14,13 +14,14 @@ CREATE TABLE pages
 #
 CREATE TABLE tt_content
 (
-    tx_twbase_heading_type  TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
-    tx_twbase_inline        TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
-    tx_twbase_responsive    TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL,
-    tx_twbase_lazyload      TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL,
-    tx_twbase_breakpoints   VARCHAR(64)         DEFAULT ''  NOT NULL,
-    tx_twbase_skipconverter VARCHAR(255)        DEFAULT ''  NOT NULL,
-    tx_twbase_video_tracks  VARCHAR(255)        DEFAULT ''  NOT NULL,
+    tx_twbase_heading_language VARCHAR(16)         DEFAULT ''  NOT NULL,
+    tx_twbase_heading_type     TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
+    tx_twbase_inline           TINYINT(1) UNSIGNED DEFAULT '0' NOT NULL,
+    tx_twbase_responsive       TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL,
+    tx_twbase_lazyload         TINYINT(1) UNSIGNED DEFAULT '1' NOT NULL,
+    tx_twbase_breakpoints      VARCHAR(64)         DEFAULT ''  NOT NULL,
+    tx_twbase_skipconverter    VARCHAR(255)        DEFAULT ''  NOT NULL,
+    tx_twbase_video_tracks     VARCHAR(255)        DEFAULT ''  NOT NULL,
 );
 
 #

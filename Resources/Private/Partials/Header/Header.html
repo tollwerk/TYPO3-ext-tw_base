@@ -3,7 +3,16 @@
       data-namespace-typo3-fluid="true">
     <f:if condition="{header}">
         <f:if condition="{layout} < 102">
-            <base:heading level="{layout}" type="{type}" class="{positionClass}" content="{header -> f:link.typolink(parameter: link)}"/>
+            <f:variable name="heading" value="{header -> f:link.typolink(parameter: link)}"/>
+            <f:if condition="{language}">
+                <f:then>
+                    <base:heading level="{layout}" type="{type}" class="{positionClass}" content="{heading}"
+                                  lang="{language}"/>
+                </f:then>
+                <f:else>
+                    <base:heading level="{layout}" type="{type}" class="{positionClass}" content="{heading}"/>
+                </f:else>
+            </f:if>
         </f:if>
     </f:if>
 </html>
