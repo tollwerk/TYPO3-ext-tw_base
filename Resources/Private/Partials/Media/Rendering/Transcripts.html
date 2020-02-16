@@ -14,7 +14,7 @@
         <f:else>
             <ul class="MediaVideo__transcript-list">
                 <f:for each="{transcripts}" as="transcript">
-                    <li class="MediaVideo_transcript-item">
+                    <li class="MediaVideo__transcript-item">
                         <f:render section="Transcript" arguments="{transcript: transcript, name: name}"/>
                     </li>
                 </f:for>
@@ -31,11 +31,14 @@
 
     --></f:comment>
     <f:section name="Transcript">
-        <details class="MediaVideo_transcript">
-            <summary class="MediaVideo_transcript-toggle">
-                {name} ()
+        <details class="MediaVideo__transcript">
+            <summary class="MediaVideo__transcript-toggle">
+                <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:video.transcript" arguments="{
+                    0: name,
+                    1: '{base:language(identifier: transcript.language)}'
+                }"/>
             </summary>
-            <div class="MediaVideo_transcript-body">
+            <div class="MediaVideo__transcript-body">
                 <f:format.html>{transcript.transcript}</f:format.html>
             </div>
         </details>
