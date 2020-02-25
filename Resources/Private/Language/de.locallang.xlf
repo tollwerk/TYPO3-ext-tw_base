@@ -51,7 +51,10 @@
                 <source>%s years ago </source>
             <target state="needs-translation">Vor %s Jahren</target></trans-unit>
             <trans-unit id="video.fallback" approved="yes">
-                <source>Your browser doesn't support HTML5 video. You may &lt;a href="%s"&gt;download the video&lt;/a&gt; and view it offline instead.</source> <target state="translated">Ihr Browser unterstützt keine HTML5-Videos. Sie können stattdessen &lt;a href="%s"&gt;das Video herunterladen&lt;/a&gt; und offline betrachten.</target></trans-unit>
+                <source>Your browser doesn't support HTML5 video. You may &lt;a href="%s"&gt;download the video&lt;/a&gt; and view it offline instead.</source>
+            <target state="translated">Ihr Browser unterstützt keine HTML5-Videos. Sie können stattdessen &lt;a href="%s"&gt;das Video herunterladen&lt;/a&gt; und offline betrachten.</target></trans-unit>
+            <trans-unit id="video.transcript" approved="yes">
+                <source>Transcript of: %s [%s]</source> <target state="translated">Transkript zu: %s [%s]</target></trans-unit>
         </body>
     </file>
 </xliff>

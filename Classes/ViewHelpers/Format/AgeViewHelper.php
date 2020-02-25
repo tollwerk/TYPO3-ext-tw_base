@@ -35,16 +35,15 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Format;
 
+use Tollwerk\TwBase\Utility\LocalizationUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithContentArgumentAndRenderStatic;
-use Tollwerk\TwBase\Utility\LocalizationUtility;
 
 /**
- * AgeViewHelper
+ * Age ViewHelper
  *
- * Return the humand readable age of a timestamp,
- * e.g. "One hour ago"
+ * Return the human readable age of a timestamp, e.g. "One hour ago"
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Classes\ViewHelpers\Format
@@ -76,12 +75,16 @@ class AgeViewHelper extends AbstractViewHelper
      * @param array $arguments
      * @param \Closure $renderChildrenClosure
      * @param RenderingContextInterface $renderingContext
-     * @return mixed
+     *
+     * @return string Age string
      */
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
-        $then = intval($renderChildrenClosure());
-        $now = time();
+    public static function renderStatic(
+        array $arguments,
+        \Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $then    = intval($renderChildrenClosure());
+        $now     = time();
         $seconds = $now - $then;
 
         if ($seconds <= 0) {
@@ -90,41 +93,42 @@ class AgeViewHelper extends AbstractViewHelper
 
         // Return seconds
         if ($seconds < 60) {
-            return ($seconds > 1 ? LocalizationUtility::translate('age.seconds', 'TwBase', array($seconds)) : LocalizationUtility::translate('age.second', 'TwBase', array($seconds)));
+            return LocalizationUtility::translate(($seconds > 1) ? 'age.seconds' : 'age.second', 'TwBase', [$seconds]);
         }
 
         // Return minutes
         $minutes = floor($seconds / 60);
         if ($minutes < 60) {
-            return ($minutes > 1 ? LocalizationUtility::translate('age.minutes', 'TwBase', array($minutes)) : LocalizationUtility::translate('age.minute', 'TwBase', array($minutes)));
+            return LocalizationUtility::translate(($minutes > 1) ? 'age.minutes' : 'age.minute', 'TwBase', [$minutes]);
         }
 
         // Return hours
         $hours = floor($minutes / 60);
         if ($hours < 24) {
-            return ($hours > 1 ? LocalizationUtility::translate('age.hours', 'TwBase', array($hours)) : LocalizationUtility::translate('age.hour', 'TwBase', array($hours)));
+            return LocalizationUtility::translate(($hours > 1) ? 'age.hours' : 'age.hour', 'TwBase', [$hours]);
         }
 
         // Return days
         $days = floor($hours / 24);
         if ($days < 7) {
-            return ($days > 1 ? LocalizationUtility::translate('age.days', 'TwBase', array($days)) : LocalizationUtility::translate('age.day', 'TwBase', array($days)));
+            return LocalizationUtility::translate(($days > 1) ? 'age.days' : 'age.day', 'TwBase', [$days]);
         }
 
         // Return weeks
         $weeks = floor($days / 7);
         if ($weeks < 4) {
-            return ($weeks > 1 ? LocalizationUtility::translate('age.weeks', 'TwBase', array($weeks)) : LocalizationUtility::translate('age.week', 'TwBase', array($weeks)));
+            return LocalizationUtility::translate(($weeks > 1) ? 'age.weeks' : 'age.week', 'TwBase', [$weeks]);
         }
 
         // Return months
         $months = floor($weeks / 4);
         if ($months < 12) {
-            return ($months > 1 ? LocalizationUtility::translate('age.months', 'TwBase', array($months)) : LocalizationUtility::translate('age.month', 'TwBase', array($months)));
+            return LocalizationUtility::translate(($months > 1) ? 'age.months' : 'age.month', 'TwBase', [$months]);
         }
 
         // Return years
         $years = floor($months / 12);
-        return ($years > 1 ? LocalizationUtility::translate('age.years', 'TwBase', array($years)) : LocalizationUtility::translate('age.year', 'TwBase', array($years)));
+
+        return LocalizationUtility::translate(($years > 1) ? 'age.years' : 'age.year', 'TwBase', [$years]);
     }
 }

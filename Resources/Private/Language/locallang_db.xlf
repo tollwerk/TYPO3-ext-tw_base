@@ -91,6 +91,9 @@
             <trans-unit id="images.lazyload.lqipblur" xml:space="preserve">
 				<source>Lazyload preview image blur: Standard deviation for the Gaussian Blur filter (0 = no blur effect)</source>
 			</trans-unit>
+            <trans-unit id="tt_content.tx_twbase_heading_language" xml:space="preserve">
+				<source>Heading language</source>
+			</trans-unit>
             <trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve">
 				<source>Visual display</source>
 			</trans-unit>
@@ -199,6 +202,9 @@
             <trans-unit id="tx_twbase_domain_model_video_track.kind.chapters" xml:space="preserve">
 				<source>Chapters</source>
 			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.transcript" xml:space="preserve">
+				<source>Transcript</source>
+			</trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track.file" xml:space="preserve">
 				<source>File</source>
 			</trans-unit>
@@ -207,6 +213,9 @@
 			</trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track.language" xml:space="preserve">
 				<source>Language</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.transcript" xml:space="preserve">
+				<source>Transcript</source>
 			</trans-unit>
         </body>
     </file>

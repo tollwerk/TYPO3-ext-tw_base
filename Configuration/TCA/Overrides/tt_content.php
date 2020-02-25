@@ -42,6 +42,18 @@ if (!defined('TYPO3_MODE')) {
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
     'tt_content',
     [
+        'tx_twbase_heading_language' => [
+            'label'   => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_language',
+            'exclude' => 1,
+            'config'  => [
+                'type'       => 'select',
+                'renderType' => 'selectSingle',
+                'items'      => \Tollwerk\TwBase\Utility\TcaUtility::$languages,
+                'size'       => 1,
+                'minitems'   => 0,
+                'maxitems'   => 1
+            ],
+        ],
         'tx_twbase_heading_type'  => [
             'label'   => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_heading_type',
             'exclude' => 1,
@@ -144,6 +156,18 @@ if (!defined('TYPO3_MODE')) {
     ]
 );
 
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
+    'tt_content',
+    'header',
+    'tx_twbase_heading_language',
+    'after:header'
+);
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
+    'tt_content',
+    'headers',
+    'tx_twbase_heading_language',
+    'after:header'
+);
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
     'tt_content',
     'header',

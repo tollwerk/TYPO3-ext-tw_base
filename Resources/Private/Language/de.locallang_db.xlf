@@ -90,6 +90,9 @@
             <trans-unit id="images.lazyload.lqipblur" xml:space="preserve" approved="yes">
 				<source>Lazyload preview image blur: Standard deviation for the Gaussian Blur filter (0 = no blur effect)</source>
 			<target state="translated">Vorschaubilder Weichzeichner: Standard-Deviation für den Gaußschen Weichzeichner (0 = kein Weichzeichner)</target></trans-unit>
+            <trans-unit id="tt_content.tx_twbase_heading_language" xml:space="preserve" approved="yes">
+				<source>Heading language</source>
+			<target state="translated">Überschriftensprache</target></trans-unit>
             <trans-unit id="tt_content.tx_twbase_heading_type" xml:space="preserve" approved="yes">
 				<source>Visual display</source>
 			<target state="translated">Darstellung</target></trans-unit>
@@ -148,9 +151,11 @@
 				<source>Responsivity &amp; converters</source>
 			<target state="translated">Responsivität &amp; Konverter</target></trans-unit>
             <trans-unit id="tollwerk" approved="yes">
-                <source>Tollwerk</source> <target state="translated">Tollwerk</target></trans-unit>
+                <source>Tollwerk</source>
+            <target state="translated">Tollwerk</target></trans-unit>
             <trans-unit id="twbase_video" approved="yes">
-                <source>Video</source> <target state="translated">Video</target></trans-unit>
+                <source>Video</source>
+            <target state="translated">Video</target></trans-unit>
             <trans-unit id="twbase_video.wizard.title" approved="yes">
                 <source>Video</source>
             <target state="translated">Video</target></trans-unit>
@@ -196,6 +201,9 @@
             <trans-unit id="tx_twbase_domain_model_video_track.kind.chapters" xml:space="preserve" approved="yes">
 				<source>Chapters</source>
 			<target state="translated">Kapitel</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.kind.transcript" xml:space="preserve" approved="yes">
+				<source>Transcript</source>
+			<target state="translated">Transkript</target></trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track.file" xml:space="preserve" approved="yes">
 				<source>File</source>
 			<target state="translated">Datei</target></trans-unit>
@@ -205,6 +213,9 @@
             <trans-unit id="tx_twbase_domain_model_video_track.language" xml:space="preserve" approved="yes">
 				<source>Language</source>
 			<target state="translated">Sprache</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.transcript" xml:space="preserve" approved="yes">
+				<source>Transcript</source>
+			<target state="translated">Trankskript</target></trans-unit>
         </body>
     </file>
 </xliff>

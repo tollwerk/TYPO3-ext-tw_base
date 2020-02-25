@@ -136,5 +136,7 @@ class CleanupConvertedFilesCommand extends Command
                 return $e->getCode();
             }
         }
+
+        return 0;
     }
 }

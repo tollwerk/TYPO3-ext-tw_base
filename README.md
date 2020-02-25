@@ -45,10 +45,13 @@ These services don't work out of the box and require particular software to be a
 * [`media` viewhelper](Docs/ViewHelpers/media.md) for responsive images
 * [`uniqid` viewhelper](Docs/ViewHelpers/uniqid.md)
 * Viewhelpers for preparing / refining lists of HTML element attributes (empty / non-empty, data attributes, binary attributes)
+* `language` viewhelper to translate a 2-character ISO 639-1 language identifier into a readable label (internal languages only) 
 * Form element viewhelper (returns a [Form Framework](https://docs.typo3.org/typo3cms/extensions/form/) element by its name)
 * `form.page.elementsByIdentifier` viewhelper (returns an array of all renderable elements of a form page by their identifier)
 * Link info viewhelper (returns detailed information about a link target)
 * SVG icon & icon sprite viewhelpers (returns detailed information about a link target)
+* `format.age` viewhelper for returning a human readable age string
+* `format.leadingZeroes` viewhelper for returning a formatted number string
 
 ## Utilities
 
