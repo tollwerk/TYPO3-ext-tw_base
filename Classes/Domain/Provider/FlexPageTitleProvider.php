@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Utility
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -14,7 +14,7 @@
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,17 +34,27 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-defined('TYPO3_MODE') || die('Access denied.');
+namespace Tollwerk\TwBase\Domain\Provider;
 
-call_user_func(
-    function() {
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-            'tw_base',
-            'Configuration/TypoScript/Static',
-            'tollwerk Base'
-        );
+use TYPO3\CMS\Core\PageTitle\AbstractPageTitleProvider;
 
-        // Allow records on standard pages
-        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_twbase_domain_model_video_track');
+/**
+ * Custom Page Title Provider
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Utility
+ */
+class FlexPageTitleProvider extends AbstractPageTitleProvider
+{
+    /**
+     * Set the page title
+     *
+     * @param string $title Title
+     *
+     * @return string Title
+     */
+    public function setTitle(string $title): string
+    {
+        return $this->title = $title;
     }
-);
+}
