@@ -43,5 +43,8 @@ call_user_func(
             'Configuration/TypoScript/Static',
             'tollwerk Base'
         );
+
+        // Allow records on standard pages
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::allowTableOnStandardPages('tx_twbase_domain_model_video_track');
     }
 );

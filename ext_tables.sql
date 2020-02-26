@@ -32,7 +32,7 @@ CREATE TABLE tx_twbase_domain_model_video_track
     uid       int(11)                          NOT NULL auto_increment,
     pid       int(11)              DEFAULT '0' NOT NULL,
 
-    kind      varchar(12)          DEFAULT ''  NOT NULL,
+    kind      varchar(12)          DEFAULT 'captions'  NOT NULL,
     file      int(11) unsigned     DEFAULT '0' NOT NULL,
     language  VARCHAR(16)          DEFAULT ''  NOT NULL,
     transcript  TEXT,
