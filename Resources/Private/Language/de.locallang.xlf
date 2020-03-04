@@ -6,63 +6,121 @@
             <trans-unit id="validator.uniqueObject.error" approved="no">
                 <source>Unique value already taken</source> <target state="needs-translation">Eindeutiger Wert bereits belegt</target></trans-unit>
             <trans-unit id="age.right_now" approved="no">
-                <source>Right now</source> <target state="needs-translation">Gerade eben</target></trans-unit>
+                <source>Right now</source>
+                <target state="needs-translation">Gerade eben</target>
+            </trans-unit>
             <trans-unit id="age.second" approved="no">
-                <source>One second ago</source> <target state="needs-translation">Vor einer Sekunde</target></trans-unit>
+                <source>One second ago</source>
+                <target state="needs-translation">Vor einer Sekunde</target>
+            </trans-unit>
             <trans-unit id="age.second.duration" approved="yes">
-                <source>One second</source> <target state="translated">Eine Sekunde</target></trans-unit>
+                <source>One second</source>
+                <target state="translated">Eine Sekunde</target>
+            </trans-unit>
             <trans-unit id="age.seconds" approved="no">
-                <source>%s seconds ago</source> <target state="needs-translation">Vor %s Sekunden</target></trans-unit>
+                <source>%s seconds ago</source>
+                <target state="needs-translation">Vor %s Sekunden</target>
+            </trans-unit>
             <trans-unit id="age.seconds.duration" approved="yes">
-                <source>%s seconds</source> <target state="translated">%s Sekunden</target></trans-unit>
+                <source>%s seconds</source>
+                <target state="translated">%s Sekunden</target>
+            </trans-unit>
             <trans-unit id="age.minute" approved="no">
-                <source>One minute ago</source> <target state="needs-translation">Vor einer Minute</target></trans-unit>
+                <source>One minute ago</source>
+                <target state="needs-translation">Vor einer Minute</target>
+            </trans-unit>
             <trans-unit id="age.minute.duration" approved="yes">
-                <source>One minute</source> <target state="translated">Eine Minute</target></trans-unit>
+                <source>One minute</source>
+                <target state="translated">Eine Minute</target>
+            </trans-unit>
             <trans-unit id="age.minutes" approved="no">
-                <source>%s minutes ago</source> <target state="needs-translation">Vor %s Minuten</target></trans-unit>
+                <source>%s minutes ago</source>
+                <target state="needs-translation">Vor %s Minuten</target>
+            </trans-unit>
             <trans-unit id="age.minutes.duration" approved="yes">
-                <source>%s minutes</source> <target state="translated">%s Minuten</target></trans-unit>
+                <source>%s minutes</source>
+                <target state="translated">%s Minuten</target>
+            </trans-unit>
             <trans-unit id="age.hour" approved="no">
-                <source>One hour ago</source> <target state="needs-translation">Vor einer Stunde</target></trans-unit>
+                <source>One hour ago</source>
+                <target state="needs-translation">Vor einer Stunde</target>
+            </trans-unit>
             <trans-unit id="age.hour.duration" approved="yes">
-                <source>One hour</source> <target state="translated">Eine Stunde</target></trans-unit>
+                <source>One hour</source>
+                <target state="translated">Eine Stunde</target>
+            </trans-unit>
             <trans-unit id="age.hours" approved="no">
-                <source>%s hours ago</source> <target state="needs-translation">Vor %s Stunden</target></trans-unit>
+                <source>%s hours ago</source>
+                <target state="needs-translation">Vor %s Stunden</target>
+            </trans-unit>
             <trans-unit id="age.hours.duration" approved="yes">
-                <source>%s hours</source> <target state="translated">%s Stunden</target></trans-unit>
+                <source>%s hours</source>
+                <target state="translated">%s Stunden</target>
+            </trans-unit>
             <trans-unit id="age.day" approved="no">
-                <source>One day ago</source> <target state="needs-translation">Vor einem Tag</target></trans-unit>
+                <source>One day ago</source>
+                <target state="needs-translation">Vor einem Tag</target>
+            </trans-unit>
             <trans-unit id="age.day.duration" approved="yes">
-                <source>One day</source> <target state="translated">Ein Tag</target></trans-unit>
+                <source>One day</source>
+                <target state="translated">Ein Tag</target>
+            </trans-unit>
             <trans-unit id="age.days" approved="no">
-                <source>%s days ago</source> <target state="needs-translation">Vor %s Tagen</target></trans-unit>
+                <source>%s days ago</source>
+                <target state="needs-translation">Vor %s Tagen</target>
+            </trans-unit>
             <trans-unit id="age.days.duration" approved="yes">
-                <source>%s days</source> <target state="translated">%s Tage</target></trans-unit>
+                <source>%s days</source>
+                <target state="translated">%s Tage</target>
+            </trans-unit>
             <trans-unit id="age.week" approved="no">
-                <source>One week ago</source> <target state="needs-translation">Vor einer Woche</target></trans-unit>
+                <source>One week ago</source>
+                <target state="needs-translation">Vor einer Woche</target>
+            </trans-unit>
             <trans-unit id="age.week.duration" approved="yes">
-                <source>One week</source> <target state="translated">Eine Woche</target></trans-unit>
+                <source>One week</source>
+                <target state="translated">Eine Woche</target>
+            </trans-unit>
             <trans-unit id="age.weeks" approved="no">
-                <source>%s weeks ago</source> <target state="needs-translation">Vor %s Wochen</target></trans-unit>
+                <source>%s weeks ago</source>
+                <target state="needs-translation">Vor %s Wochen</target>
+            </trans-unit>
             <trans-unit id="age.weeks.duration" approved="yes">
-                <source>%s weeks</source> <target state="translated">%s Wochen</target></trans-unit>
+                <source>%s weeks</source>
+                <target state="translated">%s Wochen</target>
+            </trans-unit>
             <trans-unit id="age.month" approved="no">
-                <source>One month ago</source> <target state="needs-translation">Vor einem Monat</target></trans-unit>
+                <source>One month ago</source>
+                <target state="needs-translation">Vor einem Monat</target>
+            </trans-unit>
             <trans-unit id="age.month.duration" approved="yes">
-                <source>One month</source> <target state="translated">Ein Monat</target></trans-unit>
+                <source>One month</source>
+                <target state="translated">Ein Monat</target>
+            </trans-unit>
             <trans-unit id="age.months" approved="no">
-                <source>%s months ago</source> <target state="needs-translation">Vor %s Monaten</target></trans-unit>
+                <source>%s months ago</source>
+                <target state="needs-translation">Vor %s Monaten</target>
+            </trans-unit>
             <trans-unit id="age.months.duration" approved="yes">
-                <source>%s months</source> <target state="translated">%s Monate</target></trans-unit>
+                <source>%s months</source>
+                <target state="translated">%s Monate</target>
+            </trans-unit>
             <trans-unit id="age.year" approved="no">
-                <source>One year ago</source> <target state="needs-translation">Vor einem Jahr</target></trans-unit>
+                <source>One year ago</source>
+                <target state="needs-translation">Vor einem Jahr</target>
+            </trans-unit>
             <trans-unit id="age.year.duration" approved="yes">
-                <source>One year</source> <target state="translated">Ein Jahr</target></trans-unit>
+                <source>One year</source>
+                <target state="translated">Ein Jahr</target>
+            </trans-unit>
             <trans-unit id="age.years" approved="no">
-                <source>%s years ago</source> <target state="needs-translation">Vor %s Jahren</target></trans-unit>
+                <source>%s years ago</source>
+                <target state="needs-translation">Vor %s Jahren</target>
+            </trans-unit>
             <trans-unit id="age.years.duration" approved="yes">
-                <source>%s years</source> <target state="translated">%s Jahre</target></trans-unit>
+                <source>%s years</source>
+                <target state="translated">%s Jahre</target>
+            </trans-unit>
             <trans-unit id="video.fallback" approved="yes">
                 <source>Your browser doesn't support HTML5 video. You may &lt;a href="%s"&gt;download the video&lt;/a&gt; and view it offline instead.</source> <target state="translated">Ihr Browser unterstützt keine HTML5-Videos. Sie können stattdessen &lt;a href="%s"&gt;das Video herunterladen&lt;/a&gt; und offline betrachten.</target></trans-unit>
             <trans-unit id="video.transcript" approved="yes">

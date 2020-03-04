@@ -6,7 +6,7 @@
             hitArea.classList.add('is-hit-area');
             hitArea.addEventListener('click', e => {
                 e.preventDefault();
-                if (a.hasAttribute('download') || (a.getAttribute('target').toLowerCase() === '_blank')) {
+                if (a.hasAttribute('download') || ((a.getAttribute('target') || '').toLowerCase() === '_blank')) {
                     w.open(a.href, '_blank').focus();
                 } else {
                     d.location = a.href;
