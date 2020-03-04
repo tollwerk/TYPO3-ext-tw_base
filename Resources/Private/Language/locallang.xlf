@@ -13,47 +13,91 @@
             <trans-unit id="age.second">
                 <source>One second ago</source>
             </trans-unit>
+            <trans-unit id="age.second.duration">
+                <source>One second</source>
+            </trans-unit>
             <trans-unit id="age.seconds">
                 <source>%s seconds ago</source>
             </trans-unit>
+            <trans-unit id="age.seconds.duration">
+                <source>%s seconds</source>
+            </trans-unit>
             <trans-unit id="age.minute">
-                <source>A minute ago</source>
+                <source>One minute ago</source>
+            </trans-unit>
+            <trans-unit id="age.minute.duration">
+                <source>One minute</source>
             </trans-unit>
             <trans-unit id="age.minutes">
                 <source>%s minutes ago</source>
             </trans-unit>
+            <trans-unit id="age.minutes.duration">
+                <source>%s minutes</source>
+            </trans-unit>
             <trans-unit id="age.hour">
                 <source>One hour ago</source>
+            </trans-unit>
+            <trans-unit id="age.hour.duration">
+                <source>One hour</source>
             </trans-unit>
             <trans-unit id="age.hours">
                 <source>%s hours ago</source>
             </trans-unit>
+            <trans-unit id="age.hours.duration">
+                <source>%s hours</source>
+            </trans-unit>
             <trans-unit id="age.day">
                 <source>One day ago</source>
+            </trans-unit>
+            <trans-unit id="age.day.duration">
+                <source>One day</source>
             </trans-unit>
             <trans-unit id="age.days">
                 <source>%s days ago</source>
             </trans-unit>
+            <trans-unit id="age.days.duration">
+                <source>%s days</source>
+            </trans-unit>
             <trans-unit id="age.week">
                 <source>One week ago</source>
+            </trans-unit>
+            <trans-unit id="age.week.duration">
+                <source>One week</source>
             </trans-unit>
             <trans-unit id="age.weeks">
                 <source>%s weeks ago</source>
             </trans-unit>
+            <trans-unit id="age.weeks.duration">
+                <source>%s weeks</source>
+            </trans-unit>
             <trans-unit id="age.month">
                 <source>One month ago</source>
+            </trans-unit>
+            <trans-unit id="age.month.duration">
+                <source>One month</source>
             </trans-unit>
             <trans-unit id="age.months">
                 <source>%s months ago</source>
             </trans-unit>
+            <trans-unit id="age.months.duration">
+                <source>%s months</source>
+            </trans-unit>
             <trans-unit id="age.year">
                 <source>One year ago</source>
             </trans-unit>
+            <trans-unit id="age.year.duration">
+                <source>One year</source>
+            </trans-unit>
             <trans-unit id="age.years">
-                <source>%s years ago </source>
+                <source>%s years ago</source>
+            </trans-unit>
+            <trans-unit id="age.years.duration">
+                <source>%s years</source>
             </trans-unit>
             <trans-unit id="video.fallback">
-                <source>Your browser doesn't support HTML5 video. You may &lt;a href="%s"&gt;download the video&lt;/a&gt; and view it offline instead.</source>
+                <source>Your browser doesn't support HTML5 video. You may &lt;a href="%s"&gt;download the video&lt;/a&gt;
+                    and view it offline instead.
+                </source>
             </trans-unit>
             <trans-unit id="video.transcript">
                 <source>Transcript of: %s [%s]</source>

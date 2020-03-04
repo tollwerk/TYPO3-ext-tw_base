@@ -67,6 +67,7 @@ class AgeViewHelper extends AbstractViewHelper
     public function initializeArguments()
     {
         $this->registerArgument('value', 'mixed', 'The value to output');
+        $this->registerArgument('duration', 'bool', 'Interpret value as duration');
     }
 
     /**
@@ -83,7 +84,20 @@ class AgeViewHelper extends AbstractViewHelper
         \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        $then    = intval($renderChildrenClosure());
+        $then = intval($renderChildrenClosure());
+
+        return boolval($arguments['duration']) ? static::formatDuration($then) : static::formatAge($then);
+    }
+
+    /**
+     * Format as age
+     *
+     * @param int $then Timestamp
+     *
+     * @return string Age string
+     */
+    protected static function formatAge(int $then): string
+    {
         $now     = time();
         $seconds = $now - $then;
 
@@ -130,5 +144,66 @@ class AgeViewHelper extends AbstractViewHelper
         $years = floor($months / 12);
 
         return LocalizationUtility::translate(($years > 1) ? 'age.years' : 'age.year', 'TwBase', [$years]);
+    }
+
+    /**
+     * Format as duration
+     *
+     * @param int $duration Duration
+     *
+     * @return string Duration string
+     */
+    protected static function formatDuration(int $seconds): string
+    {
+        if ($seconds <= 0) {
+            return LocalizationUtility::translate('age.right_now', 'TwBase');
+        }
+
+        // Return seconds
+        if ($seconds < 60) {
+            return LocalizationUtility::translate((($seconds > 1) ? 'age.seconds' : 'age.second').'.duration', 'TwBase',
+                [$seconds]);
+        }
+
+        // Return minutes
+        $minutes = floor($seconds / 60);
+        if ($minutes < 60) {
+            return LocalizationUtility::translate((($minutes > 1) ? 'age.minutes' : 'age.minute').'.duration', 'TwBase',
+                [$minutes]);
+        }
+
+        // Return hours
+        $hours = floor($minutes / 60);
+        if ($hours < 24) {
+            return LocalizationUtility::translate((($hours > 1) ? 'age.hours' : 'age.hour').'.duration', 'TwBase',
+                [$hours]);
+        }
+
+        // Return days
+        $days = floor($hours / 24);
+        if ($days < 7) {
+            return LocalizationUtility::translate((($days > 1) ? 'age.days' : 'age.day').'.duration', 'TwBase',
+                [$days]);
+        }
+
+        // Return weeks
+        $weeks = floor($days / 7);
+        if ($weeks < 4) {
+            return LocalizationUtility::translate((($weeks > 1) ? 'age.weeks' : 'age.week').'.duration', 'TwBase',
+                [$weeks]);
+        }
+
+        // Return months
+        $months = floor($weeks / 4);
+        if ($months < 12) {
+            return LocalizationUtility::translate((($months > 1) ? 'age.months' : 'age.month').'.duration', 'TwBase',
+                [$months]);
+        }
+
+        // Return years
+        $years = floor($months / 12);
+
+        return LocalizationUtility::translate((($years > 1) ? 'age.years' : 'age.year').'.duration', 'TwBase',
+            [$years]);
     }
 }
