@@ -66,8 +66,12 @@ class AjaxController extends ActionController
      *
      * @return string
      */
-    private function createJsonResponse(string $status, $result = null, \Exception $exception = null, \Error $error= null)
-    {
+    private function createJsonResponse(
+        string $status,
+        $result = null,
+        \Exception $exception = null,
+        \Error $error = null
+    ) {
         $return = [
             'status' => intval($status),
             'result' => $result
@@ -76,20 +80,20 @@ class AjaxController extends ActionController
         if ($exception || $error) {
             $devIpMask = GeneralUtility::trimExplode(',', $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask']);
             if (in_array($_SERVER['REMOTE_ADDR'], $devIpMask) || in_array('*', $devIpMask)) {
-                if($exception) {
+                if ($exception) {
                     $return['exception'] = [
                         'message' => $exception->getMessage(),
-                        'code' => $exception->getCode(),
-                        'file' => $exception->getFile(),
-                        'line' => $exception->getLine(),
+                        'code'    => $exception->getCode(),
+                        'file'    => $exception->getFile(),
+                        'line'    => $exception->getLine(),
                     ];
                 }
-                if($error) {
+                if ($error) {
                     $return['error'] = [
                         'message' => $error->getMessage(),
-                        'code' => $error->getCode(),
-                        'file' => $error->getFile(),
-                        'line' => $error->getLine(),
+                        'code'    => $error->getCode(),
+                        'file'    => $error->getFile(),
+                        'line'    => $error->getLine(),
                     ];
                 }
             }
@@ -108,7 +112,8 @@ class AjaxController extends ActionController
      * the ajax URL would be /?type=4000call=myAjaxTest&args[x]=1&args[y]=2.
      *
      * You have to register a class responsible for this inside ext_localconf.php of your own extension:
-     * $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax']['myAjaxTest'] = \Vendor\Extension\YourAjaxClass::class
+     * $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax']['myAjaxTest'] =
+     * \Vendor\Extension\YourAjaxClass::class
      *
      * This class must contain a public method with the same name as the ajax call you are registering for,
      * expecting a single parameter of type array. That array will contain the arguments "x" and "y".
@@ -130,9 +135,10 @@ class AjaxController extends ActionController
     {
         try {
             $functionName = GeneralUtility::_GP('call');
-            $arguments = GeneralUtility::_GP('args') ?: [];
-            if (array_key_exists($functionName, $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax'])) {
-                $_procObj = GeneralUtility::makeInstance($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax'][$functionName]);
+            $arguments    = GeneralUtility::_GP('args') ?: [];
+            $ajaxConfig   =& $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax'];
+            if (array_key_exists($functionName, $ajaxConfig)) {
+                $_procObj = $this->objectManager->get($ajaxConfig[$functionName]);
                 if (is_callable([$_procObj, $functionName])) {
                     return $this->createJsonResponse(
                         self::STATUS_SUCCESS,
@@ -140,6 +146,7 @@ class AjaxController extends ActionController
                     );
                 };
             }
+
             return $this->createJsonResponse(self::STATUS_NO_METHOD);
         } catch (\Exception $exception) {
             return $this->createJsonResponse(self::STATUS_ERROR, null, $exception);
