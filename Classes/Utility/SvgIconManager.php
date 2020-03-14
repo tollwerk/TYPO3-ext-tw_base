@@ -104,7 +104,7 @@ class SvgIconManager
         $svgDom->documentElement->setAttribute('id', $useKey);
         self::$sources[$filename] = $svgDom->saveXML($svgDom->documentElement);
         $svgUse                   = new DOMDocument();
-        $svgUse->loadXML('<svg viewBox="0 0 '.$width.' '.$height.'" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="#'.$useKey.'" /></svg>');
+        $svgUse->loadXML('<svg viewBox="0 0 '.$width.' '.$height.'" width="'.$width.'" height="'.$height.'" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="#'.$useKey.'" /></svg>');
 
         return $svgUse;
     }
