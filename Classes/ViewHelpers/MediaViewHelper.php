@@ -157,7 +157,9 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
                 $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
                 // If there are breakpoint specifications available: Render as <picture> element
-                if (!empty($breakpoints) || count($activeConverters)) {
+                if ((!empty($breakpoints) || count($activeConverters))
+                    && $this->getResponsiveImagesUtility()->canPicture($image)
+                ) {
                     return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
 
                     // If a source set can be used: Render with srcset attribute
