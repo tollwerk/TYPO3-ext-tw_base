@@ -12,8 +12,13 @@
     w.Tollwerk.has.srcset = ('srcset' in d.createElement('img'));
     classList.add(`${w.Tollwerk.has.srcset ? 'has' : 'no'}-srcset`);
 
+    // Test native lazyloading support
     w.Tollwerk.has.lazyload = ('loading' in HTMLImageElement.prototype);
     classList.add(`${w.Tollwerk.has.lazyload ? 'has' : 'no'}-lazyload`);
+
+    // Test for native details / summary support
+    w.Tollwerk.has.detsum = (typeof HTMLDetailsElement != 'undefined') && (d.createElement('details') instanceof HTMLDetailsElement);
+    classList.add(`${w.Tollwerk.has.lazyload ? 'has' : 'no'}-detsum`);
 
     // :focus-within mini polyfill
     try {
