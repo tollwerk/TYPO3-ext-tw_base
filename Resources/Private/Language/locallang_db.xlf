@@ -217,6 +217,66 @@
             <trans-unit id="tx_twbase_domain_model_video_track.transcript" xml:space="preserve">
 				<source>Transcript</source>
 			</trans-unit>
+            <trans-unit id="sys_file_metadata.tabs.license" xml:space="preserve">
+				<source>Author &amp; License</source>
+			</trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_author" xml:space="preserve">
+				<source>Author</source>
+			</trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_author_url" xml:space="preserve">
+				<source>Author URL</source>
+			</trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_creation_year" xml:space="preserve">
+				<source>Creation Year</source>
+			</trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_source_url" xml:space="preserve">
+				<source>Source URL</source>
+			</trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license">
+                <source>License</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.none">
+                <source>No licensing information</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.all">
+                <source>All rights reserved</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.cc0">
+                <source>No Copyright (CC0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by">
+                <source>Attribution 4.0 International (CC BY 4.0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-sa">
+                <source>Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nd">
+                <source>Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc">
+                <source>Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc-sa">
+                <source>Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc-nd">
+                <source>Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.custom">
+                <source>Custom license</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.url.cc">
+                <source>https://creativecommons.org/licenses/%s/4.0/legalcode</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.url.cc0">
+                <source>https://creativecommons.org/publicdomain/zero/1.0/deed</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license_name">
+                <source>Custom License Name</source>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license_url">
+                <source>Custom License URL</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -216,6 +216,63 @@
             <trans-unit id="tx_twbase_domain_model_video_track.transcript" xml:space="preserve" approved="yes">
 				<source>Transcript</source>
 			<target state="translated">Trankskript</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tabs.license" xml:space="preserve" approved="yes">
+				<source>Author &amp; License</source>
+			<target state="translated">Autor &amp; Lizenz</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_author" xml:space="preserve" approved="yes">
+				<source>Author</source>
+			<target state="translated">Autor</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_author_url" xml:space="preserve" approved="yes">
+				<source>Author URL</source>
+			<target state="translated">Autoren-URL</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_creation_year" xml:space="preserve" approved="yes">
+				<source>Creation Year</source>
+			<target state="translated">Erzeugungsjahr</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_source_url" xml:space="preserve" approved="yes">
+				<source>Source URL</source>
+			<target state="translated">Quell-URL</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license" approved="yes">
+                <source>License</source> <target state="translated">Lizenz</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.none" approved="yes">
+                <source>No licensing information</source>
+            <target state="translated">Keine Lizenzinformationen</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.all" approved="yes">
+                <source>All rights reserved</source>
+            <target state="translated">Alle Rechte vorbehalten</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.cc0" approved="yes">
+                <source>No Copyright (CC0)</source>
+            <target state="translated">Kein Urheberrechtsschutz (CC0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by" approved="yes">
+                <source>Attribution 4.0 International (CC BY 4.0)</source>
+            <target state="translated">Namensnennung 4.0 International (CC BY 4.0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-sa" approved="yes">
+                <source>Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</source>
+            <target state="translated">Namensnennung-Share Alike 4.0 International (CC BY-SA 4.0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nd" approved="yes">
+                <source>Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)</source>
+            <target state="translated">Namensnennung-Keine Bearbeitungen 4.0 International (CC BY-ND 4.0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc" approved="yes">
+                <source>Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</source>
+            <target state="translated">Namensnennung-Nicht kommerziell 4.0 International (CC BY-NC 4.0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc-sa" approved="yes">
+                <source>Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</source>
+            <target state="translated">Namensnennung-Nicht kommerziell-Share Alike 4.0 International (CC BY-NC-SA 4.0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc-nd" approved="yes">
+                <source>Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)</source>
+            <target state="translated">Namensnennung-Nicht kommerziell-Keine Bearbeitungen 4.0 International (CC BY-NC-ND 4.0)</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.custom" approved="yes">
+                <source>Custom license</source>
+            <target state="translated">Anderes Lizenzmodell</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.url.cc" approved="yes">
+                <source>https://creativecommons.org/licenses/%s/4.0/legalcode</source>
+            <target state="translated">https://creativecommons.org/licenses/%s/4.0/legalcode.de</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.url.cc0" approved="yes">
+                <source>https://creativecommons.org/publicdomain/zero/1.0/deed</source>
+            <target state="translated">https://creativecommons.org/publicdomain/zero/1.0/deed.de</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license_name" approved="yes">
+                <source>Custom License Name</source> <target state="translated">Anderer Lizenzname</target></trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license_url" approved="yes">
+                <source>Custom License URL</source> <target state="translated">Anderer Lizenz-URL</target></trans-unit>
         </body>
     </file>
 </xliff>
