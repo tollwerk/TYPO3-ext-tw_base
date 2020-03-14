@@ -34,23 +34,23 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
+namespace Tollwerk\TwBase\ViewHelpers\Heading\Level;
 
 use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Get heading context view helper
+ * Get heading level view helper
  *
  * @package Artefakt\Core
  */
 class GetViewHelper extends AbstractViewHelper
 {
     /**
-     * Returns the current heading context
+     * Returns the current heading level
      *
-     * @return string Current heading context
+     * @return int Current heading level
      */
     public function render(): string
     {
