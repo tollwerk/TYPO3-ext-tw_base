@@ -43,7 +43,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Get heading context view helper
  *
- * @package Artefakt\Core
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  */
 class GetViewHelper extends AbstractViewHelper
 {

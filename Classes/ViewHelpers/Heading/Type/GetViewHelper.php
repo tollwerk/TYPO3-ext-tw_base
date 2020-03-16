@@ -34,34 +34,27 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
+namespace Tollwerk\TwBase\ViewHelpers\Heading\Type;
 
 use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Restore heading context view helper
+ * Get heading type view helper
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
  */
-class RestoreViewHelper extends AbstractViewHelper
+class GetViewHelper extends AbstractViewHelper
 {
     /**
-     * Initialize arguments
+     * Returns the current heading level
+     *
+     * @return int Current heading level
      */
-    public function initializeArguments()
+    public function render(): string
     {
-        parent::initializeArguments();
-        $this->registerArgument('context', 'string', 'Heading context descriptor', true);
-    }
-
-    /**
-     * Restores a heading context
-     */
-    public function render(): void
-    {
-        GeneralUtility::makeInstance(HeadingContextManager::class)->restoreContext($this->arguments['context']);
+        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentType();
     }
 }

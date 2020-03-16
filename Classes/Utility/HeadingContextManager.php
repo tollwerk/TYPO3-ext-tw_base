@@ -70,6 +70,12 @@ class HeadingContextManager implements SingletonInterface
      */
     protected $currentLevel = 0;
     /**
+     * Current headline type
+     *
+     * @var int
+     */
+    protected $currentType = 0;
+    /**
      * Maximum rendered level
      *
      * @var int
@@ -126,9 +132,9 @@ class HeadingContextManager implements SingletonInterface
         }
 
         // Determine the visual headline type
-        $visualType = max(1, intval($visualType) ?: $level);
-        if ($visualType <= count(self::VISUAL_TYPES)) {
-            $visualType = self::VISUAL_TYPES[$visualType];
+        $this->currentType = max(1, intval($visualType) ?: $level);
+        if ($this->currentType <= count(self::VISUAL_TYPES)) {
+            $visualType = self::VISUAL_TYPES[$this->currentType];
         }
 
         $this->currentLevel = $level;
@@ -174,6 +180,16 @@ class HeadingContextManager implements SingletonInterface
     public function getCurrentLevel(): int
     {
         return $this->currentLevel;
+    }
+
+    /**
+     * Return the current heading type
+     *
+     * @return int Current heading type
+     */
+    public function getCurrentType(): int
+    {
+        return $this->currentType;
     }
 
     /**
