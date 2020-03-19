@@ -43,4 +43,8 @@ return [
         'class'       => \Tollwerk\TwBase\Command\CleanupConvertedFilesCommand::class,
         'schedulable' => true
     ],
+    'cleanup:nbsp'           => [
+        'class'       => \Tollwerk\TwBase\Command\CleanupNonBreakingSpacesCommand::class,
+        'schedulable' => true
+    ],
 ];

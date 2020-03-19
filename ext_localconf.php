@@ -187,6 +187,10 @@ call_user_func(
         );
 
         // Prepare hooks for Structured Data initialization
-        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] ?? [];
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] = (array)($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] ?? []);
+
+        // Prepare non-breaking space replacement fields
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup']                 = (array)($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup'] ?? []);
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup']['tt_content'][] = 'bodytext';
     }
 );
