@@ -128,7 +128,7 @@ call_user_func(
             'TwBase',
             'Ajax',
             [\Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch'],
-            [ \Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch']
+            [\Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch']
         );
 
 
@@ -185,5 +185,8 @@ call_user_func(
             \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class,
             \Tollwerk\TwBase\Persistence\Generic\Storage\Typo3DbQueryParser::class
         );
+
+        // Prepare hooks for Structured Data initialization
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] = $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] ?? [];
     }
 );
