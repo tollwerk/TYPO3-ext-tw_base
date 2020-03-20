@@ -171,7 +171,7 @@ class StructuredDataManager implements SingletonInterface
      *
      * @return string Normalized ID
      */
-    protected function normalizeId(string $id): string
+    public function normalizeId(string $id): string
     {
         return strncmp('#', $id, 1) ? $id : $this->baseUri.'/'.$id;
     }

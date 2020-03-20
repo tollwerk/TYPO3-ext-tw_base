@@ -1,3 +1,4 @@
+
 (function (w, d) {
     w.Tollwerk.Observer.register('a[href][data-hit-area]', a => {
         const hitAreaID = a.dataset.hitArea;
@@ -16,5 +17,4 @@
             a.addEventListener('blur', () => hitArea.classList.remove('hit-area-focused'), true);
         }
     });
-
 })(window, document);
