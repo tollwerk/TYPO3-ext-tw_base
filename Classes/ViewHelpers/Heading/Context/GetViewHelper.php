@@ -55,6 +55,6 @@ class GetViewHelper extends AbstractViewHelper
      */
     public function render(): string
     {
-        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentLevel();
+        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentContext();
     }
 }
