@@ -73,7 +73,7 @@ class SeoTitleElement extends InputTextElement
         $pageTitleSeparator    = $contentObjectRenderer->stdWrap(
             $settings['config.']['pageTitleSeparator'],
             $settings['config.']['pageTitleSeparator.'] ?? []
-        );
+        ) ?: ': ';
 
         $maxCharacters = 65 - strlen($pageTitleSeparator);
         $siteTitle     = '';
