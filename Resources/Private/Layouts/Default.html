@@ -24,12 +24,12 @@
                         </f:render>
                         <f:render section="Main" optional="true"/>
                         <f:render section="Footer" optional="true">
-                            <f:render partial="Footer/All" arguments="{_all}"/>
+                            <f:render partial="Footer/All" arguments="{_all}" optional="true"/>
                         </f:render>
                         <base:heading.context.restore context="{headingContext}"/>
                     </f:alias>
                     <f:render section="After" optional="true">
-                        <f:render partial="DropIn/After/All" arguments="{_all}"/>
+                        <f:render partial="DropIn/After/All" arguments="{_all}" optional="true"/>
                     </f:render>
                 </f:render>
             </f:alias>
@@ -53,12 +53,12 @@
                 </f:render>
                 <f:render section="Main" optional="true"/>
                 <f:render section="Footer" optional="true">
-                    <f:render partial="Footer/All" arguments="{_all}"/>
+                    <f:render partial="Footer/All" arguments="{_all}" optional="true"/>
                 </f:render>
                 <base:heading.context.restore context="{headingContext}"/>
             </f:alias>
             <f:render section="After" optional="true">
-                <f:render partial="DropIn/After/All" arguments="{_all}"/>
+                <f:render partial="DropIn/After/All" arguments="{_all}" optional="true"/>
             </f:render>
             <f:if condition="{data.space_after_class}">
                 <div class="frame-space-after-{data.space_after_class}"></div>
