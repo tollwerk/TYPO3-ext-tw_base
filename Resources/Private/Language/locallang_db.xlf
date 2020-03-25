@@ -175,6 +175,9 @@
             <trans-unit id="pages.tx_twbase_subnav_hide" xml:space="preserve">
 				<source>Subpages enabled in menus</source>
 			</trans-unit>
+            <trans-unit id="pages.tx_twbase_seo_title" xml:space="preserve">
+				<source>SEO Page Title (optional)</source>
+			</trans-unit>
             <trans-unit id="pages.tx_twbase_title_language.auto" xml:space="preserve">
 				<source>--- Current page language ---</source>
 			</trans-unit>

@@ -104,7 +104,7 @@ class PageTitleUtility
      *
      * @return array Page title providers
      */
-    protected static function getTitleProviders(): array
+    public static function getTitleProviders(): array
     {
         if (static::$titleProviders === null) {
             $typoscriptService = GeneralUtility::makeInstance(TypoScriptService::class);
