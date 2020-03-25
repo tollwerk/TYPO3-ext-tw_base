@@ -18,7 +18,7 @@
 
     // Test for native details / summary support
     w.Tollwerk.has.detsum = (typeof HTMLDetailsElement != 'undefined') && (d.createElement('details') instanceof HTMLDetailsElement);
-    classList.add(`${w.Tollwerk.has.lazyload ? 'has' : 'no'}-detsum`);
+    classList.add(`${w.Tollwerk.has.detsum ? 'has' : 'no'}-detsum`);
 
     // :focus-within mini polyfill
     try {
