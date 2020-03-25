@@ -118,21 +118,20 @@ class CssViewHelper extends MediaViewHelper
                 // Determine the breakpoint specifications or preset to use
                 $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
-//                // If there are breakpoint specifications available: Render as <picture> element
-//                if (!empty($breakpoints) || count($activeConverters)) {
-//                    return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
-//
-//                    // If a source set can be used: Render with srcset attribute
-//                } else
-                if ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
+                // If there are breakpoint specifications available: Render as <picture> element
+                if (!empty($breakpoints) || count($activeConverters)) {
+                    return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
+
+                    // If a source set can be used: Render with srcset attribute
+                } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
                     return $this->renderImageSrcset($image, $width, $height);
                 }
             }
 
             // If the image should only be lazyloaded
-//            if ($this->arguments['lazyload']) {
-//                return $this->renderLazyloadImage($image, $width, $height);
-//            }
+            if ($this->arguments['lazyload']) {
+                return $this->renderLazyloadImage($image, $width, $height);
+            }
         }
 
         // Fall back to a simple image
