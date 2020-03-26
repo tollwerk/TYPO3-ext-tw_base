@@ -82,7 +82,7 @@ class StructuredDataManager implements SingletonInterface
     {
         $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         $uriBuilder    = $objectManager->get(UriBuilder::class);
-        $this->baseUri = $uriBuilder->reset()->setCreateAbsoluteUri(true)->setAddQueryString(true)->build();
+        $this->baseUri = rtrim($uriBuilder->reset()->setCreateAbsoluteUri(true)->setAddQueryString(true)->build(), '/');
 
         // Call initialization hooks
         $params = [];
