@@ -63,6 +63,12 @@ class StructuredDataManager implements SingletonInterface
      */
     protected $graph = [];
     /**
+     * Preregistered values
+     *
+     * @var array
+     */
+    protected $register = [];
+    /**
      * Base URI
      *
      * @var string
@@ -88,14 +94,20 @@ class StructuredDataManager implements SingletonInterface
     /**
      * Create a new structured data node
      *
-     * @param string $id        Node ID
+     * @param string $origId    Node ID
      * @param string|array $key Key
      * @param mixed $value      data
      */
-    public function set(string $id, $key, $value): void
+    public function set(string $origId, $key, $value): void
     {
-        $id = $this->normalizeId($id);
-        if (!empty($this->graph[$id])) {
+        $id = $this->normalizeId($origId);
+
+        // If the ID doesn't exist (yet): pre-register the value
+        if (empty($this->graph[$id])) {
+            $this->register[] = [$origId, $key, $value];
+
+            // Else: Add to the graph
+        } else {
             $pointer  =& $this->graph[$id];
             $keyParts = is_array($key) ? $key : explode('.', $key);
 //            $keyCount = count($keyParts);
@@ -138,9 +150,17 @@ class StructuredDataManager implements SingletonInterface
      */
     public function register(string $type, string $id, array $data): array
     {
-        $node = $this->createNode($type, $id, $data);
+        $node                      = $this->createNode($type, $id, $data);
+        $this->graph[$node['@id']] = $node;
 
-        return $this->graph[$node['@id']] = $node;
+        // Run through all pre-registered values and apply if possibly
+        $register       = $this->register;
+        $this->register = [];
+        foreach ($register as $set) {
+            $this->set(...$set);
+        }
+
+        return $this->graph[$node['@id']];
     }
 
     /**
