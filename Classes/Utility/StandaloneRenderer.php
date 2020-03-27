@@ -113,18 +113,21 @@ class StandaloneRenderer
             (empty($this->configuration['view']['partialRootPath']) ? [] : [$this->configuration['view']['partialRootPath']]) :
             (array)$this->configuration['view']['partialRootPaths'];
         $this->partialRootPaths = array_map([$this, 'prepareRootPath'], $partialRootPaths);
+        ksort($this->partialRootPaths);
 
         // Template root paths
         $templateRootPaths       = empty($this->configuration['view']['templateRootPaths']) ?
             (empty($this->configuration['view']['templateRootPath']) ? [] : [$this->configuration['view']['templateRootPath']]) :
             (array)$this->configuration['view']['templateRootPaths'];
         $this->templateRootPaths = array_map([$this, 'prepareRootPath'], $templateRootPaths);
+        ksort($this->templateRootPaths);
 
         // Layout root paths
         $layoutRootPaths       = empty($this->configuration['view']['layoutRootPaths']) ?
             (empty($this->configuration['view']['layoutRootPath']) ? [] : [$this->configuration['view']['layoutRootPath']]) :
             (array)$this->configuration['view']['layoutRootPaths'];
         $this->layoutRootPaths = array_map([$this, 'prepareRootPath'], $layoutRootPaths);
+        ksort($this->layoutRootPaths);
     }
 
     /**

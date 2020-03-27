@@ -1,22 +1,38 @@
-<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers" data-namespace-typo3-fluid="true">
+<f:comment><!--
+
+    Render a heading & subheading
+
+    @param array data               Record
+    @param string classes           Additional CSS classes
+
+--></f:comment>
+<html xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:base="http://typo3.org/ns/Tollwerk/TwBase/ViewHelpers"
+      data-namespace-typo3-fluid="true">
     <f:if condition="{data.header_layout} < 102">
         <f:if condition="{data.header} || {data.subheader} || {data.date}">
+            <f:variable name="positionClass" value="{f:if(condition: data.header_position, then: 'ce-headline-{data.header_position}')}"/>
+            <f:variable name="mainPositionClass" value="{positionClass}{f:if(condition: classes, then: ' {classes}')}"/>
             <f:render partial="Header/Header" arguments="{
 				header: data.header,
 				layout: data.header_layout,
 				type: data.tx_twbase_heading_type,
 				language: data.tx_twbase_heading_language,
+<<<<<<< HEAD
 				positionClass: '{f:if(condition: data.header_position, then: \'ce-headline-{data.header_position}\')}',
+=======
+				positionClass: mainPositionClass,
+>>>>>>> release-4.0
 				link: data.header_link,
 				default: settings.defaultHeaderType}"/>
             <f:render partial="Header/SubHeader" arguments="{
 				subheader: data.subheader,
 				layout: data.header_layout,
-				positionClass: '{f:if(condition: data.header_position, then: \'ce-headline-{data.header_position}\')}',
+				positionClass: positionClass,
 				default: settings.defaultHeaderType}"/>
             <f:render partial="Header/Date" arguments="{
 				date: data.date,
-				positionClass: '{f:if(condition: data.header_position, then: \'ce-headline-{data.header_position}\')}'}"/>
+				positionClass: positionClass}"/>
         </f:if>
     </f:if>
 </html>

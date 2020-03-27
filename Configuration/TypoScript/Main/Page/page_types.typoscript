@@ -1,0 +1,62 @@
+tmp.uncached = PAGE
+tmp.uncached {
+    10 = USER_INT
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        settings < plugin.tx_twbase.settings
+        persistence < plugin.tx_twbase.persistence
+        view < plugin.tx_twbase.view
+        vendorName = Tollwerk
+        extensionName = TwBase
+    }
+
+    config {
+        disableAllHeaderCode = 1
+        additionalHeaders = Content-type:text/html
+        xhtml_cleaning = 0
+        admPanel = 0
+        debug = 0
+    }
+}
+
+tmp.cached = PAGE
+tmp.cached {
+    10 = USER
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        settings < plugin.tx_twbase.settings
+        persistence < plugin.tx_twbase.persistence
+        view < plugin.tx_twbase.view
+        vendorName = Tollwerk
+        extensionName = TwBase
+    }
+
+    config {
+        disableAllHeaderCode = 1
+        additionalHeaders = Content-type:text/html
+        xhtml_cleaning = 0
+        admPanel = 0
+        debug = 0
+    }
+}
+
+# Generic ajax controller. Returns text/json
+tx_twrbase_json < tmp.uncached
+tx_twrbase_json {
+    typeNum = 4000
+    10 {
+        pluginName = Ajax
+        controller = Ajax
+        action = dispatch
+        switchableControllerActions {
+            Ajax {
+                1 = dispatch
+            }
+        }
+    }
+
+    config {
+        additionalHeaders = Content-type:text/json
+    }
+}
+

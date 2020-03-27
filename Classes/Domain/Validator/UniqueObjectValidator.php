@@ -45,7 +45,8 @@ use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 /**
  * Checks for uniqueness within a given repository
  *
- * @package Tollwerk\TwBase\Domain\Validator
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Domain\Validator
  */
 class UniqueObjectValidator extends AbstractValidator
 {
@@ -65,12 +66,12 @@ class UniqueObjectValidator extends AbstractValidator
      * @var array
      */
     protected $supportedOptions = [
-        'table'     => [null, 'The table', 'string'],
-        'fieldname' => [null, 'The table field name', 'string'],
+        'table'        => [null, 'The table', 'string'],
+        'fieldname'    => [null, 'The table field name', 'string'],
+        'errorMessage' => [null, 'Custom error message for frontend', 'string'],
     ];
 
     /**
-     * /**
      * Check if $value is valid. If it is not valid, needs to add an error to result.
      *
      * @param mixed $value
@@ -79,7 +80,7 @@ class UniqueObjectValidator extends AbstractValidator
      */
     public function isValid($value)
     {
-        // Short-circuit if value is skiped
+        // Short-circuit if value is skipped
         if (isset(self::$skip[$this->calculateValueHash($value)])) {
             return true;
         }
@@ -97,6 +98,7 @@ class UniqueObjectValidator extends AbstractValidator
         if ($result->rowCount()) {
             $this->result->addError(
                 new Error(
+                    $this->options['errorMessage'] ??
                     LocalizationUtility::translate('validator.uniqueObject.error', 'TwBase'),
                     1547075816
                 )

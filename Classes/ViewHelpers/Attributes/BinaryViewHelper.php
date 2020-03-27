@@ -74,8 +74,9 @@ class BinaryViewHelper extends AbstractViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
+        $binaryAttributes = is_array($arguments['attributes']) ? $arguments['attributes'] : [];
         $attributes = [];
-        foreach ($arguments['attributes'] as $name => $value) {
+        foreach ($binaryAttributes as $name => $value) {
             if (!empty($value)) {
                 $attributes[] = $name;
             }

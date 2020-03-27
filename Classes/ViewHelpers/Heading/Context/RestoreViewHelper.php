@@ -43,7 +43,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Restore heading context view helper
  *
- * @package Artefakt\Core
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  */
 class RestoreViewHelper extends AbstractViewHelper
 {
@@ -54,6 +55,7 @@ class RestoreViewHelper extends AbstractViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('context', 'string', 'Heading context descriptor', true);
+        $this->registerArgument('root', 'bool', 'Restore the root context if needed', false, false);
     }
 
     /**
@@ -61,6 +63,7 @@ class RestoreViewHelper extends AbstractViewHelper
      */
     public function render(): void
     {
-        GeneralUtility::makeInstance(HeadingContextManager::class)->restoreContext($this->arguments['context']);
+        GeneralUtility::makeInstance(HeadingContextManager::class)
+                      ->restoreContext($this->arguments['context'], $this->arguments['root']);
     }
 }

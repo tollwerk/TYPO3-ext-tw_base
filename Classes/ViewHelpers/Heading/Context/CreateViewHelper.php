@@ -43,7 +43,8 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 /**
  * Create a new heading context and return the previous one
  *
- * @package Artefakt\Core
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  */
 class CreateViewHelper extends AbstractViewHelper
 {

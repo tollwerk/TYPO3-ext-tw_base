@@ -22,7 +22,7 @@
  *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  *  the Software, and to permit persons to whom the Software is furnished to do so,
  *  subject to the following conditions:
- *
+ *f
  *  The above copyright notice and this permission notice shall be included in all
  *  copies or substantial portions of the Software.
  *
@@ -122,6 +122,16 @@ call_user_func(
             )
         );
 
+        // Add plugin for generic ajax calls. Add array to SC_OPTIONS for registering callable ajax functions
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax'] = [];
+        \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
+            'TwBase',
+            'Ajax',
+            [\Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch'],
+            [\Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch']
+        );
+
+
         // Register additional image processing tasks
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.CropScaleMaskCompress'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageCropScaleMaskCompressTask::class;
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.Convert']               = \Tollwerk\TwBase\Service\Resource\Processing\ImageConvertTask::class;
@@ -175,5 +185,19 @@ call_user_func(
             \TYPO3\CMS\Extbase\Persistence\Generic\Storage\Typo3DbQueryParser::class,
             \Tollwerk\TwBase\Persistence\Generic\Storage\Typo3DbQueryParser::class
         );
+
+        // Prepare hooks for Structured Data initialization
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] = (array)($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['structuredData']['initialize'] ?? []);
+
+        // Prepare non-breaking space replacement fields
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup']                 = (array)($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup'] ?? []);
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup']['tt_content'][] = 'bodytext';
+
+        // Register a custom form element type
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1585076933] = [
+            'nodeName' => 'seoTitleElement',
+            'priority' => 40,
+            'class'    => \Tollwerk\TwBase\Form\Element\SeoTitleElement::class,
+        ];
     }
 );

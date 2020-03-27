@@ -104,7 +104,7 @@ class SvgIconManager
         $svgDom->documentElement->setAttribute('id', $useKey);
         self::$sources[$filename] = $svgDom->saveXML($svgDom->documentElement);
         $svgUse                   = new DOMDocument();
-        $svgUse->loadXML('<svg viewBox="0 0 '.$width.' '.$height.'" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="#'.$useKey.'" /></svg>');
+        $svgUse->loadXML('<svg viewBox="0 0 '.$width.' '.$height.'" width="'.$width.'" height="'.$height.'" xmlns:xlink="http://www.w3.org/1999/xlink"><use xlink:href="#'.$useKey.'" /></svg>');
 
         return $svgUse;
     }
@@ -170,7 +170,7 @@ class SvgIconManager
     {
         // If sprite SVGs have been registered
         if (count(self::$sources)) {
-            $sprite = '<!-- Auto-injected SVG sprite --><svg class="hide-element" aria-hidden="true">'.implode(self::$sources).'</svg>';
+            $sprite = '<!-- Auto-injected SVG sprite --><svg style="position:absolute!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;height:1px!important;width:1px!important;margin:-1px!important;padding:0!important;border:0!important" aria-hidden="true">'.implode(self::$sources).'</svg>';
             $body   = preg_split('/(<body.*?>)/', $tsfe->content, 2, PREG_SPLIT_DELIM_CAPTURE);
             if (count($body) == 3) {
                 $body[1]       .= $sprite;

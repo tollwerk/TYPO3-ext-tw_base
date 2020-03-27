@@ -40,7 +40,7 @@ return [
             'config' => [
                 'type' => 'check',
                 'renderType' => 'checkboxToggle',
-                'default' => 1,
+                'default' => 0,
                 'items' => [
                     [
                         0 => '',
@@ -78,6 +78,7 @@ return [
                         'transcript',
                     ],
                 ],
+                'default' => 'captions'
             ],
         ],
 

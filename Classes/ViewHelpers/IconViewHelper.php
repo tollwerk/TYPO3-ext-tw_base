@@ -107,6 +107,7 @@ class IconViewHelper extends AbstractTagBasedViewHelper
             $this->tag->addAttribute('class', 'Icon Icon--'.$type.' Icon--theme-'.$theme.$class);
             $this->tag->addAttribute('aria-hidden', 'true');
             $this->tag->addAttribute('role', 'presentation');
+            $this->tag->addAttribute('focusable', 'false');
             $this->tag->forceClosingTag(true);
 
             return $this->tag->render();

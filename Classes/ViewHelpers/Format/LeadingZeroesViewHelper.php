@@ -36,6 +36,7 @@
 namespace Tollwerk\TwBase\ViewHelpers\Format;
 
 use Closure;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Exception;
@@ -78,6 +79,17 @@ class LeadingZeroesViewHelper extends AbstractViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
+        if($arguments['zeroes'] == 0) {
+            $parts = GeneralUtility::trimExplode('.', $renderChildrenClosure());
+            if(count($parts) == 2) {
+                if($parts[0] == '0') {
+                    return '.'.$parts[1];
+                }
+            }
+            return $renderChildrenClosure;
+        }
+
+        // TODO: Fix bug with number containing a decimal separator
         return sprintf('%0'.$arguments['zeroes'].'d', $renderChildrenClosure());
     }
 }

@@ -129,14 +129,15 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Render an image element
      *
-     * @param FileInterface $image Image reference
-     * @param string $width        Image width
-     * @param string $height       Image height
+     * @param FileInterface $image       Image reference
+     * @param string $width              Image width
+     * @param string $height             Image height
+     * @param string|null $fileExtension File extension
      *
      * @return string Rendered <img> or <picture> element
      * @throws Exception
      */
-    protected function renderImage(FileInterface $image, $width, $height)
+    protected function renderImage(FileInterface $image, $width, $height, ?string $fileExtension)
     {
         // Disable the title attribute if necessary
         if ($this->arguments['noTitle']) {
@@ -157,7 +158,9 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
                 $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
                 // If there are breakpoint specifications available: Render as <picture> element
-                if (!empty($breakpoints) || count($activeConverters)) {
+                if ((!empty($breakpoints) || count($activeConverters))
+                    && $this->getResponsiveImagesUtility()->canPicture($image)
+                ) {
                     return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
 
                     // If a source set can be used: Render with srcset attribute

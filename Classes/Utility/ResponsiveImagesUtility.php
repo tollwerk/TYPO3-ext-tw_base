@@ -51,6 +51,12 @@ use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
+/**
+ * Responsive Images Utility
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\Utility
+ */
 class ResponsiveImagesUtility implements SingletonInterface
 {
     /**
@@ -59,6 +65,12 @@ class ResponsiveImagesUtility implements SingletonInterface
      * @var string[]
      */
     const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    /**
+     * Image file extensions eligible for picture processing
+     *
+     * @var string[]
+     */
+    const PICTURE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
     /**
      * Object Manager
      *
@@ -749,6 +761,18 @@ class ResponsiveImagesUtility implements SingletonInterface
     public function canSrcset(FileInterface $image): bool
     {
         return in_array(strtolower($image->getExtension()), self::SRCSET_FILE_EXTENSIONS);
+    }
+
+    /**
+     * Test whether an image is eligible for picture processing
+     *
+     * @param FileInterface $image Image
+     *
+     * @return bool Image can have srcset
+     */
+    public function canPicture(FileInterface $image): bool
+    {
+        return in_array(strtolower($image->getExtension()), self::PICTURE_FILE_EXTENSIONS);
     }
 
     /**
