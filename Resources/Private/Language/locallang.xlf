@@ -102,6 +102,9 @@
             <trans-unit id="video.transcript">
                 <source>Transcript of: %s [%s]</source>
             </trans-unit>
+            <trans-unit id="video.transcript">
+                <source>Transcript of: %s [%s]</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
