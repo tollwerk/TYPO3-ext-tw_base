@@ -5,16 +5,16 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,25 +34,23 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\StructuredData;
+namespace Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext;
 
 use Closure;
 use Tollwerk\TwBase\Utility\StructuredDataManager;
-use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\Exception;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Create an ID reference
+ * Return the main entity context
  *
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext
  */
-class IdrefViewHelper extends AbstractViewHelper
+class GetViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
@@ -71,35 +69,6 @@ class IdrefViewHelper extends AbstractViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        if ($arguments['global']) {
-            /** @var Site $site */
-            $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
-
-            $idref = ($arguments['id'] === null) ? $site->getBase() :
-                $site->getBase()->withPath('/')->withFragment($arguments['id']);
-        } else {
-            $objectManager         = GeneralUtility::makeInstance(ObjectManager::class);
-            $structuredDataManager = $objectManager->get(StructuredDataManager::class);
-            $idref                 = ($arguments['id'] === null) ? $structuredDataManager->getBaseUri() :
-                $structuredDataManager->normalizeId($arguments['id']);
-        }
-
-        return $arguments['object'] ? ['@id' => strval($idref)] : strval($idref);
-    }
-
-    /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
-     *
-     * @return void
-     * @api
-     */
-    public function initializeArguments()
-    {
-        parent::initializeArguments();
-        $this->registerArgument('id', 'string', 'ID', false, null);
-        $this->registerArgument('global', 'bool',
-            'Create a global ID reference, i.e. using the main domain instead of the current page', false, false);
-        $this->registerArgument('object', 'bool', 'Return as ID reference object', false, false);
+        return GeneralUtility::makeInstance(StructuredDataManager::class)->getMainEntity();
     }
 }

@@ -38,26 +38,22 @@ namespace Tollwerk\TwBase\ViewHelpers\StructuredData;
 
 use Closure;
 use Tollwerk\TwBase\Utility\StructuredDataManager;
-use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\Exception;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Create an ID reference
+ * Add a Structured Data value to a list of values
  *
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\ViewHelpers
  */
-class IdrefViewHelper extends AbstractViewHelper
+class AddViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
-
     /**
-     * Create an ID reference
+     * Register a new structured data node
      *
      * @param array $arguments
      * @param Closure $renderChildrenClosure
@@ -71,20 +67,9 @@ class IdrefViewHelper extends AbstractViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
-        if ($arguments['global']) {
-            /** @var Site $site */
-            $site = $GLOBALS['TYPO3_REQUEST']->getAttribute('site');
-
-            $idref = ($arguments['id'] === null) ? $site->getBase() :
-                $site->getBase()->withPath('/')->withFragment($arguments['id']);
-        } else {
-            $objectManager         = GeneralUtility::makeInstance(ObjectManager::class);
-            $structuredDataManager = $objectManager->get(StructuredDataManager::class);
-            $idref                 = ($arguments['id'] === null) ? $structuredDataManager->getBaseUri() :
-                $structuredDataManager->normalizeId($arguments['id']);
-        }
-
-        return $arguments['object'] ? ['@id' => strval($idref)] : strval($idref);
+        $objectManager         = GeneralUtility::makeInstance(ObjectManager::class);
+        $structuredDataManager = $objectManager->get(StructuredDataManager::class);
+        $structuredDataManager->add($arguments['id'], $arguments['key'], $arguments['value']);
     }
 
     /**
@@ -97,9 +82,8 @@ class IdrefViewHelper extends AbstractViewHelper
     public function initializeArguments()
     {
         parent::initializeArguments();
-        $this->registerArgument('id', 'string', 'ID', false, null);
-        $this->registerArgument('global', 'bool',
-            'Create a global ID reference, i.e. using the main domain instead of the current page', false, false);
-        $this->registerArgument('object', 'bool', 'Return as ID reference object', false, false);
+        $this->registerArgument('id', 'string', 'ID', true);
+        $this->registerArgument('key', 'mixed', 'Key', true);
+        $this->registerArgument('value', 'mixed', 'Value', true);
     }
 }

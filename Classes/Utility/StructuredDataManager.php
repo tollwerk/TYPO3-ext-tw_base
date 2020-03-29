@@ -74,6 +74,17 @@ class StructuredDataManager implements SingletonInterface
      * @var string
      */
     protected $baseUri;
+    /**
+     * Registered main entities
+     *
+     * @var string[]
+     */
+    protected $mainEntity = [];
+    /**
+     * Add / overwrite modes
+     */
+    const MODE_SET = 0;
+    const MODE_ADD = 1;
 
     /**
      * Constructor
@@ -92,19 +103,65 @@ class StructuredDataManager implements SingletonInterface
     }
 
     /**
-     * Create a new structured data node
+     * Register a new main entity
+     *
+     * @param string $id Main entity ID
+     *
+     * @internal
+     */
+    public function pushMainEntity(string $id): void
+    {
+        array_push($this->mainEntity, $this->normalizeId($id));
+    }
+
+    /**
+     * Deregister the latest main entity
+     *
+     * @internal
+     */
+    public function popMainEntity(): ?string
+    {
+        return array_pop($this->mainEntity);
+    }
+
+    /**
+     * Return the current main entity
+     *
+     * @return string|null Main entity ID
+     * @internal
+     */
+    public function getMainEntity(): ?string
+    {
+        return count($this->mainEntity) ? $this->mainEntity[count($this->mainEntity) - 1] : null;
+    }
+
+    /**
+     * Create and add a new structured data node to a list of nodes
      *
      * @param string $origId    Node ID
      * @param string|array $key Key
      * @param mixed $value      data
      */
-    public function set(string $origId, $key, $value): void
+    public function add(string $origId, $key, $value): void
+    {
+        $this->set($origId, rtrim($key, '.').'.', $value, self::MODE_ADD);
+    }
+
+    /**
+     * Create a new structured data node
+     *
+     * @param string $origId    Node ID
+     * @param string|array $key Key
+     * @param mixed $value      data
+     * @param int $mode         Add / overwrite mode
+     */
+    public function set(string $origId, $key, $value, int $mode = self::MODE_SET): void
     {
         $id = $this->normalizeId($origId);
 
         // If the ID doesn't exist (yet): pre-register the value
         if (empty($this->graph[$id])) {
-            $this->register[] = [$origId, $key, $value];
+            $this->register[] = [$origId, $key, $value, $mode];
 
             // Else: Add to the graph
         } else {
@@ -115,19 +172,27 @@ class StructuredDataManager implements SingletonInterface
             // Run through all key parts
             foreach ($keyParts as $index => $keyPart) {
                 // If this is an existing key
-                if (array_key_exists($keyPart, $pointer)) {
+                if (strlen($keyPart) && array_key_exists($keyPart, $pointer)) {
                     $pointer =& $pointer[$keyPart];
                     continue;
                 }
 
-                // If it's a zero-length key: Pointer must be an array, item is added
+                // If it's a zero-length key
                 if (!strlen($keyPart)) {
+                    // If the pointer is not an array already, but should be turned into one ...
+                    // Or if the pointer contains a singular node only
+                    if (($mode === self::MODE_ADD) && (!is_array($pointer) || array_key_exists('@type', $pointer))) {
+                        $pointer = [$pointer];
+                    }
+
+                    // If the pointer is an array already, item is added
                     if (is_array($pointer)) {
                         $pointer[] = [];
                         $pointer   =& $pointer[count($pointer) - 1];
                         continue;
                     }
 
+                    // Else: Error
                     return;
                 }
 
