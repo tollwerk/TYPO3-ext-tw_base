@@ -72,18 +72,15 @@ class FrontendUriUtility
      * @param string $language Language
      *
      * @return string Frontend URL
+     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      */
     public static function build(int $pageUid, array $params = [], int $pageType = 0, string $language = null): string
     {
         $tsfeController = self::getTypoScriptFrontendController($pageUid, $pageType);
-        $params['type'] = $pageType;
-        if (isset($params['type']) && !intval($params['type'])) {
-            unset($params['type']);
-        }
 
         return $tsfeController->cObj->typoLink_URL([
-            'parameter'                 => $pageUid,
+            'parameter'                 => $pageUid.(intval($pageType) ? ','.$pageType : ''),
             'linkAccessRestrictedPages' => 1,
             'additionalParams'          => GeneralUtility::implodeArrayForUrl(null, $params),
         ]);
