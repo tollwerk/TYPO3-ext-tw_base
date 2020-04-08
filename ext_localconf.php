@@ -192,5 +192,12 @@ call_user_func(
         // Prepare non-breaking space replacement fields
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup']                 = (array)($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup'] ?? []);
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['nbspCleanup']['tt_content'][] = 'bodytext';
+
+        // Register a custom form element type
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['formEngine']['nodeRegistry'][1585076933] = [
+            'nodeName' => 'seoTitleElement',
+            'priority' => 40,
+            'class'    => \Tollwerk\TwBase\Form\Element\SeoTitleElement::class,
+        ];
     }
 );

@@ -129,14 +129,15 @@ class MediaViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\MediaViewHelper
     /**
      * Render an image element
      *
-     * @param FileInterface $image Image reference
-     * @param string $width        Image width
-     * @param string $height       Image height
+     * @param FileInterface $image       Image reference
+     * @param string $width              Image width
+     * @param string $height             Image height
+     * @param string|null $fileExtension File extension
      *
      * @return string Rendered <img> or <picture> element
      * @throws Exception
      */
-    protected function renderImage(FileInterface $image, $width, $height)
+    protected function renderImage(FileInterface $image, $width, $height, ?string $fileExtension)
     {
         // Disable the title attribute if necessary
         if ($this->arguments['noTitle']) {

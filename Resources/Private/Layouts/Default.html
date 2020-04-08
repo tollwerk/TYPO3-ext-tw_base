@@ -3,9 +3,10 @@
       data-namespace-typo3-fluid="true">
     <f:if condition="{data.frame_class} != none">
         <f:then>
+            <f:variable name="listType" value="{f:if(condition: '{data.CType} == \'list\'}', then: ' ContentElement--list-{data.list_type}')}"/>
             <f:alias map="{
                 tagName: '{f:if(condition: \'{data.header} || {data.subheader}\', then: \'section\', else: \'div\')}',
-                className: 'ContentElement ContentElement--{data.CType} frame frame-{data.frame_class} frame-type-{data.CType} frame-layout-{data.layout}{f:if(condition:
+                className: 'ContentElement ContentElement--{data.CType}{listType} frame frame-{data.frame_class} frame-type-{data.CType} frame-layout-{data.layout}{f:if(condition:
             data.space_before_class, then: \' frame-space-before-{data.space_before_class}\')}{f:if(condition:
             data.space_after_class, then: \' frame-space-after-{data.space_after_class}\')}'
             }">
@@ -24,12 +25,12 @@
                         </f:render>
                         <f:render section="Main" optional="true"/>
                         <f:render section="Footer" optional="true">
-                            <f:render partial="Footer/All" arguments="{_all}"/>
+                            <f:render partial="Footer/All" arguments="{_all}" optional="true"/>
                         </f:render>
                         <base:heading.context.restore context="{headingContext}"/>
                     </f:alias>
                     <f:render section="After" optional="true">
-                        <f:render partial="DropIn/After/All" arguments="{_all}"/>
+                        <f:render partial="DropIn/After/All" arguments="{_all}" optional="true"/>
                     </f:render>
                 </f:render>
             </f:alias>
@@ -53,12 +54,12 @@
                 </f:render>
                 <f:render section="Main" optional="true"/>
                 <f:render section="Footer" optional="true">
-                    <f:render partial="Footer/All" arguments="{_all}"/>
+                    <f:render partial="Footer/All" arguments="{_all}" optional="true"/>
                 </f:render>
                 <base:heading.context.restore context="{headingContext}"/>
             </f:alias>
             <f:render section="After" optional="true">
-                <f:render partial="DropIn/After/All" arguments="{_all}"/>
+                <f:render partial="DropIn/After/All" arguments="{_all}" optional="true"/>
             </f:render>
             <f:if condition="{data.space_after_class}">
                 <div class="frame-space-after-{data.space_after_class}"></div>

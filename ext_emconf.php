@@ -21,10 +21,10 @@ $EM_CONF['tw_base'] = [
     'uploadfolder'     => '0',
     'createDirs'       => '',
     'clearCacheOnLoad' => 0,
-    'version'          => '3.2.0',
+    'version'          => '4.0.1',
     'constraints'      => [
         'depends'   => [
-            'typo3' => '10.0.0-',
+            'typo3' => '10.3.0-',
             'form'  => '*'
         ],
         'conflicts' => [],

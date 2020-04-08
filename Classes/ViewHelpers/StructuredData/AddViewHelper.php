@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Heading\Context
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,27 +34,56 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
+namespace Tollwerk\TwBase\ViewHelpers\StructuredData;
 
-use Tollwerk\TwBase\Utility\HeadingContextManager;
+use Closure;
+use Tollwerk\TwBase\Utility\StructuredDataManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Get heading context view helper
+ * Add a Structured Data value to a list of values
  *
- * @category   Tollwerk
  * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  */
-class GetViewHelper extends AbstractViewHelper
+class AddViewHelper extends AbstractViewHelper
 {
     /**
-     * Returns the current heading context
+     * Register a new structured data node
      *
-     * @return string Current heading context
+     * @param array $arguments
+     * @param Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return mixed
+     * @throws Exception
      */
-    public function render(): string
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $objectManager         = GeneralUtility::makeInstance(ObjectManager::class);
+        $structuredDataManager = $objectManager->get(StructuredDataManager::class);
+        $structuredDataManager->add($arguments['id'], $arguments['key'], $arguments['value']);
+    }
+
+    /**
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
+     *
+     * @return void
+     * @api
+     */
+    public function initializeArguments()
     {
-        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentContext();
+        parent::initializeArguments();
+        $this->registerArgument('id', 'string', 'ID', true);
+        $this->registerArgument('key', 'mixed', 'Key', true);
+        $this->registerArgument('value', 'mixed', 'Value', true);
     }
 }

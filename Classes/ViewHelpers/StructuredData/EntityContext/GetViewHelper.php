@@ -5,16 +5,16 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Heading\Context
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,27 +34,41 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
+namespace Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext;
 
-use Tollwerk\TwBase\Utility\HeadingContextManager;
+use Closure;
+use Tollwerk\TwBase\Utility\StructuredDataManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Get heading context view helper
+ * Return the main entity context
  *
- * @category   Tollwerk
  * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext
  */
 class GetViewHelper extends AbstractViewHelper
 {
+    use CompileWithRenderStatic;
+
     /**
-     * Returns the current heading context
+     * Create an ID reference
      *
-     * @return string Current heading context
+     * @param array $arguments
+     * @param Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return mixed
+     * @throws Exception
      */
-    public function render(): string
-    {
-        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentContext();
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        return GeneralUtility::makeInstance(StructuredDataManager::class)->getMainEntity();
     }
 }

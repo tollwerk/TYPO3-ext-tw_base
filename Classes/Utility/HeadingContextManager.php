@@ -99,11 +99,18 @@ class HeadingContextManager implements SingletonInterface
      */
     public function setupContext(int $level = null, int $visualType = null, string $content = ''): HeadingContext
     {
+//        debug(func_get_args(), 'setContext');
+//        try {
+//        	throw new \Exception;
+//        } catch (\Exception $e) {
+//        	echo $e->getMessage().PHP_EOL.$e->getTraceAsString().PHP_EOL;
+//        }
         $level      = intval($level);
         $afterLevel = max(1, $this->currentLevel);
         $hidden     = ($level >= 100);
         $level      = ($level >= 100) ? 0 : $level;
         $error      = null;
+//        debug([$level, $this->currentLevel], 'info');
 
         // debug([$level, $this->currentLevel], 'Setup context');
 

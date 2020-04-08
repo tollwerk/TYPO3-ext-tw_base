@@ -68,6 +68,13 @@ $fields = [
             ],
         ]
     ],
+    'tx_twbase_seo_title'      => [
+        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:pages.tx_twbase_seo_title',
+        'config' => [
+            'type' => 'user',
+            'renderType' => 'seoTitleElement',
+        ],
+    ],
 ];
 
 // Add new fields to pages:
@@ -91,4 +98,12 @@ $fields = [
     'tw_base',
     'Configuration/TypoScript/Main/TSconfig/page.tsconfig',
     'Page Settings'
+);
+
+// Add the 'tx_twbase_seo_title' field
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes(
+    'pages',
+    'tx_twbase_seo_title',
+    '',
+    'after:subtitle'
 );

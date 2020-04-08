@@ -98,14 +98,15 @@ class CssViewHelper extends MediaViewHelper
     /**
      * Render an image element
      *
-     * @param FileInterface $image Image reference
-     * @param string $width        Image width
-     * @param string $height       Image height
+     * @param FileInterface $image       Image reference
+     * @param string $width              Image width
+     * @param string $height             Image height
+     * @param string|null $fileExtension File extension
      *
      * @return string Rendered <img> or <picture> element
      * @throws Exception
      */
-    protected function renderImage(FileInterface $image, $width, $height): string
+    protected function renderImage(FileInterface $image, $width, $height, ?string $fileExtension)
     {
         // If the image shouldn't be inlined
         if (!$this->arguments['inline']) {
@@ -117,21 +118,20 @@ class CssViewHelper extends MediaViewHelper
                 // Determine the breakpoint specifications or preset to use
                 $breakpoints = $this->getBreakpointSpecifications($this->arguments['breakpoints']);
 
-//                // If there are breakpoint specifications available: Render as <picture> element
-//                if (!empty($breakpoints) || count($activeConverters)) {
-//                    return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
-//
-//                    // If a source set can be used: Render with srcset attribute
-//                } else
-                if ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
+                // If there are breakpoint specifications available: Render as <picture> element
+                if (!empty($breakpoints) || count($activeConverters)) {
+                    return $this->renderPicture($image, $width, $height, $breakpoints, $activeConverters);
+
+                    // If a source set can be used: Render with srcset attribute
+                } elseif ($this->arguments['srcset'] && $this->getResponsiveImagesUtility()->canSrcset($image)) {
                     return $this->renderImageSrcset($image, $width, $height);
                 }
             }
 
             // If the image should only be lazyloaded
-//            if ($this->arguments['lazyload']) {
-//                return $this->renderLazyloadImage($image, $width, $height);
-//            }
+            if ($this->arguments['lazyload']) {
+                return $this->renderLazyloadImage($image, $width, $height);
+            }
         }
 
         // Fall back to a simple image
