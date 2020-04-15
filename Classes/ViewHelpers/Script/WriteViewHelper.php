@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\ViewHelpers\Script;
 
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 use WyriHaximus\HtmlCompress\Factory;
 
@@ -61,6 +62,8 @@ class WriteViewHelper extends AbstractTagBasedViewHelper
     {
         parent::initializeArguments();
         $this->registerArgument('condition', 'string', 'JavaScript condition to be met', false, null);
+        $this->registerArgument('excludeTypes', 'string',
+            'Comma separated list of page types that aren\'t eligible for output', false, '');
     }
 
     /**
@@ -71,18 +74,23 @@ class WriteViewHelper extends AbstractTagBasedViewHelper
      */
     public function render(): string
     {
-        $compressor = Factory::construct();
-        $html       = trim($compressor->compress($this->renderChildren()));
+        $excludeTypes = array_map('intval', GeneralUtility::trimExplode(',', $this->arguments['excludeTypes'], true));
+        if (empty($excludeTypes) || !in_array(intval($GLOBALS['TSFE']->type), $excludeTypes)) {
+            $compressor = Factory::construct();
+            $html       = trim($compressor->compress($this->renderChildren()));
 
-        if (!strlen($html)) {
-            return '';
+            if (!strlen($html)) {
+                return '';
+            }
+
+            $condition = trim($this->arguments['condition']);
+            $condition = strlen($condition) ? "if($condition)" : '';
+
+            $this->tag->setContent($condition.'document.write(\''.addcslashes($html, "'").'\')');
+
+            return $this->tag->render();
         }
 
-        $condition = trim($this->arguments['condition']);
-        $condition = strlen($condition) ? "if($condition)" : '';
-
-        $this->tag->setContent($condition.'document.write(\''.addcslashes($html, "'").'\')');
-
-        return $this->tag->render();
+        return '';
     }
 }
