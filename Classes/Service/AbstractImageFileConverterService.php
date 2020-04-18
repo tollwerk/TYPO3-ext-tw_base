@@ -36,42 +36,68 @@
 
 namespace Tollwerk\TwBase\Service;
 
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
-use TYPO3\CMS\Core\Utility\CommandUtility;
+use TYPO3\CMS\Core\Service\AbstractService;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
 
 /**
- * SVGO image compressor
+ * Abstract file converter service
  */
-class SvgoCompressorService extends AbstractImageFileCompressorService
+abstract class AbstractImageFileConverterService extends AbstractService
 {
     /**
      * Name of the TypoScript key to enable this service
      *
      * @var bool|string|null
      */
-    protected $typoscriptEnableKey = 'compressors.svgo';
+    protected $typoscriptEnableKey = false;
+
+    /**
+     * Initialization of the service
+     *
+     * Checks whether the service was enabled via its TypoScript constant
+     * @throws Exception
+     */
+    public function init()
+    {
+        if (!parent::init() || !$this->typoscriptEnableKey) {
+            return false;
+        }
+
+        if ($this->typoscriptEnableKey === null) {
+            return true;
+        }
+
+        /** @var ImageService $imageService */
+        $imageService = GeneralUtility::makeInstance(ImageService::class);
+
+        return (boolean)$imageService->getImageSettings($this->typoscriptEnableKey.'._typoScriptNodeValue');
+    }
+
+    /**
+     * Check whether this converer accepts a particular file for conversion
+     *
+     * @param FileInterface $image File
+     *
+     * @return bool File is accepted for conversion
+     */
+    public function acceptsFile(FileInterface $image): bool
+    {
+        return false;
+    }
 
     /**
      * Process a file
      *
-     * @param TaskInterface $task     Image processing task
-     * @param array $processingResult Image processing result
-     * @param array $configuration    Service configuration
+     * @param TaskInterface $task  Image processing task
+     * @param array $configuration Service configuration
      *
-     * @return string File path
+     * @return array|null Result
      */
-    public function processImageFile(TaskInterface $task, array $processingResult, array $configuration = []): string
+    public function processImageFile(TaskInterface $task, array $configuration = []): ?array
     {
-        $filePath = $task->getSourceFile()->getForLocalProcessing();
-        $this->registerTempFile($filePath);
-
-        $svgoConfig  = json_encode($configuration, JSON_NUMERIC_CHECK);
-        $svgoCommand = 'svgo --quiet --multipass --input '.CommandUtility::escapeShellArgument($filePath);
-        $svgoCommand .= ' --config '.CommandUtility::escapeShellArgument($svgoConfig);
-
-        $output = $returnValue = null;
-        CommandUtility::exec($svgoCommand, $output, $returnValue);
-
-        return $returnValue ? '' : $filePath;
+        return null;
     }
 }

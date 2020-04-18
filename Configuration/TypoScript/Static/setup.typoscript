@@ -52,6 +52,8 @@ plugin.tx_twbase {
         compressors {
             mozjpeg = {$plugin.tx_twbase.settings.compressors.mozjpeg}
             svgo = {$plugin.tx_twbase.settings.compressors.svgo}
+            gzip = {$plugin.tx_twbase.settings.compressors.gzip}
+            brotli = {$plugin.tx_twbase.settings.compressors.brotli}
         }
 
         converters {

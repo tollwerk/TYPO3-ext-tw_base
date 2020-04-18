@@ -45,7 +45,7 @@ use TYPO3\CMS\Core\Utility\CommandUtility;
 /**
  * Webp converter service
  */
-class WebpConverterService extends AbstractFileConverterService
+class WebpConverterService extends AbstractImageFileConverterService
 {
     /**
      * Name of the TypoScript key to enable this service
@@ -74,7 +74,7 @@ class WebpConverterService extends AbstractFileConverterService
      *
      * @return array|null Result
      */
-    public function processFile(TaskInterface $task, array $configuration = []): ?array
+    public function processImageFile(TaskInterface $task, array $configuration = []): ?array
     {
         /** @var File $sourceFile */
         $sourceFile     = $task->getSourceFile();

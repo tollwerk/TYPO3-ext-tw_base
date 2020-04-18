@@ -36,7 +36,7 @@
 
 namespace Tollwerk\TwBase\Utility;
 
-use Tollwerk\TwBase\Service\AbstractFileConverterService;
+use Tollwerk\TwBase\Service\AbstractImageFileConverterService;
 use Tollwerk\TwBase\Service\AbstractLqipService;
 use Tollwerk\TwBase\Service\ImageService;
 use Tollwerk\TwBase\ViewHelpers\TagSequenceBuilder;
@@ -790,7 +790,7 @@ class ResponsiveImagesUtility implements SingletonInterface
 
             // Test if the WebP converter is available
             $webPConverterService = GeneralUtility::makeInstanceService('fileconvert', 'webp');
-            if (($webPConverterService instanceof AbstractFileConverterService)
+            if (($webPConverterService instanceof AbstractImageFileConverterService)
                 && ($webPConverterService->acceptsFile($image))) {
                 $this->availableImageConverters['webp'] = $webPConverterService;
             }

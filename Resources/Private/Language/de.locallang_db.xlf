@@ -36,6 +36,12 @@
             <trans-unit id="compressors.svgo" xml:space="preserve" approved="yes">
 				<source>SVG compressor: Enable the SVGO graphics compressor</source>
 			<target state="translated">SVG-Kompressor: SVGO-Grafik-Kompressor aktivieren</target></trans-unit>
+            <trans-unit id="compressors.gzip" xml:space="preserve" approved="yes">
+				<source>Text compressor (1): Enable the GZIP text compressor</source>
+			<target state="translated">Text-Kompressor (1): GZIP-Text-Kompressor aktivieren</target></trans-unit>
+            <trans-unit id="compressors.brotli" xml:space="preserve" approved="yes">
+				<source>Text compressor (2): Enable the Brotli text compressor</source>
+			<target state="translated">Text-Kompressor (2): Brotli-Text-Kompressor aktivieren</target></trans-unit>
             <trans-unit id="converters" xml:space="preserve" approved="yes">
 				<source>Converters</source>
 			<target state="translated">Konverter</target></trans-unit>

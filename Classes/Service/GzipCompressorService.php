@@ -36,68 +36,43 @@
 
 namespace Tollwerk\TwBase\Service;
 
-use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
-use TYPO3\CMS\Core\Service\AbstractService;
+use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Exception;
 
 /**
- * Abstract file converter service
+ * Gzip compressor
  */
-abstract class AbstractFileConverterService extends AbstractService
+class GzipCompressorService extends AbstractTextFileCompressorService
 {
     /**
      * Name of the TypoScript key to enable this service
      *
      * @var bool|string|null
      */
-    protected $typoscriptEnableKey = false;
+    protected $typoscriptEnableKey = 'compressors.gzip';
 
     /**
-     * Initialization of the service
+     * Process a text file
      *
-     * Checks whether the service was enabled via its TypoScript constant
-     * @throws Exception
+     * @param string $file         File name
+     * @param array $configuration Configuration
+     *
+     * @return string Processed file name
      */
-    public function init()
+    public function processTextFile(string $file, array $configuration = []): string
     {
-        if (!parent::init() || !$this->typoscriptEnableKey) {
-            return false;
+        $filePath    = GeneralUtility::getFileAbsFileName($file);
+        $gzipCommand = 'gzip --keep --force --quiet --best '.CommandUtility::escapeShellArgument($filePath);
+        $output      = $returnValue = null;
+        CommandUtility::exec($gzipCommand, $output, $returnValue);
+
+        // If the text file couldn't be compressed: Cleanup
+        if ($returnValue) {
+            @unlink($filePath.'.gz');
+
+            return '';
         }
 
-        if ($this->typoscriptEnableKey === null) {
-            return true;
-        }
-
-        /** @var ImageService $imageService */
-        $imageService = GeneralUtility::makeInstance(ImageService::class);
-
-        return (boolean)$imageService->getImageSettings($this->typoscriptEnableKey.'._typoScriptNodeValue');
-    }
-
-    /**
-     * Check whether this converer accepts a particular file for conversion
-     *
-     * @param FileInterface $image File
-     *
-     * @return bool File is accepted for conversion
-     */
-    public function acceptsFile(FileInterface $image): bool
-    {
-        return false;
-    }
-
-    /**
-     * Process a file
-     *
-     * @param TaskInterface $task  Image processing task
-     * @param array $configuration Service configuration
-     *
-     * @return array|null Result
-     */
-    public function processFile(TaskInterface $task, array $configuration = []): ?array
-    {
-        return null;
+        return $filePath.'.gz';
     }
 }

@@ -42,7 +42,7 @@ use TYPO3\CMS\Core\Utility\CommandUtility;
 /**
  * Mozjpeg image compressor
  */
-class MozjpegCompressorService extends AbstractFileCompressorService
+class MozjpegCompressorService extends AbstractImageFileCompressorService
 {
     /**
      * Name of the TypoScript key to enable this service
@@ -60,7 +60,7 @@ class MozjpegCompressorService extends AbstractFileCompressorService
      *
      * @return string File path
      */
-    public function processFile(TaskInterface $task, array $processingResult, array $configuration = []): string
+    public function processImageFile(TaskInterface $task, array $processingResult, array $configuration = []): string
     {
         $filePath       = $processingResult['filePath'];
         $mozjpegCommand = 'mozjpeg -progressive -copy none '.CommandUtility::escapeShellArgument($filePath);

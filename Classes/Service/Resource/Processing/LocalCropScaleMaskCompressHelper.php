@@ -67,7 +67,7 @@ class LocalCropScaleMaskCompressHelper extends LocalCropScaleMaskHelper
                 /** @var ImageService $imageService */
                 $imageService       = GeneralUtility::makeInstance(ImageService::class);
                 $fileFormatSettings = ArrayUtility::recursivelyFalsify($imageService->getImageSettings('images.compress.'.$fileExtension));
-                $result['filePath'] = $fileCompressor->processFile($task, $result, $fileFormatSettings);
+                $result['filePath'] = $fileCompressor->processImageFile($task, $result, $fileFormatSettings);
             }
         }
 
