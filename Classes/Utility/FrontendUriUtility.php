@@ -71,22 +71,23 @@ class FrontendUriUtility
      * @param int $pageType    Page type
      * @param string $language Language
      *
-     * @return string Frontend URL
+     * @return string|null Frontend URL
+     * @throws ServiceUnavailableException
      * @throws SiteNotFoundException
      */
-    public static function build(int $pageUid, array $params = [], int $pageType = 0, string $language = null): string
+    public static function build(int $pageUid, array $params = [], int $pageType = 0, string $language = null): ?string
     {
-        $tsfeController = self::getTypoScriptFrontendController($pageUid, $pageType);
-        $params['type'] = $pageType;
-        if (isset($params['type']) && !intval($params['type'])) {
-            unset($params['type']);
+        if (intval($pageUid)) {
+            $tsfeController = self::getTypoScriptFrontendController($pageUid, $pageType);
+
+            return $tsfeController->cObj->typoLink_URL([
+                'parameter'                 => $pageUid.(intval($pageType) ? ','.$pageType : ''),
+                'linkAccessRestrictedPages' => 1,
+                'additionalParams'          => GeneralUtility::implodeArrayForUrl(null, $params),
+            ]);
         }
 
-        return $tsfeController->cObj->typoLink_URL([
-            'parameter'                 => $pageUid,
-            'linkAccessRestrictedPages' => 1,
-            'additionalParams'          => GeneralUtility::implodeArrayForUrl(null, $params),
-        ]);
+        return null;
     }
 
     /**

@@ -5,16 +5,16 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Service
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
+ * @copyright  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
  */
 
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2020 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -34,44 +34,41 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\Service;
+namespace Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext;
 
-use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
-use TYPO3\CMS\Core\Utility\CommandUtility;
+use Closure;
+use Tollwerk\TwBase\Utility\StructuredDataManager;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * SVGO image compressor
+ * Return the main entity context
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData\EntityContext
  */
-class SvgoCompressorService extends AbstractImageFileCompressorService
+class GetViewHelper extends AbstractViewHelper
 {
-    /**
-     * Name of the TypoScript key to enable this service
-     *
-     * @var bool|string|null
-     */
-    protected $typoscriptEnableKey = 'compressors.svgo';
+    use CompileWithRenderStatic;
 
     /**
-     * Process a file
+     * Create an ID reference
      *
-     * @param TaskInterface $task     Image processing task
-     * @param array $processingResult Image processing result
-     * @param array $configuration    Service configuration
+     * @param array $arguments
+     * @param Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
      *
-     * @return string File path
+     * @return mixed
+     * @throws Exception
      */
-    public function processImageFile(TaskInterface $task, array $processingResult, array $configuration = []): string
-    {
-        $filePath = $task->getSourceFile()->getForLocalProcessing();
-        $this->registerTempFile($filePath);
-
-        $svgoConfig  = json_encode($configuration, JSON_NUMERIC_CHECK);
-        $svgoCommand = 'svgo --quiet --multipass --input '.CommandUtility::escapeShellArgument($filePath);
-        $svgoCommand .= ' --config '.CommandUtility::escapeShellArgument($svgoConfig);
-
-        $output = $returnValue = null;
-        CommandUtility::exec($svgoCommand, $output, $returnValue);
-
-        return $returnValue ? '' : $filePath;
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        return GeneralUtility::makeInstance(StructuredDataManager::class)->getMainEntity();
     }
 }

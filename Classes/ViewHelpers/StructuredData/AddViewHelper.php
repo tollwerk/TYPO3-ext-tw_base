@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Service
+ * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,43 +34,56 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\Service\Resource\Processing;
+namespace Tollwerk\TwBase\ViewHelpers\StructuredData;
 
-use Tollwerk\TwBase\Service\AbstractFileCompressorService;
-use Tollwerk\TwBase\Service\ImageService;
-use Tollwerk\TwBase\Utility\ArrayUtility;
-use TYPO3\CMS\Core\Resource\Processing\LocalCropScaleMaskHelper;
-use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
+use Closure;
+use Tollwerk\TwBase\Utility\StructuredDataManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Extended local CropScaleMask helper
+ * Add a Structured Data value to a list of values
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  */
-class LocalCropScaleMaskCompressHelper extends LocalCropScaleMaskHelper
+class AddViewHelper extends AbstractViewHelper
 {
     /**
-     * This method actually does the processing of files locally
+     * Register a new structured data node
      *
-     * @param TaskInterface $task
+     * @param array $arguments
+     * @param Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
      *
-     * @return array|NULL Processing result
+     * @return mixed
      * @throws Exception
      */
-    public function process(TaskInterface $task)
-    {
-        $result = parent::process($task);
-        if ($result !== null) {
-            $fileExtension  = strtolower($task->getSourceFile()->getExtension());
-            $fileCompressor = GeneralUtility::makeInstanceService('filecompress', $fileExtension);
-            if ($fileCompressor instanceof AbstractFileCompressorService) {
-                /** @var ImageService $imageService */
-                $imageService       = GeneralUtility::makeInstance(ImageService::class);
-                $fileFormatSettings = ArrayUtility::recursivelyFalsify($imageService->getImageSettings('images.compress.'.$fileExtension));
-                $result['filePath'] = $fileCompressor->processImageFile($task, $result, $fileFormatSettings);
-            }
-        }
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
+        $objectManager         = GeneralUtility::makeInstance(ObjectManager::class);
+        $structuredDataManager = $objectManager->get(StructuredDataManager::class);
+        $structuredDataManager->add($arguments['id'], $arguments['key'], $arguments['value']);
+    }
 
-        return $result;
+    /**
+     * Initialize all arguments. You need to override this method and call
+     * $this->registerArgument(...) inside this method, to register all your arguments.
+     *
+     * @return void
+     * @api
+     */
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('id', 'string', 'ID', true);
+        $this->registerArgument('key', 'mixed', 'Key', true);
+        $this->registerArgument('value', 'mixed', 'Value', true);
     }
 }

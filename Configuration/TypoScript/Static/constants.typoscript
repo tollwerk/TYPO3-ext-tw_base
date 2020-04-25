@@ -21,6 +21,10 @@ plugin.tx_twbase {
             mozjpeg = 1
             # cat=plugin.tx_twbase/compressors/b; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors.svgo
             svgo = 1
+            # cat=plugin.tx_twbase/compressors/c; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors.gzip
+            gzip = 1
+            # cat=plugin.tx_twbase/compressors/d; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:compressors.brotli
+            brotli = 1
         }
 
         converters {

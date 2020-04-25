@@ -41,8 +41,8 @@ tmp.cached {
 }
 
 # Generic ajax controller. Returns text/json
-tx_twrbase_json < tmp.uncached
-tx_twrbase_json {
+tx_twbase_json < tmp.uncached
+tx_twbase_json {
     typeNum = 4000
     10 {
         pluginName = Ajax

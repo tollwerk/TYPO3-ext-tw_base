@@ -36,8 +36,12 @@
 
 namespace Tollwerk\TwBase\Utility;
 
+use Tollwerk\TwBase\Service\AbstractTextFileCompressorService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceCompressor;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\Exception;
 
 /**
  * Custom concatenation utility
@@ -112,5 +116,48 @@ class ConcatenateUtility extends ResourceCompressor
         }
 
         return $bundles;
+    }
+
+    /**
+     * Creates a merged file with given file type
+     *
+     * @param array $filesToInclude Files which should be merged, paths relative to root path
+     * @param string $type          File type
+     *
+     * @return mixed Filename of the merged file
+     * @throws Exception
+     */
+    protected function createMergedFile(array $filesToInclude, $type = 'css')
+    {
+        $mergedFile          = parent::createMergedFile($filesToInclude, $type);
+        $deactivatedServices = [];
+
+        // Run through all available compressor services
+        while ($info = ExtensionManagementUtility::findService('filecompress', $type, [])) {
+            /** @var AbstractTextFileCompressorService $compressor */
+            $compressor = GeneralUtility::makeInstance($info['className']);
+            if ($compressor instanceof AbstractTextFileCompressorService) {
+                $compressor->info = $info;
+                if ($compressor->init()) {
+                    $compressor->processTextFile($mergedFile);
+                }
+            }
+            unset($compressor);
+
+            // Temporarily deactivate the service
+            if ($GLOBALS['T3_SERVICES'][$info['serviceType']][$info['serviceKey']]['available']) {
+                $GLOBALS['T3_SERVICES'][$info['serviceType']][$info['serviceKey']]['available'] = false;
+                $deactivatedServices[]                                                          = [
+                    $info['serviceType'],
+                    $info['serviceKey']
+                ];
+            }
+        }
+
+        foreach ($deactivatedServices as $serviceTypeKey) {
+            $GLOBALS['T3_SERVICES'][$serviceTypeKey[0]][$serviceTypeKey[1]]['available'] = true;
+        }
+
+        return $mergedFile;
     }
 }

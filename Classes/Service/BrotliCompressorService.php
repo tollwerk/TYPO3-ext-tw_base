@@ -36,42 +36,43 @@
 
 namespace Tollwerk\TwBase\Service;
 
-use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Utility\CommandUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * SVGO image compressor
+ * Brotli compressor
  */
-class SvgoCompressorService extends AbstractImageFileCompressorService
+class BrotliCompressorService extends AbstractTextFileCompressorService
 {
     /**
      * Name of the TypoScript key to enable this service
      *
      * @var bool|string|null
      */
-    protected $typoscriptEnableKey = 'compressors.svgo';
+    protected $typoscriptEnableKey = 'compressors.brotli';
 
     /**
-     * Process a file
+     * Process a text file
      *
-     * @param TaskInterface $task     Image processing task
-     * @param array $processingResult Image processing result
-     * @param array $configuration    Service configuration
+     * @param string $file         File name
+     * @param array $configuration Configuration
      *
-     * @return string File path
+     * @return string Processed file name
      */
-    public function processImageFile(TaskInterface $task, array $processingResult, array $configuration = []): string
+    public function processTextFile(string $file, array $configuration = []): string
     {
-        $filePath = $task->getSourceFile()->getForLocalProcessing();
-        $this->registerTempFile($filePath);
+        $filePath      = GeneralUtility::getFileAbsFileName($file);
+        $brotliCommand = 'brotli --keep --force --quality=11 '.CommandUtility::escapeShellArgument($filePath);
+        $output        = $returnValue = null;
+        CommandUtility::exec($brotliCommand, $output, $returnValue);
 
-        $svgoConfig  = json_encode($configuration, JSON_NUMERIC_CHECK);
-        $svgoCommand = 'svgo --quiet --multipass --input '.CommandUtility::escapeShellArgument($filePath);
-        $svgoCommand .= ' --config '.CommandUtility::escapeShellArgument($svgoConfig);
+        // If the text file couldn't be compressed: Cleanup
+        if ($returnValue) {
+            @unlink($filePath.'.br');
 
-        $output = $returnValue = null;
-        CommandUtility::exec($svgoCommand, $output, $returnValue);
+            return '';
+        }
 
-        return $returnValue ? '' : $filePath;
+        return $filePath.'.br';
     }
 }

@@ -68,6 +68,42 @@ call_user_func(
             )
         );
 
+        // Register the gzip compressor service
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            'tw_base',
+            'filecompress', // Service type
+            'tx_twbase_gzip', // Service key
+            array(
+                'title'       => 'gzip',
+                'description' => 'Compress text resources using the gzip compressor',
+                'subtype'     => 'css,js,txt,svg,json,html,xml',
+                'available'   => true,
+                'priority'    => 60,
+                'quality'     => 80,
+                'os'          => '',
+                'exec'        => 'gzip',
+                'className'   => \Tollwerk\TwBase\Service\GzipCompressorService::class
+            )
+        );
+
+        // Register the brotli compressor service
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            'tw_base',
+            'filecompress', // Service type
+            'tx_twbase_brotli', // Service key
+            array(
+                'title'       => 'brotli',
+                'description' => 'Compress text resources using the gzip compressor',
+                'subtype'     => 'css,js,txt,svg,json,html,xml',
+                'available'   => true,
+                'priority'    => 70,
+                'quality'     => 80,
+                'os'          => '',
+                'exec'        => 'brotli',
+                'className'   => \Tollwerk\TwBase\Service\BrotliCompressorService::class
+            )
+        );
+
         // Register the mozjpeg image compressor service
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             'tw_base',
@@ -171,8 +207,9 @@ call_user_func(
         // Register a hook for injecting an SVG sprite
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][] = \Tollwerk\TwBase\Utility\SvgIconManager::class.'->injectSvgSprite';
 
-        // Register a custom JavaScript resource compressor
-        $GLOBALS['TYPO3_CONF_VARS']['FE']['jsConcatenateHandler'] = \Tollwerk\TwBase\Utility\ConcatenateUtility::class.'->concatenateJs';
+        // Register a custom JavaScript & CSS resource compressors
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['jsConcatenateHandler']  = \Tollwerk\TwBase\Utility\ConcatenateUtility::class.'->concatenateJs';
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['cssConcatenateHandler'] = \Tollwerk\TwBase\Utility\ConcatenateUtility::class.'->concatenateCssFiles';
 
         // Register classes to be available in 'eval' of TCA
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tce']['formevals'][\Tollwerk\TwBase\Evaluation\NumberEvaluation::class] = '';

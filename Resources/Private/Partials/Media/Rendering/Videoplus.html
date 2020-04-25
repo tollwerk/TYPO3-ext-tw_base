@@ -9,53 +9,107 @@
     @param array settings           Settings
 
 --></f:comment>
-<html data-namespace-typo3-fluid="true">
-    <video controls preload="metadata" {f:if(condition: poster, then: ' poster="{poster.0.publicUrl}"')}>
-        <f:for each="{sources}" as="source">
-            <f:variable name="latestSource" value="{source.publicUrl}"/>
-            <source src="{latestSource}" type="{source.mimeType}">
-        </f:for>
-        <f:for each="{tracks}" as="track">
-            <f:if condition="{track.data.kind} == 'transcript'">
+<html data-namespace-typo3-fluid="true"
+      xmlns:base="http://typo3.org/ns/Tollwerk/TwBase/ViewHelpers">
+    <f:if condition="{sources}">
+        <f:comment><!--
+
+            Structured Data
+
+        --></f:comment>
+        <f:variable name="structuredDataId" value="{base:structuredData.idref(id: '#video-{data.uid}')}"/>
+        <f:variable name="posterImage"
+                    value="{f:if(condition: poster, then: '{f:uri.image(image: poster.0, absolute: 1)}')}"/>
+        <base:structuredData.register type="VideoObject" id="{structuredDataId}" data="{
+                name: sources.0.alternative,
+                description: sources.0.description,
+                uploadDate: '{data.crdate -> f:format.date(format: \'c\')}',
+                thumbnailUrl: posterImage
+            }"/>
+
+        <f:comment><!--
+
+            Register with main entity (if available)
+
+        --></f:comment>
+        <f:variable name="structuredDataMainEntity" value="{base:structuredData.entityContext.get()}"/>
+        <f:if condition="{structuredDataMainEntity}">
+            <base:structuredData.add id="{structuredDataMainEntity}" key="video" value="{
+                    '@type': 'VideoObject',
+                    '@id': structuredDataId
+                }"/>
+        </f:if>
+
+        <base:structuredData.entityContext.wrap id="{structuredDataId}">
+            <video controls preload="metadata" {f:if(condition: poster, then:
+            ' poster="{poster.0.publicUrl}"')}>
+            <f:for each="{sources}" as="source">
+                <f:variable name="latestSource" value="{source.publicUrl}"/>
+                <source src="{latestSource}" type="{source.mimeType}">
+                <base:structuredData.add id="{structuredDataId}" key="contentUrl"
+                                         value="{f:uri.image(image: source, absolute: 1)}"/>
+                <base:structuredData.add id="{structuredDataId}" key="encoding" value="{
+                        '@type': 'MediaObject',
+                        contentUrl: '{f:uri.image(image: source, absolute: 1)}',
+                        encodingFormat: source.mimeType
+                    }"/>
+            </f:for>
+            <f:for each="{tracks}" as="track">
+                <f:if condition="{track.data.kind} == 'transcript'">
+                    <f:else>
+                        <f:variable name="label" value="{f:if(
+                                    condition: track.file.0.originalFile.metaData.title,
+                                    then: track.file.0.originalFile.metaData.title,
+                                    else: '{track.data.kind} ({track.data.language})'
+                                    )}"/>
+                        <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}"
+                               srclang="{track.data.language}"/>
+                    </f:else>
+                </f:if>
+            </f:for>
+            <f:if condition="{data.bodytext}">
+                <f:then>
+                    <f:format.html>{data.bodytext}</f:format.html>
+                </f:then>
                 <f:else>
-                    <f:variable name="label" value="{f:if(
-                            condition: track.file.0.originalFile.metaData.title,
-                            then: track.file.0.originalFile.metaData.title,
-                            else: '{track.data.kind} ({track.data.language})'
-                            )}"/>
-                    <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}"
-                           srclang="{track.data.language}"/>
+                    <p>
+                        <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:video.fallback"
+                                     arguments="{0: latestSource}"/>
+                    </p>
                 </f:else>
             </f:if>
-        </f:for>
-        <f:if condition="{data.bodytext}">
-            <f:then>
-                <f:format.html>{data.bodytext}</f:format.html>
-            </f:then>
-            <f:else>
-                <p>
-                    <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:video.fallback" arguments="{0: latestSource}"/>
-                </p>
-            </f:else>
-        </f:if>
-    </video>
-    <f:if condition="{sources}">
-        <f:render partial="Media/Rendering/Videosource" optional="true" arguments="{
-            author: sources.0.originalFile.properties.tx_twbase_author,
-            authorUrl: sources.0.originalFile.properties.tx_twbase_author_url,
-            sourceUrl: sources.0.originalFile.properties.tx_twbase_source_url,
-            year: sources.0.originalFile.properties.tx_twbase_creation_year,
-            license: sources.0.originalFile.properties.tx_twbase_license,
-            licenseName: sources.0.originalFile.properties.tx_twbase_license_name,
-            licenseUrl: sources.0.originalFile.properties.tx_twbase_license_url,
-            classes: 'MediaVideo__source'
-        }"/>
+            </video>
+            <f:render partial="Media/Rendering/Videosource" optional="true" arguments="{
+                author: sources.0.originalFile.properties.tx_twbase_author,
+                authorUrl: sources.0.originalFile.properties.tx_twbase_author_url,
+                sourceUrl: sources.0.originalFile.properties.tx_twbase_source_url,
+                year: sources.0.originalFile.properties.tx_twbase_creation_year,
+                license: sources.0.originalFile.properties.tx_twbase_license,
+                licenseName: sources.0.originalFile.properties.tx_twbase_license_name,
+                licenseUrl: sources.0.originalFile.properties.tx_twbase_license_url,
+                classes: 'MediaVideo__source'
+            }"/>
+            <f:variable name="transcripts" value="{}"/>
+            <f:for each="{tracks}" as="track">
+                <f:if condition="{track.data.kind} == 'transcript'">
+                    <f:variable name="transcripts"
+                                value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
+                </f:if>
+                <f:if condition="{track.data.kind} == 'captions'">
+                    <f:variable name="mimeType">
+                        <f:switch expression="{track.file.0.extension}">
+                            <f:case value="vtt">text/vtt</f:case>
+                            <f:case value="srt">text/plain</f:case>
+                        </f:switch>
+                    </f:variable>
+                    <base:structuredData.add id="{structuredDataId}" key="caption" value="{
+                            '@type': 'MediaObject',
+                            contentUrl: '{f:uri.image(image: track.file.0, absolute: 1)}',
+                            encodingFormat: '{mimeType -> v:format.trim()}'
+                        }"/>
+                </f:if>
+            </f:for>
+            <f:render partial="Media/Rendering/Transcripts" arguments="{transcripts: transcripts, name: data.header}"/>
+        </base:structuredData.entityContext.wrap>
     </f:if>
-    <f:variable name="transcripts" value="{}"/>
-    <f:for each="{tracks}" as="track">
-        <f:if condition="{track.data.kind} == 'transcript'">
-            <f:variable name="transcripts" value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
-        </f:if>
-    </f:for>
-    <f:render partial="Media/Rendering/Transcripts" arguments="{transcripts: transcripts, name: data.header}"/>
 </html>

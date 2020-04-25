@@ -36,7 +36,7 @@
 
 namespace Tollwerk\TwBase\Service\Resource\Processing;
 
-use Tollwerk\TwBase\Service\AbstractFileConverterService;
+use Tollwerk\TwBase\Service\AbstractImageFileConverterService;
 use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -57,8 +57,8 @@ class LocalConvertHelper
         $result        = null;
         $config        = $task->getConfiguration();
         $fileConverter = GeneralUtility::makeInstanceService('fileconvert', $config['converter']['type']);
-        if ($fileConverter instanceof AbstractFileConverterService) {
-            $result = $fileConverter->processFile($task, $config['converter']);
+        if ($fileConverter instanceof AbstractImageFileConverterService) {
+            $result = $fileConverter->processImageFile($task, $config['converter']);
         }
 
         return $result;

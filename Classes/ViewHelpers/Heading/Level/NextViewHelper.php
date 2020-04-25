@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Service
+ * @subpackage Tollwerk\TwBase\ViewHelpers\Heading\Context
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,70 +34,36 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Tollwerk\TwBase\Service;
+namespace Tollwerk\TwBase\ViewHelpers\Heading\Level;
 
-use TYPO3\CMS\Core\Resource\FileInterface;
-use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
-use TYPO3\CMS\Core\Service\AbstractService;
+use Tollwerk\TwBase\Utility\HeadingContextManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Exception;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Abstract file converter service
+ * Get next heading level view helper
+ *
+ * @category   Tollwerk
+ * @package    Tollwerk\TwBase
  */
-abstract class AbstractFileConverterService extends AbstractService
+class NextViewHelper extends AbstractViewHelper
 {
     /**
-     * Name of the TypoScript key to enable this service
-     *
-     * @var bool|string|null
+     * Initialize arguments
      */
-    protected $typoscriptEnableKey = false;
-
-    /**
-     * Initialization of the service
-     *
-     * Checks whether the service was enabled via its TypoScript constant
-     * @throws Exception
-     */
-    public function init()
+    public function initializeArguments()
     {
-        if (!parent::init() || !$this->typoscriptEnableKey) {
-            return false;
-        }
-
-        if ($this->typoscriptEnableKey === null) {
-            return true;
-        }
-
-        /** @var ImageService $imageService */
-        $imageService = GeneralUtility::makeInstance(ImageService::class);
-
-        return (boolean)$imageService->getImageSettings($this->typoscriptEnableKey.'._typoScriptNodeValue');
+        parent::initializeArguments();
+        $this->registerArgument('level', 'int', 'Heading level', false, null);
     }
 
     /**
-     * Check whether this converer accepts a particular file for conversion
+     * Returns the current heading level
      *
-     * @param FileInterface $image File
-     *
-     * @return bool File is accepted for conversion
+     * @return int Current heading level
      */
-    public function acceptsFile(FileInterface $image): bool
+    public function render(): string
     {
-        return false;
-    }
-
-    /**
-     * Process a file
-     *
-     * @param TaskInterface $task  Image processing task
-     * @param array $configuration Service configuration
-     *
-     * @return array|null Result
-     */
-    public function processFile(TaskInterface $task, array $configuration = []): ?array
-    {
-        return null;
+        return GeneralUtility::makeInstance(HeadingContextManager::class)->getNextLevel($this->arguments['level']);
     }
 }

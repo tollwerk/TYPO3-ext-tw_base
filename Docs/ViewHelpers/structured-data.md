@@ -86,6 +86,45 @@ Use this viewhelper to set an additional property to an already existing data ob
 <base:structuredData.set id="#john-doe" key="additionalName" value="Jack"/>
 ```
 
+## `<base:structuredData.add>`
+
+Use this viewhelper to add an additional value to an already existing data object property. Non-list properties will automatically be converted to a list, keeping the current value as the first list item. If the property doesn't exist yet, it will be created.
+
+```html
+<base:structuredData.add id="#john-doe" key="sameAs" value="https://johndoe.com"/>
+```
+
+## `<base:structuredData.idref>`
+
+Resolves and returns an ID reference to a data object (as full URI). The return value is either an ID string or a JSON object referencing a data object by ID string. 
+
+```html
+<!-- Return the current page's base URI --> 
+<base:structuredData.idref id=""/>
+
+<!-- Return the normalized ID of the john-doe object (based on the current page URL as) --> 
+<base:structuredData.idref id="#john-doe"/>
+
+<!-- Return the ID of the john-doe object as top-level object (based on the current site URL) --> 
+<base:structuredData.idref id="#john-doe" global="1"/>
+
+<!-- Return a JSON reference to the john-doe object ({@id: '...#john-doe'}) --> 
+<base:structuredData.idref id="#john-doe" object="1"/>
+```
+
+## `<base:structuredData.entityContext.wrap>` / `<base:structuredData.entityContext.get>`
+
+Enables you to register a particular data object as "main entity" for nested fluid operations. `<base:structuredData.entityContext.get>` will return the ID of the current main entity, also within nested partials.
+
+```html
+<base:structuredData.entityContext.wrap id="#john-doe">
+    <!-- Inside here the john-doe object is considered the "main entity" -->
+    
+    <f:variable name="mainEntity" value="{base:structuredData.entityContext.get()}"/>
+    <base:structuredData.set id="{$mainEntity}" key="additionalName" value="Jack"/>
+</base:structuredData.entityContext.wrap>
+```
+
 ## `<base:structuredData>`
 
 Use this viewhelper to output the aggregated structured data objects. This can be placed in the footer of a page, e.g. in a Fluid layout. The boolean `pretty` parameter can be used to pretty-print the output (just for readabilty).

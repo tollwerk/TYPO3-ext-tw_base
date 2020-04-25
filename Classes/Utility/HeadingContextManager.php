@@ -200,6 +200,21 @@ class HeadingContextManager implements SingletonInterface
     }
 
     /**
+     * Pre-calculate and return the next heading level
+     *
+     * @param int|null $level Explicit level
+     *
+     * @return int Next level
+     */
+    public function getNextLevel(int $level = null): int
+    {
+        $level  = intval($level);
+        $level  = ($level >= 100) ? 0 : $level;
+
+        return $level ?: ($this->currentLevel + 1);
+    }
+
+    /**
      * Restore a heading context
      *
      * @param string $restoreContext Heading context descriptor
