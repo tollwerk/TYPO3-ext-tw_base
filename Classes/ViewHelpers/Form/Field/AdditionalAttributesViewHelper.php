@@ -39,6 +39,7 @@ namespace Tollwerk\TwBase\ViewHelpers\Form\Field;
 use Tollwerk\TwBase\Domain\Validator\ValidationErrorMapper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Error\Result;
+use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 use TYPO3\CMS\Form\Service\TranslationService;
@@ -140,7 +141,7 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('element', GenericFormElement::class, 'Form element', true);
+        $this->registerArgument('element', AbstractFormElement::class, 'Form element', true);
         $this->registerArgument('validationResults', Result::class, 'Validation results', false, null);
     }
 }
