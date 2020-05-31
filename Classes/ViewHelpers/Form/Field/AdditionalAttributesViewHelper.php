@@ -83,10 +83,22 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
         // Skipped as JAWS reads both the error message AND the aria-describedby attribute
         // All other screenreaders only read the aria-describedby attribute
         $additionalAttributes['aria-errormessage'] = $element->getUniqueIdentifier().'-error';
-
-        $ariaDescribedBy                          = GeneralUtility::trimExplode(' ',
-            $additionalAttributes['aria-describedby'] ?? '', true);
-        $ariaDescribedBy[]                        = $element->getUniqueIdentifier().'-error';
+        $ariaDescribedBy                           = GeneralUtility::trimExplode(
+            ' ',
+            $additionalAttributes['aria-describedby'] ?? '',
+            true
+        );
+        if (!empty($properties['elementDescription'])) {
+            $elementDescriptionIdentifier = implode('-', [
+                $element->getRootForm()->getIdentifier(),
+                $element->getIdentifier(),
+                'desc'
+            ]);
+            if (!in_array($elementDescriptionIdentifier, $ariaDescribedBy)) {
+                $ariaDescribedBy[] = $elementDescriptionIdentifier;
+            }
+        }
+        array_unshift($ariaDescribedBy, $element->getUniqueIdentifier().'-error');
         $additionalAttributes['aria-describedby'] = implode(' ', $ariaDescribedBy);
         if ($element->isRequired()) {
             $additionalAttributes['required']      = 'required';
