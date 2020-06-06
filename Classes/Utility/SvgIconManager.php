@@ -37,6 +37,7 @@
 namespace Tollwerk\TwBase\Utility;
 
 use DOMDocument;
+use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -45,7 +46,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * @package    Tollwerk\TwBase
  * @subpackage Tollwerk\TwBase\Utility
  */
-class SvgIconManager
+class SvgIconManager implements SingletonInterface
 {
     /**
      * SVG source files
@@ -161,23 +162,12 @@ class SvgIconManager
     }
 
     /**
-     * Inject an SVG sprite
+     * Return an SVG sprite
      *
-     * @param array $params
-     * @param TypoScriptFrontendController $tsfe TypoScript Frontend Controller
+     * @return string|null SVG sprite
      */
-    public function injectSvgSprite(array $params, TypoScriptFrontendController $tsfe): void
+    public static function getSprite(): ?string
     {
-        // If sprite SVGs have been registered
-        if (count(self::$sources)) {
-            $sprite = '<!-- Auto-injected SVG sprite --><svg style="position:absolute!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;height:1px!important;width:1px!important;margin:-1px!important;padding:0!important;border:0!important" aria-hidden="true">'.implode(self::$sources).'</svg>';
-            $body   = preg_split('/(<body.*?>)/', $tsfe->content, 2, PREG_SPLIT_DELIM_CAPTURE);
-            if (count($body) == 3) {
-                $body[1]       .= $sprite;
-                $tsfe->content = implode('', $body);
-            } else {
-                $tsfe->content = $sprite.$tsfe->content;
-            }
-        }
+        return count(self::$sources) ? '<!-- Auto-injected SVG sprite --><svg style="position:absolute!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;height:1px!important;width:1px!important;margin:-1px!important;padding:0!important;border:0!important" aria-hidden="true">'.implode(self::$sources).'</svg>' : null;
     }
 }
