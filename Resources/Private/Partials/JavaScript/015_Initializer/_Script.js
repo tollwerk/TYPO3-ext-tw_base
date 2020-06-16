@@ -37,7 +37,7 @@
      * Run initializers
      */
     Initializer.prototype.run = function () {
-        if (this._onDisplay !== null) {
+        if (this._onReady !== null) {
             for (var c = 0; c < this._onReady.length; ++c) {
                 this._onReady[c]();
             }
