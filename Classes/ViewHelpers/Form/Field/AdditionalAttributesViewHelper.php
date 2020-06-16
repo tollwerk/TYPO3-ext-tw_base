@@ -39,6 +39,7 @@ namespace Tollwerk\TwBase\ViewHelpers\Form\Field;
 use Tollwerk\TwBase\Domain\Validator\ValidationErrorMapper;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Error\Result;
+use TYPO3\CMS\Form\Domain\Model\FormElements\AbstractFormElement;
 use TYPO3\CMS\Form\Domain\Model\FormElements\GenericFormElement;
 use TYPO3\CMS\Form\Domain\Runtime\FormRuntime;
 use TYPO3\CMS\Form\Service\TranslationService;
@@ -82,10 +83,22 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
         // Skipped as JAWS reads both the error message AND the aria-describedby attribute
         // All other screenreaders only read the aria-describedby attribute
         $additionalAttributes['aria-errormessage'] = $element->getUniqueIdentifier().'-error';
-
-        $ariaDescribedBy                          = GeneralUtility::trimExplode(' ',
-            $additionalAttributes['aria-describedby'] ?? '', true);
-        $ariaDescribedBy[]                        = $element->getUniqueIdentifier().'-error';
+        $ariaDescribedBy                           = GeneralUtility::trimExplode(
+            ' ',
+            $additionalAttributes['aria-describedby'] ?? '',
+            true
+        );
+        if (!empty($properties['elementDescription'])) {
+            $elementDescriptionIdentifier = implode('-', [
+                $element->getRootForm()->getIdentifier(),
+                $element->getIdentifier(),
+                'desc'
+            ]);
+            if (!in_array($elementDescriptionIdentifier, $ariaDescribedBy)) {
+                $ariaDescribedBy[] = $elementDescriptionIdentifier;
+            }
+        }
+        array_unshift($ariaDescribedBy, $element->getUniqueIdentifier().'-error');
         $additionalAttributes['aria-describedby'] = implode(' ', $ariaDescribedBy);
         if ($element->isRequired()) {
             $additionalAttributes['required']      = 'required';
@@ -140,7 +153,7 @@ class AdditionalAttributesViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('element', GenericFormElement::class, 'Form element', true);
+        $this->registerArgument('element', AbstractFormElement::class, 'Form element', true);
         $this->registerArgument('validationResults', Result::class, 'Validation results', false, null);
     }
 }

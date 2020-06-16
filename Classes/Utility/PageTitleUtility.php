@@ -38,6 +38,7 @@ namespace Tollwerk\TwBase\Utility;
 
 use Tollwerk\TwBase\Domain\Provider\FlexPageTitleProvider;
 use TYPO3\CMS\Core\PageTitle\PageTitleProviderInterface;
+use TYPO3\CMS\Core\PageTitle\RecordPageTitleProvider;
 use TYPO3\CMS\Core\TypoScript\TypoScriptService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\Exception;
@@ -70,6 +71,29 @@ class PageTitleUtility
         $title       = $replacement ? sprintf($title, $replacement) : $title;
 
         return GeneralUtility::makeInstance(FlexPageTitleProvider::class)->setTitle($title);
+    }
+
+    /**
+     * Return the current page title (considering all providers)
+     *
+     * @return string Page title
+     */
+    public static function getPageTitle(): string
+    {
+        $objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $pageTitle     = '';
+        /** @var PageTitleProviderInterface $titleProvider */
+        foreach (static::getTitleProviders() as $titleProviderClass) {
+            $titleProvider     = $objectManager->get($titleProviderClass);
+            $providerPageTitle = trim($titleProvider->getTitle());
+            if (strlen($providerPageTitle)) {
+                $pageTitle = $providerPageTitle;
+                continue;
+            }
+            break;
+        }
+
+        return $pageTitle;
     }
 
     /**

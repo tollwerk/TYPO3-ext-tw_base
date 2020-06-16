@@ -89,21 +89,29 @@ class StandaloneRenderer
      * @var string
      */
     protected $controllerExtensionName;
+    /**
+     * Values for viewhelper variable containers
+     *
+     * @var array
+     */
+    protected $viewhelperVariableContainer;
 
     /**
      * Constructor
      *
-     * @param string $controllerExtensionName Controller Extension Name
+     * @param string $controllerExtensionName    Controller Extension Name
+     * @param array $viewhelperVariableContainer Values for viewhelper variable containers
      *
      * @throws InvalidConfigurationTypeExceptionAlias
      * @throws Exception
      */
-    public function __construct(string $controllerExtensionName = null)
+    public function __construct(string $controllerExtensionName = null, array $viewhelperVariableContainer = [])
     {
-        $this->controllerExtensionName = $controllerExtensionName;
-        $this->objectManager           = GeneralUtility::makeInstance(ObjectManager::class);
-        $configurationManager          = $this->objectManager->get(ConfigurationManager::class);
-        $this->configuration           = $configurationManager->getConfiguration(
+        $this->controllerExtensionName     = $controllerExtensionName;
+        $this->viewhelperVariableContainer = $viewhelperVariableContainer;
+        $this->objectManager               = GeneralUtility::makeInstance(ObjectManager::class);
+        $configurationManager              = $this->objectManager->get(ConfigurationManager::class);
+        $this->configuration               = $configurationManager->getConfiguration(
             ConfigurationManager::CONFIGURATION_TYPE_FRAMEWORK,
             $this->controllerExtensionName
         );
@@ -128,6 +136,7 @@ class StandaloneRenderer
             (array)$this->configuration['view']['layoutRootPaths'];
         $this->layoutRootPaths = array_map([$this, 'prepareRootPath'], $layoutRootPaths);
         ksort($this->layoutRootPaths);
+        $this->viewhelperVariableContainer = $viewhelperVariableContainer;
     }
 
     /**
@@ -218,11 +227,19 @@ class StandaloneRenderer
         string $section = null,
         string $language = null
     ): string {
+        /** @var StandaloneView $view */
         $view = $this->objectManager->get(StandaloneView::class);
         $view->setFormat($format);
         $view->setTemplateRootPaths($this->templateRootPaths);
         $view->setLayoutRootPaths($this->layoutRootPaths);
         $view->setPartialRootPaths($this->partialRootPaths);
+
+        // Load the variable container
+        if (!empty($this->viewhelperVariableContainer)) {
+            foreach ($this->viewhelperVariableContainer as $viewhelper => $variables) {
+                $view->getRenderingContext()->getViewHelperVariableContainer()->addAll($viewhelper, $variables);
+            }
+        }
 
         // Find the first matching root path, potentially considering the given language
         $name                    = trim($name, '/');

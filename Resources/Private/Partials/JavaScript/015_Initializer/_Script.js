@@ -37,8 +37,10 @@
      * Run initializers
      */
     Initializer.prototype.run = function () {
-        for (var c = 0; c < this._onReady.length; ++c) {
-            this._onReady[c]();
+        if (this._onDisplay !== null) {
+            for (var c = 0; c < this._onReady.length; ++c) {
+                this._onReady[c]();
+            }
         }
         this._onReady = null;
     }
@@ -47,8 +49,10 @@
      * Run display routines
      */
     Initializer.prototype.display = function () {
-        for (var c = 0; c < this._onDisplay.length; ++c) {
-            this._onDisplay[c]();
+        if (this._onDisplay !== null) {
+            for (var c = 0; c < this._onDisplay.length; ++c) {
+                this._onDisplay[c]();
+            }
         }
         this._onDisplay = null;
     }
