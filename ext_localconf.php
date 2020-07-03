@@ -233,5 +233,8 @@ call_user_func(
             'priority' => 40,
             'class'    => \Tollwerk\TwBase\Form\Element\SeoTitleElement::class,
         ];
+
+        // SVG sprite injection
+        $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['tslib/class.tslib_fe.php']['contentPostProc-all'][1593792359] = \Tollwerk\TwBase\Utility\SvgIconManager::class.'->injectSprite';
     }
 );

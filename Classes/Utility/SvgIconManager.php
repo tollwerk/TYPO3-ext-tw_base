@@ -170,4 +170,24 @@ class SvgIconManager implements SingletonInterface
     {
         return count(self::$sources) ? '<!-- Auto-injected SVG sprite --><svg style="position:absolute!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;height:1px!important;width:1px!important;margin:-1px!important;padding:0!important;border:0!important" aria-hidden="true">'.implode(self::$sources).'</svg>' : null;
     }
+
+    /**
+     * Create and inject the SVG icon sprite
+     *
+     * @param array $params                      Parameters
+     * @param TypoScriptFrontendController $tsfe Frontend engine
+     */
+    public function injectSprite(array $params, TypoScriptFrontendController $tsfe)
+    {
+        $sprite = static::getSprite();
+        if ($sprite !== null) {
+            $body = preg_split('/(<body.*?>)/', $tsfe->content, 2, PREG_SPLIT_DELIM_CAPTURE);
+            if (count($body) == 3) {
+                $body[1]       .= $sprite;
+                $tsfe->content = implode('', $body);
+            } else {
+                $tsfe->content = $sprite.$tsfe->content;
+            }
+        }
+    }
 }
