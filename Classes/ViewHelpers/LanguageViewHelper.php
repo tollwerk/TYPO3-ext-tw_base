@@ -69,7 +69,7 @@ class LanguageViewHelper extends AbstractViewHelper
         Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ): string {
-        foreach (TcaUtility::$languages as $language) {
+        foreach (TcaUtility::languages() as $language) {
             if ($arguments['identifier'] == $language[1]) {
                 return $language[0];
             }
