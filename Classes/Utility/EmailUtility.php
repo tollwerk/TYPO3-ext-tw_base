@@ -86,6 +86,7 @@ class EmailUtility
      * @param array $cc                  CC repipients
      * @param array $bcc                 BCC recipients
      * @param array|string|null $replyTo Reply-To recipient
+     * @param array $attachments         Array with absolute paths for attachments
      *
      * @return int Number of successfully sent emails
      * @throws RuntimeException If the email would be empty
@@ -97,7 +98,8 @@ class EmailUtility
         string $plain = '',
         array $cc = [],
         array $bcc = [],
-        $replyTo = null
+        $replyTo = null,
+        array $attachments = []
     ): int {
         $html  = trim($html);
         $plain = trim($plain);
@@ -141,6 +143,16 @@ class EmailUtility
 
         // Set the plaintext content
         $mail->text($plain);
+
+        // Add attachments
+        foreach($attachments as $key => $attachment) {
+            // If $key is a string, set it as the attachments file name
+            if(is_string($key)) {
+                $mail->attachFromPath($attachment, $key);
+            } else {
+                $mail->attachFromPath($attachment);
+            }
+        }
 
         return $mail->send();
     }
