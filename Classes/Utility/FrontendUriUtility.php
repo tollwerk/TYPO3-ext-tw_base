@@ -122,6 +122,11 @@ class FrontendUriUtility
             if (empty(self::$rootPageTyposcriptController[$rootPage.'/'.$pageType])) {
                 $backupTsfeController = $GLOBALS['TSFE'] ?? null;
 
+                // If not available, manually set some $_SERVER values based one site configuration
+                $_SERVER['SERVER_NAME'] = $_SERVER['SERVER_NAME'] ? : $site->getBase()->getHost();
+                $_SERVER['HTTP_HOST'] =  $_SERVER['HTTP_HOST'] ? : $site->getBase()->getHost();
+                $_SERVER['HTTP_REFERER'] = $_SERVER['HTTP_REFERER'] ? : (array)($site->getConfiguration())['base'];
+
                 self::$rootPageTyposcriptController[$rootPage.'/'.$pageType] = version_compare(TYPO3_version, '10.0.0',
                     '>=') ?
                     self::create10xContext($site) :
