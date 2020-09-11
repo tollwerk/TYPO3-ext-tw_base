@@ -48,14 +48,14 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class TcaUtility
 {
     /**
-     * Supported languages
+     * Supported locales
      *
      * SELECT CONCAT(`lg_name_local`, " (", lg_name_en, ")") AS label, IF(lg_collate_locale = "", LOWER(lg_iso_2),
      * lg_collate_locale) AS iso FROM `static_languages` ORDER BY lg_name_en ASC
      *
      * @var array
      */
-    public static $languages = [
+    public static $locales = [
         ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:pages.tx_twbase_title_language.auto', ''],
         ['Аҧсуа бызшәа (Abkhazian)', 'ab'],
         ['Afaraf (Afar)', 'aa'],
@@ -254,13 +254,24 @@ class TcaUtility
     ];
 
     /**
+     * Extract a list language subtags from the locales
+     *
+     * @return array[] languages
+     */
+    public static function languages(): array {
+        return array_map(function(array $locale){
+            return [$locale[0], strtok($locale[1], '_')];
+        }, self::$locales);
+    }
+
+    /**
      * Add track languages
      *
      * @param array $config
      */
     public function trackLanguages(array &$config)
     {
-        $config['items'] = self::$languages;
+        $config['items'] = self::languages();
         unset($config['items'][0]);
     }
 

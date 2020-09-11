@@ -48,7 +48,7 @@ if (!defined('TYPO3_MODE')) {
             'config'  => [
                 'type'       => 'select',
                 'renderType' => 'selectSingle',
-                'items'      => \Tollwerk\TwBase\Utility\TcaUtility::$languages,
+                'items'      => \Tollwerk\TwBase\Utility\TcaUtility::languages(),
                 'size'       => 1,
                 'minitems'   => 0,
                 'maxitems'   => 1
