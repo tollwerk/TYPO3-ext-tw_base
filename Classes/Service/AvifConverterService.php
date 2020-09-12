@@ -43,16 +43,16 @@ use TYPO3\CMS\Core\Resource\Processing\TaskInterface;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 
 /**
- * WebP converter service
+ * AVIF converter service
  */
-class WebpConverterService extends AbstractImageFileConverterService
+class AvifConverterService extends AbstractImageFileConverterService
 {
     /**
      * Name of the TypoScript key to enable this service
      *
      * @var bool|string|null
      */
-    protected $typoscriptEnableKey = 'converters.webp';
+    protected $typoscriptEnableKey = 'converters.avif';
 
     /**
      * Check whether this converer accepts a particular file for conversion
@@ -84,15 +84,17 @@ class WebpConverterService extends AbstractImageFileConverterService
         $targetFilePath = dirname($sourceFilePath).DIRECTORY_SEPARATOR.pathinfo(
                 $sourceFilePath,
                 PATHINFO_FILENAME
-            ).'.webp';
+            ).'.avif';
         $this->registerTempFile($targetFilePath);
 
-        $cwebpCommand = 'cwebp -q '.CommandUtility::escapeShellArgument($configuration['quality']);
-        $cwebpCommand .= ' '.CommandUtility::escapeShellArgument($sourceFilePath);
-        $cwebpCommand .= ' -o '.CommandUtility::escapeShellArgument($targetFilePath);
+        $avifencCommand = 'avifenc -j '.CommandUtility::escapeShellArgument(max(1, intval($configuration['jobs'])));
+        $avifencCommand .= ' --min '.CommandUtility::escapeShellArgument(max(0, min(63, intval($configuration['min']))));
+        $avifencCommand .= ' --max '.CommandUtility::escapeShellArgument(max(0, min(63, intval($configuration['max']))));
+        $avifencCommand .= ' '.CommandUtility::escapeShellArgument($sourceFilePath);
+        $avifencCommand .= ' '.CommandUtility::escapeShellArgument($targetFilePath);
 
         $output = $returnValue = null;
-        CommandUtility::exec($cwebpCommand, $output, $returnValue);
+        CommandUtility::exec($avifencCommand, $output, $returnValue);
 
         return $returnValue ? null : ['filePath' => $targetFilePath];
     }

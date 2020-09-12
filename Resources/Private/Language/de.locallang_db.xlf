@@ -51,6 +51,18 @@
             <trans-unit id="converters.webp.quality" xml:space="preserve" approved="yes">
 				<source>WebP quality (0-100)</source>
 			<target state="translated">WebP-Qualität (0-100)</target></trans-unit>
+            <trans-unit id="converters.avif" xml:space="preserve" approved="yes">
+				<source>AVIF converter: Enable automatic encoding of AVIF image variants</source>
+			<target state="translated">AVIF-Konverter: Automatische Kodierung von AVIF-Bildvarianten aktivieren</target></trans-unit>
+            <trans-unit id="converters.avif.jobs" xml:space="preserve" approved="yes">
+				<source>Number of AVIF worker jobs (depends on your hardware)</source>
+			<target state="translated">Anzahl von AVIF-Worker-Prozessen (systemabhängig)</target></trans-unit>
+            <trans-unit id="converters.avif.min" xml:space="preserve" approved="yes">
+				<source>AVIF minimum quantizer (0-63, 0 = lossless)</source>
+			<target state="translated">AVIF Minimum Quantizer (0-63, 0 = verlustfrei)</target></trans-unit>
+            <trans-unit id="converters.avif.max" xml:space="preserve" approved="yes">
+				<source>AVIF minimum quantizer (0-63, 0 = lossless)</source>
+			<target state="translated">AVIF Maximum Quantizer (0-63, 0 = verlustfrei)</target></trans-unit>
             <trans-unit id="images.srcset" xml:space="preserve" approved="yes">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			<target state="translated">Zusätzliche Bildgrößen für Responsive Bilder: Zusätzliche Bildgrößen, die für jedes Inhaltsbild erzeugt werden sollen (kommaseparierte Liste von Bildbreiten in Pixeln oder Auflösungsfaktoren, z.B. "2x")</target></trans-unit>
@@ -147,6 +159,9 @@
             <trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve" approved="yes">
                 <source>WebP</source>
 			<target state="translated">WebP</target></trans-unit>
+            <trans-unit id="tt_content.tx_twbase_skipconverter.I.avif" xml:space="preserve" approved="yes">
+                <source>AVIF</source>
+			<target state="translated">AVIF</target></trans-unit>
             <trans-unit id="tt_content.tx_twbase_video_tracks" xml:space="preserve" approved="yes">
 				<source>Tracks</source>
 			<target state="translated">Tracks</target></trans-unit>
