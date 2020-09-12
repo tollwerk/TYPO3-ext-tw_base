@@ -57,6 +57,10 @@ plugin.tx_twbase {
         }
 
         converters {
+            avif = {$plugin.tx_twbase.settings.converters.avif}
+            avif.jobs = {$plugin.tx_twbase.settings.converters.avif.jobs}
+            avif.min = {$plugin.tx_twbase.settings.converters.avif.min}
+            avif.max = {$plugin.tx_twbase.settings.converters.avif.max}
             webp = {$plugin.tx_twbase.settings.converters.webp}
             webp.quality = {$plugin.tx_twbase.settings.converters.webp.quality}
         }

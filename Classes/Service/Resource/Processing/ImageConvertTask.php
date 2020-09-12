@@ -90,6 +90,8 @@ class ImageConvertTask extends AbstractGraphicalTask
             switch ($this->configuration['converter']['type']) {
                 case 'webp':
                     return 'webp';
+                case 'avif':
+                    return 'avif';
             }
         }
 
