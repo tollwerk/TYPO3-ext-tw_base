@@ -28,10 +28,22 @@ plugin.tx_twbase {
         }
 
         converters {
-            # cat=plugin.tx_twbase/converters/a; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.webp
+            # cat=plugin.tx_twbase/converters/a; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.avif
+            avif = 1
+
+            # cat=plugin.tx_twbase/converters/b; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.avif.jobs
+            avif.jobs = 1
+
+            # cat=plugin.tx_twbase/converters/c; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.avif.min
+            avif.min = 35
+
+            # cat=plugin.tx_twbase/converters/d; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.avif.max
+            avif.max = 50
+
+            # cat=plugin.tx_twbase/converters/e; type=options[Off=0,On=1]; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.webp
             webp = 1
 
-            # cat=plugin.tx_twbase/converters/b; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.webp.quality
+            # cat=plugin.tx_twbase/converters/f; type=int+; label=LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:converters.webp.quality
             webp.quality = 80
         }
 

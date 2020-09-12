@@ -138,7 +138,11 @@ if (!defined('TYPO3_MODE')) {
                     [
                         'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_skipconverter.I.webp',
                         'webp'
-                    ]
+                    ],
+                    [
+                        'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tt_content.tx_twbase_skipconverter.I.avif',
+                        'avif'
+                    ],
                 ],
             ],
         ],

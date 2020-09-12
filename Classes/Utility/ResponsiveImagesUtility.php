@@ -64,13 +64,13 @@ class ResponsiveImagesUtility implements SingletonInterface
      *
      * @var string[]
      */
-    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    const SRCSET_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
     /**
      * Image file extensions eligible for picture processing
      *
      * @var string[]
      */
-    const PICTURE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    const PICTURE_FILE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif'];
     /**
      * Object Manager
      *
@@ -787,6 +787,12 @@ class ResponsiveImagesUtility implements SingletonInterface
     {
         if ($this->availableImageConverters === null) {
             $this->availableImageConverters = [];
+
+            // Test if the AVIF converter is available
+            $avifConverterService = GeneralUtility::makeInstanceService('fileconvert', 'avif');
+            if ($avifConverterService instanceof AbstractImageFileConverterService) {
+                $this->availableImageConverters['avif'] = $avifConverterService;
+            }
 
             // Test if the WebP converter is available
             $webPConverterService = GeneralUtility::makeInstanceService('fileconvert', 'webp');

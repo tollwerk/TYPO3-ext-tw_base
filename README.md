@@ -33,7 +33,8 @@
 These services don't work out of the box and require particular software to be available on the server:
 
 * For optimizing JPEG images using the **mozjpeg encoder**, install the [Mozilla JPEG Encoder Project](https://github.com/mozilla/mozjpeg) and create a `mozjpeg` alias to `jpegtran`.
-* For creating WebP image variants, install the [WebP](https://developers.google.com/speed/webp/download) on the server and make sure the [cwebp](https://developers.google.com/speed/webp/docs/cwebp) encoder tool is available as `cwebp` on the command line.
+* For creating WebP image variants, install the [WebP](https://developers.google.com/speed/webp/download) converter on the server and make sure the [cwebp](https://developers.google.com/speed/webp/docs/cwebp) encoder tool is available as `cwebp` on the command line.
+* For creating AVIV image variants, install the [AVIF](hhttps://github.com/AOMediaCodec/libavif) converter on the server and make sure the encoder tool is available as `avifenc` on the command line.
 * For compressing SVG images on the fly, install the [Node.js](https://nodejs.org/en/) based [SVGO](https://github.com/svg/svgo) tool and make sure it's available as `svgo` on the command line.
 * For creating SVG previews for images with Primitive, install the [Go language](https://golang.org/) and [Primitive](https://github.com/fogleman/primitive) on your server and make sure `primitive` is available on the command line.
 * For creating gzipped versions of merged CSS and JavaScript files you need to have the [GNU Gzip](https://www.gnu.org/software/gzip/) command line utility installed (standard on any Linux system), globally available as `gzip` binary.

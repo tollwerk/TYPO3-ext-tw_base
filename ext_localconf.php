@@ -158,6 +158,24 @@ call_user_func(
             )
         );
 
+        // Register the AVIF image converter service
+        \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
+            'tw_base',
+            'fileconvert', // Service type
+            'tx_twbase_avif', // Service key
+            array(
+                'title'       => 'avif',
+                'description' => 'Convert images using the AVIF converter (https://github.com/AOMediaCodec/libavif)',
+                'subtype'     => 'avif',
+                'available'   => true,
+                'priority'    => 60,
+                'quality'     => 80,
+                'os'          => '',
+                'exec'        => 'avifenc',
+                'className'   => \Tollwerk\TwBase\Service\AvifConverterService::class
+            )
+        );
+
         // Add plugin for generic ajax calls. Add array to SC_OPTIONS for registering callable ajax functions
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['ext/tw_base']['ajax'] = [];
         \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin(
@@ -167,7 +185,6 @@ call_user_func(
             [\Tollwerk\TwBase\Controller\AjaxController::class => 'dispatch']
         );
 
-
         // Register additional image processing tasks
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.CropScaleMaskCompress'] = \Tollwerk\TwBase\Service\Resource\Processing\ImageCropScaleMaskCompressTask::class;
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['fal']['processingTaskTypes']['Image.Convert']               = \Tollwerk\TwBase\Service\Resource\Processing\ImageConvertTask::class;
@@ -176,6 +193,9 @@ call_user_func(
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][\TYPO3\CMS\Core\Resource\Processing\LocalImageProcessor::class] = [
             'className' => \Tollwerk\TwBase\Service\Resource\Processing\LocalImageProcessor::class,
         ];
+
+        // Register the AVIF MIME type
+        $GLOBALS['TYPO3_CONF_VARS']['SYS']['FileInfo']['fileExtensionToMimeType']['avif'] = 'image/avif';
 
         // Override language files
         $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']['EXT:form/Resources/Private/Language/Database.xlf'][] = 'EXT:tw_base/Resources/Private/Language/form_editor.xlf';

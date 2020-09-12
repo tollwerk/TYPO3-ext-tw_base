@@ -52,6 +52,18 @@
             <trans-unit id="converters.webp.quality" xml:space="preserve">
 				<source>WebP quality (0-100)</source>
 			</trans-unit>
+            <trans-unit id="converters.avif" xml:space="preserve">
+				<source>AVIF converter: Enable automatic encoding of AVIF image variants</source>
+			</trans-unit>
+            <trans-unit id="converters.avif.jobs" xml:space="preserve">
+				<source>Number of AVIF worker jobs (depends on your hardware)</source>
+			</trans-unit>
+            <trans-unit id="converters.avif.min" xml:space="preserve">
+				<source>AVIF minimum quantizer (0-63, 0 = lossless)</source>
+			</trans-unit>
+            <trans-unit id="converters.avif.max" xml:space="preserve">
+				<source>AVIF minimum quantizer (0-63, 0 = lossless)</source>
+			</trans-unit>
             <trans-unit id="images.srcset" xml:space="preserve">
 				<source>Additional Image Sizes for Responsive Images: Additional image sizes that should be generated for each content image (comma-separated list of either image widths specified in pixels or pixel density descriptors, e. g. "2x")</source>
 			</trans-unit>
@@ -147,6 +159,9 @@
 			</trans-unit>
             <trans-unit id="tt_content.tx_twbase_skipconverter.I.webp" xml:space="preserve">
                 <source>WebP</source>
+			</trans-unit>
+            <trans-unit id="tt_content.tx_twbase_skipconverter.I.avif" xml:space="preserve">
+                <source>AVIF</source>
 			</trans-unit>
             <trans-unit id="tt_content.tx_twbase_video_tracks" xml:space="preserve">
 				<source>Tracks</source>
