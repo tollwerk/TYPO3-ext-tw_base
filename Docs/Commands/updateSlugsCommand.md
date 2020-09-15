@@ -16,7 +16,7 @@ update:slugs [options] [--] [<table> [<fields>]]
 
 **Basic example** assuming we want to update the `slug` field for all records of the `pages` table:
 ```
-update:slugs pages slugs
+update:slugs pages slug
 ```
 
 **Advanced example** assuming we want to change multiple slug fields for all records of a custom table. 
