@@ -47,4 +47,8 @@ return [
         'class'       => \Tollwerk\TwBase\Command\CleanupNonBreakingSpacesCommand::class,
         'schedulable' => true
     ],
+    'update:slugs'           => [
+        'class'       => \Tollwerk\TwBase\Command\UpdateSlugsCommand::class,
+        'schedulable' => true
+    ],
 ];
