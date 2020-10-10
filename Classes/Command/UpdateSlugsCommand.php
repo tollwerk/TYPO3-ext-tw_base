@@ -89,7 +89,7 @@ class UpdateSlugsCommand extends Command
     protected function configure()
     {
         parent::configure();
-        $this->setDescription('Update slugs for all records')
+        $this->setDescription('Update field slugs for all records of a particular table')
              ->addArgument(
                  'table',
                  InputOption::VALUE_REQUIRED,
