@@ -1,4 +1,5 @@
 <?php
+
 /**
  * tollwerk
  *
@@ -35,8 +36,6 @@
 
 namespace Tollwerk\TwBase\Command;
 
-
-use Safe\Exceptions\MysqlException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -57,6 +56,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class UpdateSlugsCommand extends Command
 {
     /**
+     * Styling
+     *
      * @var SymfonyStyle
      */
     protected $io = null;
@@ -88,26 +89,25 @@ class UpdateSlugsCommand extends Command
     protected function configure()
     {
         parent::configure();
-        $this
-            ->setDescription('Update slugs for all records')
-            ->addArgument(
-                'table',
-                InputOption::VALUE_REQUIRED,
-                'The tablename like \'pages\' or \'tx_myextension_domain_model_myrecord\''
-            )
-            ->addArgument(
-                'fields',
-                InputOption::VALUE_REQUIRED,
-                'One or multiple, comma separated, fieldnames, like \'slug\' or \'"slug|another_slug, yet_another_field"\''
-            )
-            ->addOption(
-                'force-update',
-                'f',
-                InputOption::VALUE_OPTIONAL,
-                'Force update of existing slug values.',
-                false
-            )
-            ->setHelp('Finds all records of [tablename] and updates their [fieldname] slug field (if empty) by using the TCA configuration for [fieldname], assuming it\'s type is configured as \'slug\'.');;
+        $this->setDescription('Update slugs for all records')
+             ->addArgument(
+                 'table',
+                 InputOption::VALUE_REQUIRED,
+                 'The tablename like \'pages\' or \'tx_myextension_domain_model_myrecord\''
+             )
+             ->addArgument(
+                 'fields',
+                 InputOption::VALUE_REQUIRED,
+                 'One or multiple, comma separated, fieldnames, like \'slug\' or \'"slug|another_slug, yet_another_field"\''
+             )
+             ->addOption(
+                 'force-update',
+                 'f',
+                 InputOption::VALUE_OPTIONAL,
+                 'Force update of existing slug values.',
+                 false
+             )
+             ->setHelp('Finds all records of [tablename] and updates their [fieldname] slug field (if empty) by using the TCA configuration for [fieldname], assuming it\'s type is configured as \'slug\'.');
     }
 
     /**
@@ -117,7 +117,7 @@ class UpdateSlugsCommand extends Command
      * This is mainly useful when a lot of commands extends one main command
      * where some things need to be initialized based on the input arguments and options.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      */
     public function initialize(InputInterface $input, OutputInterface $output)
@@ -128,37 +128,45 @@ class UpdateSlugsCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
 
         // Get arguments
-        $this->table = $input->getArgument('table');
-        $this->fields = array_filter(GeneralUtility::trimExplode(',', $input->getArgument('fields')));
+        $this->table       = $input->getArgument('table');
+        $this->fields      = GeneralUtility::trimExplode(',', $input->getArgument('fields'), true);
         $this->forceUpdate = ($input->getOption('force-update') !== false);
     }
 
     /**
-     * @return array
+     * Fetch all records from the database
+     *
+     * @return array Records
+     * @throws \Exception
      */
     public function getRecords(): array
     {
-        if(!$this->table || !count($this->fields)) {
+        if (!strlen($this->table) || !count($this->fields)) {
             throw new \Exception('No tablename or fieldname given. If you are using -v together with other arguments like -f, please make sure that -v always comes last.');
         }
 
         /** @var QueryBuilder $queryBuilder */
         $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($this->table);
-        $records = $queryBuilder->select('*')->from($this->table)->execute()->fetchAll();
+        $records      = $queryBuilder->select('*')->from($this->table)->execute()->fetchAll();
         if ($this->io->isVerbose()) {
-            $this->io->text(count($records) ? sprintf('%s records found.', count($records)) : 'No records found');
+            $this->io->text(count($records) ? sprintf('%s records found', count($records)) : 'No records found');
             $this->io->newLine();
         }
+
         return $records;
     }
 
     /**
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int|void
+     * Execute the command
+     *
+     * @param InputInterface  $input  Input
+     * @param OutputInterface $output Output
+     *
+     * @return int|void Status code
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        // If output should be verbose
         if ($this->io->isVerbose()) {
             $this->io->title($this->getDescription());
             $this->io->text('tablename: ' . $this->table);
@@ -167,7 +175,7 @@ class UpdateSlugsCommand extends Command
         }
 
         // Get records
-        $records = $this->getRecords();
+        $records      = $this->getRecords();
         $skippedSlugs = 0;
         $updatedSlugs = 0;
         if (!count($records)) {
@@ -181,8 +189,8 @@ class UpdateSlugsCommand extends Command
             foreach ($this->fields as $field) {
 
                 // Skip this field if a slug is already set
-                if(!empty($record[$field]) && !$this->forceUpdate) {
-                    $skippedSlugs++;
+                if (!empty($record[$field]) && !$this->forceUpdate) {
+                    ++$skippedSlugs;
                     continue;
                 }
 
@@ -198,6 +206,7 @@ class UpdateSlugsCommand extends Command
                 // Generate slug and add it to $slugs array for database update
                 $slugs[$field] = $slugHelper->generate($record, intval($record['pid']) ?: 1);
 
+                // If output should be verbose
                 if ($this->io->isVerbose()) {
                     $this->io->text(sprintf('[%s] %s.%s: %s',
                         $record['uid'],
@@ -209,29 +218,30 @@ class UpdateSlugsCommand extends Command
             }
 
             // Update the record, setting all slugs
-            if(count($slugs)) {
+            if (count($slugs)) {
                 /** @var ConnectionPool $connection */
-                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable($this->table);
+                $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class)
+                                                ->getConnectionForTable($this->table);
                 $connectionPool->update(
                     $this->table,
                     $slugs,
                     ['uid' => $record['uid']],
                     [Connection::PARAM_STR]
                 );
-                $updatedSlugs++;
+                ++$updatedSlugs;
             }
         }
 
-        if($this->io->isVerbose()) {
+        // If output should be verbose
+        if ($this->io->isVerbose()) {
             $this->io->newLine();
-            $this->io->text(sprintf('Updated %s slugs.', $updatedSlugs));
-            $this->io->text(sprintf('Skipped %s slugs.', $skippedSlugs));
+            $this->io->text(sprintf('Updated %s slugs', $updatedSlugs));
+            $this->io->text(sprintf('Skipped %s slugs', $skippedSlugs));
             $this->io->newLine();
-            $this->io->text('Done.');
+            $this->io->text('Done');
             $this->io->newLine();
         }
 
         return 0;
     }
-
 }
