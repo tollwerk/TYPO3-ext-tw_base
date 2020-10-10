@@ -24,7 +24,7 @@ $EM_CONF['tw_base'] = [
     'version'          => '4.3.0',
     'constraints'      => [
         'depends'   => [
-            'typo3' => '10.3.0-',
+            'typo3' => '10.4.9-',
             'form'  => '*'
         ],
         'conflicts' => [],
