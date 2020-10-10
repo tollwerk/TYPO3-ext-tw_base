@@ -55,7 +55,7 @@ class LocalImageProcessor extends \TYPO3\CMS\Core\Resource\Processing\LocalImage
      *
      * @return bool
      */
-    public function canProcessTask(TaskInterface $task)
+    public function canProcessTask(TaskInterface $task): bool
     {
         $canProcessTask = $task->getType() === 'Image';
         $canProcessTask = $canProcessTask & in_array(
