@@ -89,7 +89,7 @@ class EmailUtility
      * @param array $attachments         Array with attachments. Each item can either be a string or an array.
      *                                   If string, it contains the absolute paths to an existing file on the server.
      *                                   If array, the attached file will be created on-the-fly. The array must be
-     *                                   formed like this: ['body' => 'This is the content of the attachment!', 'name' => 'my_attachment.txt', 'content-type' => 'text/plain']
+     *                                   formed like this: ['body' => 'This is the content of the attachment!', 'name' => 'my_attachment.txt', 'contentType' => 'text/plain']
      *
      * @return int Number of successfully sent emails
      * @throws RuntimeException If the email would be empty
