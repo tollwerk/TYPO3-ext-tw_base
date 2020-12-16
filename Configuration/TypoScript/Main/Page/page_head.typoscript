@@ -18,6 +18,7 @@
 [{$plugin.tx_twbase_javascript.observer} == 1]
     page.includeJS.base_base = EXT:tw_base/Resources/Public/JavaScript/_000_Base.default.min.js#base
     page.includeJS.base_polyfills = EXT:tw_base/Resources/Public/JavaScript/_005_Polyfill.default.min.js#base
+    page.includeJS.base_initializer = EXT:tw_base/Resources/Public/JavaScript/_015_Initializer.default.min.js#base
     page.includeJS.base_observer = EXT:tw_base/Resources/Public/JavaScript/_020_Observer.default.min.js#base
 [END]
 

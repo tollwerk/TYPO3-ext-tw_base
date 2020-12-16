@@ -30,13 +30,13 @@ CREATE TABLE tt_content
 #
 CREATE TABLE sys_file_metadata
 (
-    tx_twbase_author        TINYTEXT    DEFAULT '' NOT NULL,
-    tx_twbase_author_url    TINYTEXT    DEFAULT '' NOT NULL,
-    tx_twbase_source_url    TINYTEXT    DEFAULT '' NOT NULL,
+    tx_twbase_author        TINYTEXT    DEFAULT '',
+    tx_twbase_author_url    TINYTEXT    DEFAULT '',
+    tx_twbase_source_url    TINYTEXT    DEFAULT '',
     tx_twbase_creation_year int(11) unsigned,
-    tx_twbase_license       VARCHAR(12) DEFAULT '' NOT NULL,
-    tx_twbase_license_name  TINYTEXT    DEFAULT '' NOT NULL,
-    tx_twbase_license_url   TINYTEXT    DEFAULT '' NOT NULL,
+    tx_twbase_license       VARCHAR(12) DEFAULT '',
+    tx_twbase_license_name  TINYTEXT    DEFAULT '',
+    tx_twbase_license_url   TINYTEXT    DEFAULT '',
 );
 
 #
