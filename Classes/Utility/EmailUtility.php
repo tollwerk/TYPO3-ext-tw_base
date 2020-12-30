@@ -86,6 +86,10 @@ class EmailUtility
      * @param array $cc                  CC repipients
      * @param array $bcc                 BCC recipients
      * @param array|string|null $replyTo Reply-To recipient
+     * @param array $attachments         Array with attachments. Each item can either be a string or an array.
+     *                                   If string, it contains the absolute paths to an existing file on the server.
+     *                                   If array, the attached file will be created on-the-fly. The array must be
+     *                                   formed like this: ['body' => 'This is the content of the attachment!', 'name' => 'my_attachment.txt', 'contentType' => 'text/plain']
      *
      * @return int Number of successfully sent emails
      * @throws RuntimeException If the email would be empty
@@ -97,7 +101,8 @@ class EmailUtility
         string $plain = '',
         array $cc = [],
         array $bcc = [],
-        $replyTo = null
+        $replyTo = null,
+        array $attachments = []
     ): int {
         $html  = trim($html);
         $plain = trim($plain);
@@ -141,6 +146,21 @@ class EmailUtility
 
         // Set the plaintext content
         $mail->text($plain);
+
+        // Add attachments
+        foreach($attachments as $key => $attachment) {
+
+            // Determine the filename
+            $filename = is_string($key) ? $key : null;
+
+            // If $attachment is an array, we create the attached file on-the-fly,
+            // otherwise, we assume it's a string and the absolute path to a physical file on the server
+            if(is_array($attachment)) {
+                $mail->attach($attachment['body'], $attachment['name'], $attachment['contentType']);
+            } else {
+                $mail->attachFromPath($attachment, $filename);
+            }
+        }
 
         return $mail->send();
     }

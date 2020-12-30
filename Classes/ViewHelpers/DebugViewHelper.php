@@ -5,7 +5,7 @@
  *
  * @category   Tollwerk
  * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Command
+ * @subpackage Tollwerk\TwBase\ViewHelpers
  * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
  * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
@@ -34,21 +34,38 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-return [
-    'cleanup:processedfiles' => [
-        'class'       => \Tollwerk\TwBase\Command\CleanupProcessedFilesCommand::class,
-        'schedulable' => true
-    ],
-    'cleanup:convertedfiles' => [
-        'class'       => \Tollwerk\TwBase\Command\CleanupConvertedFilesCommand::class,
-        'schedulable' => true
-    ],
-    'cleanup:nbsp'           => [
-        'class'       => \Tollwerk\TwBase\Command\CleanupNonBreakingSpacesCommand::class,
-        'schedulable' => true
-    ],
-    'update:slugs'           => [
-        'class'       => \Tollwerk\TwBase\Command\UpdateSlugsCommand::class,
-        'schedulable' => true
-    ],
-];
+namespace Tollwerk\TwBase\ViewHelpers;
+
+use Closure;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
+
+/**
+ * This DebugViewHelper behaves the same as the regular \TYPO3\CMS\Fluid\ViewHelpers\DebugViewHelper,
+ * but only shows debug output if the users IP address was successfully checked against the current
+ * devIPmask settings.
+ *
+ * @package    Tollwerk\TwBase
+ * @subpackage Tollwerk\TwBase\ViewHelpers
+ */
+class DebugViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\DebugViewHelper
+{
+    /**
+     * @param array $arguments
+     * @param \Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     *
+     * @return string
+     */
+    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    {
+        // Check if user IP against devIPmask settings, return empty string if not found and devIPmask has no wildcard.
+        if(!GeneralUtility::cmpIP($_SERVER['REMOTE_ADDR'], $GLOBALS['TYPO3_CONF_VARS']['SYS']['devIPmask'])) {
+            return '';
+        }
+
+        // Return regular debug output
+        return parent::renderStatic($arguments, $renderChildrenClosure, $renderingContext);
+    }
+}
