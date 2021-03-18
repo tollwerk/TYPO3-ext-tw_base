@@ -93,7 +93,7 @@ call_user_func(
             'tx_twbase_brotli', // Service key
             array(
                 'title'       => 'brotli',
-                'description' => 'Compress text resources using the gzip compressor',
+                'description' => 'Compress text resources using the Brotli compressor',
                 'subtype'     => 'css,js,txt,svg,json,html,xml',
                 'available'   => true,
                 'priority'    => 70,
