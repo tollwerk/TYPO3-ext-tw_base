@@ -39,5 +39,10 @@
   "suggest": {
     "sjbr/static-info-tables": "Data and API for countries, languages and currencies for use in TYPO3 CMS",
     "typo3/cms-form": "Form Library, Plugin and Editor"
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "tw_base"
+    }
   }
 }
