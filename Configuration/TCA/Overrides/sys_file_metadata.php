@@ -133,3 +133,10 @@ $GLOBALS['TCA']['sys_file_metadata']['palettes']['license'] = [
     --palette--;;license',
     '',
     'after:title');
+
+// Enable alternative text for videos
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('sys_file_metadata',
+    '25',
+    'alternative, --linebreak--',
+    'before:caption'
+);
