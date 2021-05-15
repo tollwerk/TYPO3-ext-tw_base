@@ -14,7 +14,7 @@
 /***********************************************************************************
  *  The MIT License (MIT)
  *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
+ *  Copyright © 2021 Joschi Kuphal <joschi@tollwerk.de>
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of
  *  this software and associated documentation files (the "Software"), to deal in
@@ -36,6 +36,7 @@
 
 namespace Tollwerk\TwBase\Persistence\Generic\Storage;
 
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\EndTimeRestriction;
@@ -43,6 +44,12 @@ use TYPO3\CMS\Core\Database\Query\Restriction\FrontendGroupRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction;
 use TYPO3\CMS\Core\Database\Query\Restriction\QueryRestrictionInterface;
 use TYPO3\CMS\Core\Database\Query\Restriction\StartTimeRestriction;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Persistence\Generic\Exception;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\ConstraintInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\JoinInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SelectorInterface;
+use TYPO3\CMS\Extbase\Persistence\Generic\Qom\SourceInterface;
 use TYPO3\CMS\Extbase\Persistence\QueryInterface;
 
 /**
@@ -76,21 +83,87 @@ class Typo3DbQueryParser extends \TYPO3\CMS\Extbase\Persistence\Generic\Storage\
      */
     public function convertQueryToDoctrineQueryBuilder(QueryInterface $query)
     {
-        $queryBuilder = parent::convertQueryToDoctrineQueryBuilder($query);
+        // Reset all properties
+        $this->tablePropertyMap     = [];
+        $this->tableAliasMap        = [];
+        $this->unionTableAliasCache = [];
+        $this->tableName            = '';
 
-        if ($query->getQuerySettings()->getIgnoreEnableFields()) {
-            if (!empty($ignoreEnableFields = $query->getQuerySettings()->getEnableFieldsToBeIgnored())) {
-                foreach ($ignoreEnableFields as $ignoreEnableField) {
-                    if (!empty(static::$enableFieldsRestrictionMappings[$ignoreEnableField])) {
-                        $queryBuilder->getRestrictions()
-                                     ->removeByType(static::$enableFieldsRestrictionMappings[$ignoreEnableField]);
-                    }
-                }
-            } else {
-                $queryBuilder->getRestrictions()->removeAll();
+        if ($query->getStatement() && $query->getStatement()->getStatement() instanceof QueryBuilder) {
+            $this->queryBuilder = clone $query->getStatement()->getStatement();
+
+            return $this->queryBuilder;
+        }
+        // Find the right table name
+        $source = $query->getSource();
+        $this->initializeQueryBuilderWithInheritedRestrictions($query, $source);
+
+        $constraint = $query->getConstraint();
+        if ($constraint instanceof ConstraintInterface) {
+            $wherePredicates = $this->parseConstraint($constraint, $source);
+            if (!empty($wherePredicates)) {
+                $this->queryBuilder->andWhere($wherePredicates);
             }
         }
 
-        return $queryBuilder;
+        $this->parseOrderings($query->getOrderings(), $source);
+        $this->addTypo3Constraints($query);
+
+        return $this->queryBuilder;
+    }
+
+    /**
+     * Creates the queryBuilder object whether it is a regular select or a JOIN
+     *
+     * @param QueryInterface  $query  Query
+     * @param SourceInterface $source The source
+     *
+     * @throws Exception
+     */
+    protected function initializeQueryBuilderWithInheritedRestrictions(QueryInterface $query, SourceInterface $source)
+    {
+        if ($source instanceof SelectorInterface) {
+            $className       = $source->getNodeTypeName();
+            $tableName       = $this->dataMapper->getDataMap($className)->getTableName();
+            $this->tableName = $tableName;
+
+            $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                                                ->getQueryBuilderForTable($tableName);
+            $this->queryBuilder->getRestrictions()->removeAll();
+
+            $tableAlias = $this->getUniqueAlias($tableName);
+
+            $this->queryBuilder
+                ->select($tableAlias . '.*')
+                ->from($tableName, $tableAlias);
+
+            $this->addRecordTypeConstraint($className);
+        } elseif ($source instanceof JoinInterface) {
+            $leftSource    = $source->getLeft();
+            $leftTableName = $leftSource->getSelectorName();
+
+            $this->queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)
+                                                ->getQueryBuilderForTable($leftTableName);
+
+            // Inherit restrictions from base query
+            if ($query->getQuerySettings()->getIgnoreEnableFields()) {
+                if (!empty($ignoreEnableFields = $query->getQuerySettings()->getEnableFieldsToBeIgnored())) {
+                    foreach ($ignoreEnableFields as $ignoreEnableField) {
+                        if (!empty(static::$enableFieldsRestrictionMappings[$ignoreEnableField])) {
+                            $this->queryBuilder->getRestrictions()
+                                               ->removeByType(static::$enableFieldsRestrictionMappings[$ignoreEnableField]);
+                        }
+                    }
+                } else {
+                    $this->queryBuilder->getRestrictions()->removeAll();
+                }
+            }
+
+            $leftTableAlias = $this->getUniqueAlias($leftTableName);
+            $this->queryBuilder
+                ->select($leftTableAlias . '.*')
+                ->from($leftTableName, $leftTableAlias);
+            $this->parseJoin($source, $leftTableAlias);
+        }
     }
 }
