@@ -32,9 +32,9 @@
     "ext-dom": "*",
     "ext-json": "*",
     "ext-curl": "*",
-    "typo3/cms-core": "^10.4.16",
+    "typo3/cms-core": "^10.4.22",
     "soundasleep/html2text": "^1.1",
-    "wyrihaximus/html-compress": "^3.0"
+    "wyrihaximus/html-compress": "^4.1"
   },
   "suggest": {
     "sjbr/static-info-tables": "Data and API for countries, languages and currencies for use in TYPO3 CMS",
