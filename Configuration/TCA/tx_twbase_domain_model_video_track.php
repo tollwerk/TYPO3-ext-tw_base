@@ -29,7 +29,7 @@ return [
     ],
     'palettes' => [
         'video' => [
-            'showitem' => 'kind, language',
+            'showitem' => 'kind, language, render',
             'canNotCollapse' => true
         ],
     ],
@@ -48,6 +48,15 @@ return [
                         'invertStateDisplay' => true
                     ]
                 ],
+            ]
+        ],
+        'render' => [
+            'exclude' => true,
+            'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:tx_twbase_domain_model_video_track.render',
+            'config' => [
+                'type' => 'check',
+                'renderType' => 'checkboxToggle',
+                'default' => 1,
             ]
         ],
         'kind' => [

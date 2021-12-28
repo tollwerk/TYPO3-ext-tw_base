@@ -57,6 +57,7 @@ CREATE TABLE tx_twbase_domain_model_video_track
     cruser_id  int(11) unsigned     DEFAULT '0'        NOT NULL,
     deleted    smallint(5) unsigned DEFAULT '0'        NOT NULL,
     hidden     smallint(5) unsigned DEFAULT '0'        NOT NULL,
+    render     smallint(5) unsigned DEFAULT '1'        NOT NULL,
     starttime  int(11) unsigned     DEFAULT '0'        NOT NULL,
     endtime    int(11) unsigned     DEFAULT '0'        NOT NULL,
 

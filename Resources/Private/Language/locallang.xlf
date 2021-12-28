@@ -105,6 +105,17 @@
             <trans-unit id="video.transcript">
                 <source>Transcript of: %s [%s]</source>
             </trans-unit>
+            <trans-unit id="audio.fallback">
+                <source>Your browser doesn't support HTML5 audio. You may &lt;a href="%s"&gt;download the audio&lt;/a&gt;
+                    and listen to it offline instead.
+                </source>
+            </trans-unit>
+            <trans-unit id="audio.transcript">
+                <source>Transcript of: %s [%s]</source>
+            </trans-unit>
+            <trans-unit id="audio.transcript">
+                <source>Transcript of: %s [%s]</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

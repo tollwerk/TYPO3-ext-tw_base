@@ -29,7 +29,15 @@ mod.wizards.newContentElement.wizardItems.tollwerk {
                 CType = twbase_video
             }
         }
+        twbase_audio {
+            iconIdentifier = base-audio
+            title = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_audio.wizard.title
+            description = LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:twbase_audio.wizard.description
+            tt_content_defValues {
+                CType = twbase_audio
+            }
+        }
     }
 
-    show := addToList(twbase_video)
+    show := addToList(twbase_video, twbase_audio)
 }

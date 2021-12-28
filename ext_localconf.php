@@ -50,6 +50,13 @@ call_user_func(
             ['source' => 'EXT:tw_base/Resources/Public/Icons/Track.svg']
         );
 
+        // Register audio content element icon
+        \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Core\Imaging\IconRegistry::class)->registerIcon(
+            'base-audio',
+            \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+            ['source' => 'EXT:tw_base/Resources/Public/Icons/Track.svg']
+        );
+
         // Register the Primitive LQIP service
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addService(
             'tw_base',

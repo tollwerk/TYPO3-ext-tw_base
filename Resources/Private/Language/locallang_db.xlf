@@ -190,6 +190,18 @@
             <trans-unit id="twbase_video.bodytext">
                 <source>Fallback text</source>
             </trans-unit>
+            <trans-unit id="twbase_audio">
+                <source>Audio</source>
+            </trans-unit>
+            <trans-unit id="twbase_audio.wizard.title">
+                <source>Audio</source>
+            </trans-unit>
+            <trans-unit id="twbase_audio.wizard.description">
+                <source>A audio with multiple sources</source>
+            </trans-unit>
+            <trans-unit id="twbase_audio.bodytext">
+                <source>Fallback text</source>
+            </trans-unit>
             <trans-unit id="pages.tx_twbase_title_language" xml:space="preserve">
 				<source>Page title language</source>
 			</trans-unit>
@@ -210,6 +222,9 @@
 			</trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track" xml:space="preserve">
 				<source>Video Track</source>
+			</trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.render" xml:space="preserve">
+				<source>Render</source>
 			</trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track.kind" xml:space="preserve">
 				<source>Kind</source>

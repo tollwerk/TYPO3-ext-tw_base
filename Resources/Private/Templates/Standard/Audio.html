@@ -1,0 +1,17 @@
+<f:comment><!--
+
+    Render an audio
+
+    @param array data               Content record
+    @param FileReference[] sources  Audio sources
+    @param FileReference[] tracks   Caption tracks
+    @param array settings           Settings
+
+--></f:comment>
+<html xmlns:f="https://xsd.helhum.io/ns/typo3/cms-fluid/master/ViewHelpers" data-namespace-typo3-fluid="true">
+    <f:layout name="Default"/>
+
+    <f:section name="Main">
+        <f:render partial="Media/Rendering/Audioplus" arguments="{_all}"/>
+    </f:section>
+</html>

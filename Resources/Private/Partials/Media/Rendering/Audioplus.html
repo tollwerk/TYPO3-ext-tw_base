@@ -1,11 +1,9 @@
 <f:comment><!--
 
-    Render a video
+    Render an audio
 
     @param array data               Content record
-    @param FileReference[] sources  Video sources
-    @param FileReference[] poster   Poster images (only the first one is used)
-    @param FileReference[] tracks   Caption tracks
+    @param FileReference[] sources  Audio sources
     @param array settings           Settings
 
 --></f:comment>
@@ -17,14 +15,11 @@
             Structured Data
 
         --></f:comment>
-        <f:variable name="structuredDataId" value="{base:structuredData.idref(id: '#video-{data.uid}')}"/>
-        <f:variable name="posterImage"
-                    value="{f:if(condition: poster, then: '{f:uri.image(image: poster.0, absolute: 1)}')}"/>
-        <base:structuredData.register type="VideoObject" id="{structuredDataId}" data="{
+        <f:variable name="structuredDataId" value="{base:structuredData.idref(id: '#audio-{data.uid}')}"/>
+        <base:structuredData.register type="AudioObject" id="{structuredDataId}" data="{
                 name: sources.0.alternative,
                 description: sources.0.description,
-                uploadDate: '{data.crdate -> f:format.date(format: \'c\')}',
-                thumbnailUrl: posterImage
+                uploadDate: '{data.crdate -> f:format.date(format: \'c\')}'
             }"/>
 
         <f:comment><!--
@@ -34,15 +29,14 @@
         --></f:comment>
         <f:variable name="structuredDataMainEntity" value="{base:structuredData.entityContext.get()}"/>
         <f:if condition="{structuredDataMainEntity}">
-            <base:structuredData.add id="{structuredDataMainEntity}" key="video" value="{
-                    '@type': 'VideoObject',
+            <base:structuredData.add id="{structuredDataMainEntity}" key="audio" value="{
+                    '@type': 'AudioObject',
                     '@id': structuredDataId
                 }"/>
         </f:if>
 
         <base:structuredData.entityContext.wrap id="{structuredDataId}">
-            <video controls preload="metadata" {f:if(condition: poster, then:
-            ' poster="{poster.0.publicUrl}"')}>
+            <audio controls preload="metadata">
             <f:for each="{sources}" as="source">
                 <f:variable name="latestSource" value="{source.publicUrl}"/>
                 <source src="{latestSource}" type="{source.mimeType}">
@@ -73,12 +67,12 @@
                 </f:then>
                 <f:else>
                     <p>
-                        <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:video.fallback"
+                        <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:audio.fallback"
                                      arguments="{0: latestSource}"/>
                     </p>
                 </f:else>
             </f:if>
-            </video>
+            </audio>
             <f:render partial="Media/Rendering/Mediasource" optional="true" arguments="{
                 author: sources.0.originalFile.properties.tx_twbase_author,
                 authorUrl: sources.0.originalFile.properties.tx_twbase_author_url,
@@ -87,7 +81,7 @@
                 license: sources.0.originalFile.properties.tx_twbase_license,
                 licenseName: sources.0.originalFile.properties.tx_twbase_license_name,
                 licenseUrl: sources.0.originalFile.properties.tx_twbase_license_url,
-                classes: 'MediaVideo__source'
+                classes: 'MediaAudio__source'
             }"/>
             <f:variable name="transcripts" value="{}"/>
             <f:for each="{tracks}" as="track">

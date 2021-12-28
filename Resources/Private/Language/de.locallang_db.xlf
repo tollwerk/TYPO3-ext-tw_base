@@ -189,6 +189,18 @@
             <trans-unit id="twbase_video.bodytext" approved="yes">
                 <source>Fallback text</source>
             <target state="translated">Ersatztext</target></trans-unit>
+            <trans-unit id="twbase_audio" approved="yes">
+                <source>Audio</source>
+            <target state="translated">Audio</target></trans-unit>
+            <trans-unit id="twbase_audio.wizard.title" approved="yes">
+                <source>Audio</source>
+            <target state="translated">Audio</target></trans-unit>
+            <trans-unit id="twbase_audio.wizard.description" approved="yes">
+                <source>A audio with multiple sources</source>
+            <target state="translated">Audio mit mehreren Quellen</target></trans-unit>
+            <trans-unit id="twbase_audio.bodytext" approved="yes">
+                <source>Fallback text</source>
+            <target state="translated">Ersatztext</target></trans-unit>
             <trans-unit id="pages.tx_twbase_title_language" xml:space="preserve" approved="yes">
 				<source>Page title language</source>
 			<target state="translated">Sprache der Seitentitel</target></trans-unit>
@@ -210,6 +222,9 @@
             <trans-unit id="tx_twbase_domain_model_video_track" xml:space="preserve" approved="yes">
 				<source>Video Track</source>
 			<target state="translated">Video-Track</target></trans-unit>
+            <trans-unit id="tx_twbase_domain_model_video_track.render" xml:space="preserve" approved="yes">
+				<source>Render</source>
+			<target state="translated">Darstellen</target></trans-unit>
             <trans-unit id="tx_twbase_domain_model_video_track.kind" xml:space="preserve" approved="yes">
 				<source>Kind</source>
 			<target state="translated">Typ</target></trans-unit>
