@@ -91,9 +91,13 @@
             }"/>
             <f:variable name="transcripts" value="{}"/>
             <f:for each="{tracks}" as="track">
-                <f:if condition="({track.data.kind} == 'transcript') && {track.data.render}">
-                    <f:variable name="transcripts"
-                                value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
+                <f:if condition="({track.data.kind} == 'transcript')">
+                    <f:if condition="{track.data.render}">
+                        <f:variable name="transcripts"
+                                    value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
+                    </f:if>
+                    <base:structuredData.add id="{structuredDataId}" key="transcript"
+                                             value="{track.data.transcript -> base:structuredData.plaintext()}"/>
                 </f:if>
                 <f:if condition="{track.data.kind} == 'captions'">
                     <f:variable name="mimeType">

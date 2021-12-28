@@ -37,41 +37,41 @@
 
         <base:structuredData.entityContext.wrap id="{structuredDataId}">
             <audio controls preload="metadata">
-            <f:for each="{sources}" as="source">
-                <f:variable name="latestSource" value="{source.publicUrl}"/>
-                <source src="{latestSource}" type="{source.mimeType}">
-                <base:structuredData.add id="{structuredDataId}" key="contentUrl"
-                                         value="{f:uri.image(image: source, absolute: 1)}"/>
-                <base:structuredData.add id="{structuredDataId}" key="encoding" value="{
+                <f:for each="{sources}" as="source">
+                    <f:variable name="latestSource" value="{source.publicUrl}"/>
+                    <source src="{latestSource}" type="{source.mimeType}">
+                    <base:structuredData.add id="{structuredDataId}" key="contentUrl"
+                                             value="{f:uri.image(image: source, absolute: 1)}"/>
+                    <base:structuredData.add id="{structuredDataId}" key="encoding" value="{
                         '@type': 'MediaObject',
                         contentUrl: '{f:uri.image(image: source, absolute: 1)}',
                         encodingFormat: source.mimeType
                     }"/>
-            </f:for>
-            <f:for each="{tracks}" as="track">
-                <f:if condition="{track.data.kind} == 'transcript'">
-                    <f:else if="{track.data.render}">
-                        <f:variable name="label" value="{f:if(
+                </f:for>
+                <f:for each="{tracks}" as="track">
+                    <f:if condition="{track.data.kind} == 'transcript'">
+                        <f:else if="{track.data.render}">
+                            <f:variable name="label" value="{f:if(
                                     condition: track.file.0.originalFile.metaData.title,
                                     then: track.file.0.originalFile.metaData.title,
                                     else: '{track.data.kind} ({track.data.language})'
                                     )}"/>
-                        <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}"
-                               srclang="{track.data.language}"/>
+                            <track label="{label}" src="{track.file.0.publicUrl}" kind="{track.data.kind}"
+                                   srclang="{track.data.language}"/>
+                        </f:else>
+                    </f:if>
+                </f:for>
+                <f:if condition="{data.bodytext}">
+                    <f:then>
+                        <f:format.html>{data.bodytext}</f:format.html>
+                    </f:then>
+                    <f:else>
+                        <p>
+                            <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:audio.fallback"
+                                         arguments="{0: latestSource}"/>
+                        </p>
                     </f:else>
                 </f:if>
-            </f:for>
-            <f:if condition="{data.bodytext}">
-                <f:then>
-                    <f:format.html>{data.bodytext}</f:format.html>
-                </f:then>
-                <f:else>
-                    <p>
-                        <f:translate key="LLL:EXT:tw_base/Resources/Private/Language/locallang.xlf:audio.fallback"
-                                     arguments="{0: latestSource}"/>
-                    </p>
-                </f:else>
-            </f:if>
             </audio>
             <f:render partial="Media/Rendering/Mediasource" optional="true" arguments="{
                 author: sources.0.originalFile.properties.tx_twbase_author,
@@ -85,9 +85,13 @@
             }"/>
             <f:variable name="transcripts" value="{}"/>
             <f:for each="{tracks}" as="track">
-                <f:if condition="({track.data.kind} == 'transcript') && {track.data.render}">
-                    <f:variable name="transcripts"
-                                value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
+                <f:if condition="({track.data.kind} == 'transcript')">
+                    <f:if condition="{track.data.render}">
+                        <f:variable name="transcripts"
+                                    value="{base:collection.push(a: transcripts, b: '{0: track.data}')}"/>
+                    </f:if>
+                    <base:structuredData.add id="{structuredDataId}" key="transcript"
+                                             value="{track.data.transcript -> base:structuredData.plaintext()}"/>
                 </f:if>
                 <f:if condition="{track.data.kind} == 'captions'">
                     <f:variable name="mimeType">
