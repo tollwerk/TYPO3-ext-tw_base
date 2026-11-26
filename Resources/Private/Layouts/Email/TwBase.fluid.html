@@ -1,0 +1,18 @@
+<f:comment>
+    Accessible HTML of a mail: the language and the subject as title, one heading, no images and no tables for layout
+    @param string languageCode Language of the site, such as "en-US"
+    @param string subject Subject
+</f:comment><!DOCTYPE html>
+<html lang="{languageCode}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{subject}</title>
+</head>
+<body style="font-family: system-ui, sans-serif; font-size: 1rem; line-height: 1.5; color: #1a1a1a; background: #fff; margin: 0; padding: 1rem;">
+    <main style="max-width: 40rem;">
+        <h1 style="font-size: 1.25rem;">{subject}</h1>
+        <f:render section="Main" />
+    </main>
+</body>
+</html>
