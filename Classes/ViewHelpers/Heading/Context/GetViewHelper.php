@@ -1,60 +1,52 @@
 <?php
 
 /**
- * tollwerk
+ * Returns the marker of the current heading context
  *
- * @category   Tollwerk
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\Heading\Context
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
 
-/***********************************************************************************
- *  The MIT License (MIT)
- *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in
- *  the Software without restriction, including without limitation the rights to
- *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- *  the Software, and to permit persons to whom the Software is furnished to do so,
- *  subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ***********************************************************************************/
+declare(strict_types=1);
 
 namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
 
-use Tollwerk\TwBase\Utility\HeadingContextManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Tollwerk\TwBase\Heading\HeadingContextManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * Get heading context view helper
+ * Returns the marker of the current heading context
  *
- * @category   Tollwerk
- * @package    Tollwerk\TwBase
+ * A content element takes the marker before it renders and restores it afterwards, so its headings do not change the
+ * levels of the next element.
+ *
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
-class GetViewHelper extends AbstractViewHelper
+final class GetViewHelper extends AbstractViewHelper
 {
     /**
-     * Returns the current heading context
+     * Constructor
      *
-     * @return string Current heading context
+     * @param HeadingContextManager $headingContextManager Heading levels
+     */
+    public function __construct(private readonly HeadingContextManager $headingContextManager) {}
+
+    /**
+     * Return the marker
+     *
+     * @return string
      */
     public function render(): string
     {
-        return GeneralUtility::makeInstance(HeadingContextManager::class)->getCurrentContext();
+        return $this->headingContextManager->currentMarker();
     }
 }

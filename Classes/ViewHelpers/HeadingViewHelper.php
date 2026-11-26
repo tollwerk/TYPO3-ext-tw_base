@@ -1,109 +1,109 @@
 <?php
 
 /**
- * tollwerk
+ * Renders a heading at the level its position calls for
  *
- * @category   Tollwerk
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
 
-/***********************************************************************************
- *  The MIT License (MIT)
- *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in
- *  the Software without restriction, including without limitation the rights to
- *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- *  the Software, and to permit persons to whom the Software is furnished to do so,
- *  subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ***********************************************************************************/
+declare(strict_types=1);
 
 namespace Tollwerk\TwBase\ViewHelpers;
 
-use Tollwerk\TwBase\Utility\HeadingContextManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use Override;
+use Tollwerk\TwBase\Heading\HeadingContextManager;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
 /**
- * Render a heading
+ * Renders a heading at the level its position calls for
+ *
+ * Inside the tag goes the section the heading opens; its headings get the next level. Levels beyond 6 become a div
+ * with the role heading. The classes name the visual type, a skipped level and a hidden heading.
+ *
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
-class HeadingViewHelper extends AbstractTagBasedViewHelper
+final class HeadingViewHelper extends AbstractTagBasedViewHelper
 {
+    use TypedArguments;
+
     /**
-     * Escape the output
+     * The heading may contain markup, such as code or parts in another language; templates escape plain text
      *
-     * @var bool
+     * @var boolean
      */
+    #[Override]
     protected $escapeOutput = false;
 
     /**
-     * Arguments initialization
+     * Constructor
+     *
+     * @param HeadingContextManager $headingContextManager Heading levels
+     */
+    public function __construct(private readonly HeadingContextManager $headingContextManager)
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Register the arguments
+     *
+     * @return void
      */
     public function initializeArguments(): void
     {
         parent::initializeArguments();
-        $this->registerUniversalTagAttributes();
-        $this->registerArgument('level', 'int', 'Heading level', false, null);
-        $this->registerArgument('type', 'string', 'Visual type', false, null);
-        $this->registerArgument('content', 'string', 'Heading content', true);
-        $this->registerArgument('restoreContext', 'boolean', 'Restore the heading context', false, true);
+        $this->registerArgument('content', 'string', 'Content of the heading, which may contain markup', true);
+        $this->registerArgument('level', 'int', 'Level, if the position does not decide it', false);
+        $this->registerArgument('type', 'int', 'Visual type as a level, if it differs from the level', false);
+        $this->registerArgument('hidden', 'bool', 'Whether the heading is only for assistive technology', false, false);
+        $this->registerArgument('restoreContext', 'bool', 'Whether the section ends with this ViewHelper', false, true);
     }
 
     /**
-     * Render the heading
+     * Render the heading, followed by its section
      *
-     * @return string Heading
+     * @return string
      */
     public function render(): string
     {
-        $level = $this->arguments['level'];
-        $type    = $this->arguments['type'];
-        $content = trim($this->arguments['content']);
+        $context = $this->headingContextManager->setUp(
+            $this->intArgument('level'),
+            $this->intArgument('type'),
+            $this->boolArgument('hidden'),
+        );
 
-        /** @var HeadingContextManager $headingContextManager */
-        $headingContextManager = GeneralUtility::makeInstance(HeadingContextManager::class);
-
-        // Set up a headline context
-        $headingContext = $headingContextManager->setupContext($level, $type, $content);
-
-//        echo 'heading context: '.$headingContext->getLevel().'/'.$headingContext->getVisualType()
-//          .' ('.$this->arguments['level'].'/'.$this->arguments['type'].')<br/>';
-
-        $class = implode(' ', array_filter([
-            'Heading Heading--'.$headingContext->getVisualType(),
-            $headingContext->isError() ? 'Heading--semantic-error' : '',
-            $headingContext->isHidden() ? 'Heading--hidden' : '',
-            trim($this->arguments['class'])
-        ]));
-
-        $headingLevel = $headingContext->getLevel();
-        $this->tag->setTagName(($headingLevel > 6) ? 'div' : 'h'.$headingLevel);
-        $this->tag->addAttribute('class', $class);
-        $this->tag->setContent($content);
-        $content = parent::render().$this->renderChildren();
-
-        // Tear down the headline context
-        if ((boolean)$this->arguments['restoreContext']) {
-            $headingContextManager->tearDownContext($headingContext);
+        if ($context->level > 6) {
+            $this->tag->setTagName('div');
+            $this->tag->addAttribute('role', 'heading');
+            $this->tag->addAttribute('aria-level', (string) $context->level);
+        } else {
+            $this->tag->setTagName('h' . $context->level);
         }
 
-        // Return the Rendered result
-        return $content;
+        $class = $this->tag->getAttribute('class');
+        $this->tag->addAttribute('class', implode(' ', array_filter([
+            'Heading Heading--' . $context->visualType,
+            ($context->skipped === []) ? '' : 'Heading--skipped',
+            $context->hidden ? 'Heading--hidden' : '',
+            \is_string($class) ? trim($class) : '',
+        ], static fn(string $name): bool => $name !== '')));
+        $this->tag->setContent(trim($this->stringArgument('content') ?? ''));
+        $section = $this->tag->render() . $this->renderedChildren();
+
+        if ($this->boolArgument('restoreContext')) {
+            $this->headingContextManager->tearDown($context);
+        }
+
+        return $section;
     }
 }

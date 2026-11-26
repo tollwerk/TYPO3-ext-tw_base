@@ -1,142 +1,85 @@
 <?php
 
 /**
- * tollwerk
+ * Attribution and licence of files
  *
- * @category   Tollwerk
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\Configuration
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
 
-/***********************************************************************************
- *  The MIT License (MIT)
- *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in
- *  the Software without restriction, including without limitation the rights to
- *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- *  the Software, and to permit persons to whom the Software is furnished to do so,
- *  subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ***********************************************************************************/
+declare(strict_types=1);
 
-$GLOBALS['TCA']['sys_file_metadata']['columns']['alternative']['config']['eval'] = 'required';
+use Tollwerk\TwBase\FileMetadata\License;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-$newColumns = [
-    'tx_twbase_author'        => [
-        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_author',
+defined('TYPO3') || die();
+
+// Creator and source are fields of the core extension filemetadata; these complete the attribution
+ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', [
+    'tx_twbase_creator_url' => [
+        'label' => 'tw_base.db:sys_file_metadata.tx_twbase_creator_url',
         'config' => [
-            'type' => 'input',
-            'size' => 30,
-            'eval' => 'trim'
-        ],
-    ],
-    'tx_twbase_author_url'    => [
-        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_author_url',
-        'config' => [
-            'type' => 'input',
-            'size' => 30,
-            'eval' => 'trim'
+            'type' => 'link',
+            'allowedTypes' => ['url'],
         ],
     ],
     'tx_twbase_creation_year' => [
-        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_creation_year',
+        'label' => 'tw_base.db:sys_file_metadata.tx_twbase_creation_year',
         'config' => [
-            'type' => 'input',
-            'size' => 7,
-            'eval' => 'trim,int'
-        ],
-    ],
-    'tx_twbase_source_url'    => [
-        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_source_url',
-        'config' => [
-            'type' => 'input',
-            'size' => 30,
-            'eval' => 'trim'
+            'type' => 'number',
+            'range' => ['lower' => 0, 'upper' => 9999],
+            'default' => 0,
         ],
     ],
     'tx_twbase_license' => [
-        'label' => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license',
+        'label' => 'tw_base.db:sys_file_metadata.tx_twbase_license',
+        'onChange' => 'reload',
         'config' => [
             'type' => 'select',
             'renderType' => 'selectSingle',
-            'size' => 1,
             'items' => [
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.none', ''],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.all', 'all'],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.cc0', 'CC0'],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.by', 'BY'],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.by-sa', 'BY-SA'],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.by-nd', 'BY-ND'],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.by-nc', 'BY-NC'],
-                [
-                    'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.by-nc-sa',
-                    'BY-NC-SA'
-                ],
-                [
-                    'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.by-nc-nd',
-                    'BY-NC-ND'
-                ],
-                ['LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license.custom', 'custom'],
-            ]
+                ['label' => '', 'value' => ''],
+                ...array_map(
+                    static fn(License $license): array => [
+                        'label' => 'tw_base.db:sys_file_metadata.tx_twbase_license.' . strtolower($license->value),
+                        'value' => $license->value,
+                    ],
+                    License::cases(),
+                ),
+            ],
+            'default' => '',
         ],
     ],
-    'tx_twbase_license_name'    => [
-        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license_name',
+    'tx_twbase_license_name' => [
+        'label' => 'tw_base.db:sys_file_metadata.tx_twbase_license_name',
+        'displayCond' => 'FIELD:tx_twbase_license:=:' . License::Custom->value,
         'config' => [
             'type' => 'input',
-            'size' => 30,
-            'eval' => 'trim'
+            'eval' => 'trim',
         ],
     ],
-    'tx_twbase_license_url'    => [
-        'label'  => 'LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tx_twbase_license_url',
+    'tx_twbase_license_url' => [
+        'label' => 'tw_base.db:sys_file_metadata.tx_twbase_license_url',
+        'displayCond' => 'FIELD:tx_twbase_license:=:' . License::Custom->value,
         'config' => [
-            'type' => 'input',
-            'size' => 30,
-            'eval' => 'trim'
+            'type' => 'link',
+            'allowedTypes' => ['url'],
         ],
     ],
-];
-
-// Create a new 'imageadvanced' palette
-$GLOBALS['TCA']['sys_file_metadata']['palettes']['author'] = [
-    'showitem' => 'tx_twbase_author, tx_twbase_author_url',
-];
-$GLOBALS['TCA']['sys_file_metadata']['palettes']['creation'] = [
-    'showitem' => 'tx_twbase_creation_year, tx_twbase_source_url',
-];
-$GLOBALS['TCA']['sys_file_metadata']['palettes']['license'] = [
-    'showitem' => 'tx_twbase_license_name, tx_twbase_license_url',
-];
-
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns('sys_file_metadata', $newColumns);
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addToAllTCAtypes('sys_file_metadata',
-    '--div--;LLL:EXT:tw_base/Resources/Private/Language/locallang_db.xlf:sys_file_metadata.tabs.license,
-    --palette--;;author,
-    --palette--;;creation,
-    tx_twbase_license,
-    --palette--;;license',
+]);
+ExtensionManagementUtility::addFieldsToPalette(
+    'sys_file_metadata',
+    'twbaseAttribution',
+    'tx_twbase_creator_url, tx_twbase_creation_year, --linebreak--, '
+        . 'tx_twbase_license, tx_twbase_license_name, tx_twbase_license_url',
+);
+ExtensionManagementUtility::addToAllTCAtypes(
+    'sys_file_metadata',
+    '--palette--;tw_base.db:sys_file_metadata.palette.attribution;twbaseAttribution',
     '',
-    'after:title');
-
-// Enable alternative text for videos
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette('sys_file_metadata',
-    '25',
-    'alternative, --linebreak--',
-    'before:caption'
+    'after:creator',
 );

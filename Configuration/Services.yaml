@@ -1,0 +1,12 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Tollwerk\TwBase\:
+    resource: '../Classes/*'
+    exclude:
+      - '../Classes/FileMetadata/Attribution.php'
+      - '../Classes/FileMetadata/License.php'
+      - '../Classes/Heading/HeadingContext.php'

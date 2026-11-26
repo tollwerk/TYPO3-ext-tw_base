@@ -1,89 +1,58 @@
 <?php
 
 /**
- * tollwerk
+ * Registers a node of the JSON-LD graph
  *
- * @category   Tollwerk
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers\StructuredData
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
 
-/***********************************************************************************
- *  The MIT License (MIT)
- *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in
- *  the Software without restriction, including without limitation the rights to
- *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- *  the Software, and to permit persons to whom the Software is furnished to do so,
- *  subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ***********************************************************************************/
+declare(strict_types=1);
 
 namespace Tollwerk\TwBase\ViewHelpers\StructuredData;
 
-use Closure;
-use Tollwerk\TwBase\Utility\StructuredDataManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\Exception;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-
 /**
- * Register a Structured Data Type
+ * Registers a node of the JSON-LD graph
  *
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
-class RegisterViewHelper extends AbstractViewHelper
+final class RegisterViewHelper extends AbstractStructuredDataViewHelper
 {
     /**
-     * Register a new structured data node
+     * Register the arguments
      *
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
-     * @return mixed
-     * @throws Exception
+     * @return void
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ) {
-        $objectManager         = GeneralUtility::makeInstance(ObjectManager::class);
-        $structuredDataManager = $objectManager->get(StructuredDataManager::class);
-        $structuredDataManager->register($arguments['type'], $arguments['id'], $arguments['data']);
+    public function initializeArguments(): void
+    {
+        $this->registerArgument('type', 'string', 'Type, such as "Event"', true);
+        $this->registerArgument('id', 'string', 'Id; ids starting with # are relative to the page', true);
+        $this->registerArgument('data', 'array', 'Properties', false, []);
     }
 
     /**
-     * Initialize all arguments. You need to override this method and call
-     * $this->registerArgument(...) inside this method, to register all your arguments.
+     * Register the node
      *
-     * @return void
-     * @api
+     * @return string Nothing
      */
-    public function initializeArguments()
+    public function render(): string
     {
-        parent::initializeArguments();
-        $this->registerArgument('type', 'string', 'Type', true);
-        $this->registerArgument('id', 'string', 'ID', true);
-        $this->registerArgument('data', 'array', 'Data', false, []);
+        $data = $this->arguments['data'] ?? [];
+        $this->graph()->register(
+            $this->stringArgument('type') ?? 'Thing',
+            $this->stringArgument('id') ?? '',
+            \is_array($data) ? array_filter($data, \is_string(...), ARRAY_FILTER_USE_KEY) : [],
+        );
+
+        return '';
     }
 }

@@ -1,99 +1,84 @@
 <?php
 
 /**
- * tollwerk
+ * Renders its content with the heading levels shifted
  *
- * @category   Tollwerk
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
- * @author     Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @copyright  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de> / @jkphl
- * @license    http://opensource.org/licenses/MIT The MIT License (MIT)
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
 
-/***********************************************************************************
- *  The MIT License (MIT)
- *
- *  Copyright © 2019 Joschi Kuphal <joschi@tollwerk.de>
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of
- *  this software and associated documentation files (the "Software"), to deal in
- *  the Software without restriction, including without limitation the rights to
- *  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- *  the Software, and to permit persons to whom the Software is furnished to do so,
- *  subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- *  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- *  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ***********************************************************************************/
+declare(strict_types=1);
 
 namespace Tollwerk\TwBase\ViewHelpers\Heading\Context;
 
-use Closure;
-use Tollwerk\TwBase\Utility\HeadingContextManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
+use Override;
+use Tollwerk\TwBase\Heading\HeadingContextManager;
+use Tollwerk\TwBase\ViewHelpers\TypedArguments;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * Shift the heading context for rendering the enclosed children
+ * Renders its content with the heading levels shifted
  *
- * @package    Tollwerk\TwBase
- * @subpackage Tollwerk\TwBase\ViewHelpers
+ * Useful where a part of the page has a heading the markup does not show, such as the summary of a collapsible
+ * element.
+ *
+ * @category  Tollwerk
+ * @package   Tollwerk\TwBase
+ * @author    Joschi Kuphal <joschi@tollwerk.de>
+ * @copyright 2026 tollwerk GmbH
+ * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
+ * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
-class ShiftViewHelper extends AbstractViewHelper
+final class ShiftViewHelper extends AbstractViewHelper
 {
-    use CompileWithRenderStatic;
+    use TypedArguments;
+
     /**
+     * The content is already rendered markup
+     *
      * @var boolean
      */
+    #[Override]
     protected $escapeOutput = false;
 
     /**
-     * Render
+     * Constructor
      *
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
-     *
-     * @return string
+     * @param HeadingContextManager $headingContextManager Heading levels
      */
-    public static function renderStatic(
-        array $arguments,
-        Closure $renderChildrenClosure,
-        RenderingContextInterface $renderingContext
-    ): string {
-        $shiftHeadingLevel = intval($arguments['by']);
-        if ($shiftHeadingLevel > 0) {
-            $headingContextManager = GeneralUtility::makeInstance(HeadingContextManager::class);
-            $currentHeadingContext = $headingContextManager->getCurrentContext();
-            $currentHeadingLevel   = $headingContextManager->getCurrentLevel();
-            $headingContextManager->setupContext($currentHeadingLevel + $shiftHeadingLevel);
-            $children = $renderChildrenClosure();
-            $headingContextManager->restoreContext($currentHeadingContext, true);
+    public function __construct(private readonly HeadingContextManager $headingContextManager) {}
 
-            return $children;
-        }
-
-        return $renderChildrenClosure();
+    /**
+     * Register the arguments
+     *
+     * @return void
+     */
+    public function initializeArguments(): void
+    {
+        $this->registerArgument('by', 'int', 'Number of levels to shift by', false, 0);
     }
 
     /**
-     * Initialize all arguments
+     * Render the content
      *
-     * @return void
-     * @api
+     * @return string
      */
-    public function initializeArguments()
+    public function render(): string
     {
-        $this->registerArgument('by', 'int', 'Temporarily shift the heading level by this number', false, 0);
+        $by = $this->intArgument('by') ?? 0;
+        if ($by <= 0) {
+            return $this->renderedChildren();
+        }
+
+        $marker = $this->headingContextManager->currentMarker();
+        $this->headingContextManager->setUp($this->headingContextManager->currentLevel() + $by);
+        $content = $this->renderedChildren();
+        $this->headingContextManager->restore($marker, true);
+
+        return $content;
     }
 }
