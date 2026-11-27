@@ -1,14 +1,24 @@
 /**
  * Notice in a mail
  */
-.Mail-notice {
+.MailNotice {
     margin: 0 0 16px;
     padding: 8px 16px;
     border-left: 4px solid var(--mail-color-accent);
 }
 
 @media (prefers-color-scheme: dark) {
-    .Mail-notice {
+    .MailNotice {
         border-color: var(--mail-dark-color-accent) !important;
+    }
+}
+
+.MailNotice a {
+    color: var(--mail-color-accent);
+}
+
+@media (prefers-color-scheme: dark) {
+    .MailNotice a {
+        color: var(--mail-dark-color-accent) !important;
     }
 }

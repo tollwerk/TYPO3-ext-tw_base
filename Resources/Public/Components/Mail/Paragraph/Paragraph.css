@@ -1,6 +1,16 @@
 /**
  * Paragraph of a mail
  */
-.Mail-paragraph {
+.MailParagraph {
     margin: 0 0 16px;
+}
+
+.MailParagraph a {
+    color: var(--mail-color-accent);
+}
+
+@media (prefers-color-scheme: dark) {
+    .MailParagraph a {
+        color: var(--mail-dark-color-accent) !important;
+    }
 }

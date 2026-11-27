@@ -1,24 +1,32 @@
 /**
  * Footer of a mail
  */
-.Mail-footer {
+.MailFooter {
     margin: 32px 0 0;
     padding: 16px 0 0;
     border-top: 1px solid var(--mail-color-border);
     color: var(--mail-color-muted);
 }
 
-.Mail-footer-line {
+.MailFooter__line {
     margin: 0 0 16px;
 }
 
-.Mail-footer-link {
+.MailFooter__item {
     margin: 0 0 8px;
 }
 
+.MailFooter__link {
+    color: var(--mail-color-accent);
+}
+
 @media (prefers-color-scheme: dark) {
-    .Mail-footer {
+    .MailFooter {
         border-color: var(--mail-dark-color-border) !important;
         color: var(--mail-dark-color-muted) !important;
+    }
+
+    .MailFooter__link {
+        color: var(--mail-dark-color-accent) !important;
     }
 }

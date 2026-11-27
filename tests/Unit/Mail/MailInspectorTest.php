@@ -43,7 +43,7 @@ final class MailInspectorTest extends UnitTestCase
             <!DOCTYPE html><html lang="en"><head>
             <meta name="color-scheme" content="light dark"><title>Code</title></head>
             <body style="background: #fff; color: #1a1a1a">
-            <h1>Code</h1><p style="color: #767676">Grey</p><p class="Mail-code">482916</p><img src="logo.png" alt="">
+            <h1>Code</h1><p style="color: #767676">Grey</p><p class="MailCode">482916</p><img src="logo.png" alt="">
             <!--[if mso]><table role="presentation"><tr><td><![endif]-->
             <a href="https://example.org/account">Open your account</a><a href="mailto:hi@example.org">Write to us</a>
             <!--[if mso]></td></tr></table><![endif]--></body></html>
@@ -64,7 +64,7 @@ final class MailInspectorTest extends UnitTestCase
         $html = <<<'HTML'
             <html><head></head><body><h1>A</h1><h1>B</h1><table><tr><td><img src="logo.png"></td></tr></table>
             <a href="https://example.org/a">Click here</a><a href="https://example.org/b"> </a>
-            <p class="Mail-code">482916</p>
+            <p class="MailCode">482916</p>
             <div style="background: #ffffff"><p style="color: #999999">Pale</p>
             <h2 style="color: #949494; font-size: 24px">Large</h2>
             <p style="color: var(--x)">Token</p></div></body></html>

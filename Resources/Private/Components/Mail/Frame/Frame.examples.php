@@ -19,8 +19,8 @@ return [
             'label' => 'Default',
             'arguments' => ['languageCode' => 'en-US', 'subject' => 'Your code', 'website' => 'Example Website'],
             'slots' => [
-                'default' => '<p class="Mail-paragraph">Hello,</p>',
-                'footer' => '<div class="Mail-footer"><p class="Mail-footer-line">Example Organisation</p></div>',
+                'default' => '<p class="MailParagraph">Hello,</p>',
+                'footer' => '<div class="MailFooter"><p class="MailFooter__line">Example Organisation</p></div>',
             ],
         ],
     ],

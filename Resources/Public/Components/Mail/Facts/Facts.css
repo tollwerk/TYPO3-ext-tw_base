@@ -1,15 +1,25 @@
 /**
  * Facts in a mail
  */
-.Mail-facts {
+.MailFacts {
     margin: 0 0 16px;
 }
 
-.Mail-facts-label {
+.MailFacts__label {
     margin: 0;
     font-weight: bold;
 }
 
-.Mail-facts-value {
+.MailFacts__value {
     margin: 0 0 8px;
+}
+
+.MailFacts__value a {
+    color: var(--mail-color-accent);
+}
+
+@media (prefers-color-scheme: dark) {
+    .MailFacts__value a {
+        color: var(--mail-dark-color-accent) !important;
+    }
 }

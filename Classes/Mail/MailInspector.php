@@ -80,7 +80,7 @@ final readonly class MailInspector
             $problems = [...$problems, ...$this->linkProblems($link, $text)];
         }
 
-        foreach ($document->querySelectorAll('.Mail-code') as $code) {
+        foreach ($document->querySelectorAll('.MailCode') as $code) {
             $value = trim($code->textContent ?? '');
             if (str_contains($text, $value)) {
                 continue;

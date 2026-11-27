@@ -1,8 +1,8 @@
 <f:argument name="sender" type="string" description="Who sends the mail, such as the name and address of the organisation" />
 <f:argument name="reason" type="string" optional="1" default="" description="Why the person gets the mail" />
 <f:argument name="links" type="array" optional="1" default="{}" description="Links such as contact and legal notice, each with &quot;label&quot; and &quot;href&quot;" />
-<div class="Mail-footer">
-    <f:if condition="{reason}"><p class="Mail-footer-line">{reason}</p></f:if>
-    <p class="Mail-footer-line">{sender}</p>
-    <f:for each="{links}" as="link"><p class="Mail-footer-link"><a class="Mail-link" href="{link.href}">{link.label}</a></p></f:for>
+<div class="MailFooter">
+    <f:if condition="{reason}"><p class="MailFooter__line">{reason}</p></f:if>
+    <p class="MailFooter__line">{sender}</p>
+    <f:for each="{links}" as="link"><p class="MailFooter__item"><a class="MailFooter__link" href="{link.href}">{link.label}</a></p></f:for>
 </div>

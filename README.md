@@ -30,6 +30,14 @@ Zu `Event/Teaser/Teaser.fluid.html` in `Resources/Private/Components` gehören:
 - **Ressourcen** unter demselben Pfad in `Resources/Public/Components`: `Teaser.css`, `Teaser.critical.css` für CSS, das inline in den Kopf kommt, und `Teaser.js` als ES-Modul, jeweils nur, wenn es sie gibt. Ein Listener auf `RenderComponentEvent` meldet sie für jede gerenderte Komponente einmal beim AssetCollector an, aus dem Paket, dessen Template gilt; der Seiten-Cache behält sie. Für ES-Module bildet das Paket `Resources/Public/` oder einen Ordner darüber in `Configuration/JavaScriptModules.php` ab, etwa `'@tollwerk/tw-events/' => 'EXT:tw_events/Resources/Public/'`, und das Modul importiert andere über diese Bezeichner.
 - **Beispiele** in `Teaser.examples.php` neben dem Template: `requires` nennt die Komponenten, in denen sie nur funktioniert, `examples` ihre Varianten und Zustände mit Bezeichnung, optionaler Gruppe, Argumenten, Slots und `within`. Den Aufbau beschreibt `Tollwerk\TwBase\Component\Example\Examples`.
 
+Die gemeinsame Laufzeit für JavaScript liegt unter `@tollwerk/tw-base/JavaScript/`. `enhance()` aus `enhance.js` ruft eine Funktion einmal für jedes Element auf, das zu einem Selektor passt, auch für Elemente, die später ins Dokument kommen:
+
+```js
+import { enhance } from '@tollwerk/tw-base/JavaScript/enhance.js';
+
+enhance('.FormField__input', (input) => { /* … */ });
+```
+
 `ExampleRenderer` rendert eine Komponente mit einem ihrer Beispiele, eingebettet in die Beispiele der Komponenten, die sie voraussetzt. Die Tests eines Pakets rendern damit jedes Beispiel; die Liste dafür liefert `Examples::find()` ohne TYPO3, für einen Data Provider:
 
 ```php

@@ -1,0 +1,12 @@
+{
+    "name": "@tollwerk/tw-base",
+    "version": "14.0.0",
+    "private": true,
+    "description": "JavaScript and CSS of tw-base: the shared runtime of the components and the mail components",
+    "license": "GPL-2.0-or-later",
+    "type": "module",
+    "devDependencies": {
+        "@tollwerk/guidelines": "git+ssh://git@code.tollwerk.net/tollwerk/guidelines.git#f332805f5fcad46045fa13d0abfe975e715b700a",
+        "jsdom": "31.0.1"
+    }
+}

@@ -1,11 +1,11 @@
 /**
  * Button of a mail, a link that looks like a button
  */
-.Mail-action {
+.MailButton {
     margin: 24px 0;
 }
 
-.Mail-button {
+.MailButton__link {
     display: inline-block;
     padding: 12px 24px;
     border-radius: 4px;
@@ -16,7 +16,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-    .Mail-button {
+    .MailButton__link {
         background: var(--mail-dark-color-accent) !important;
         color: var(--mail-dark-color-accent-text) !important;
     }

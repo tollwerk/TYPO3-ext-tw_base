@@ -39,7 +39,7 @@ settings:
     label: 'Background'
     category: twBase.mail.tokens
     type: color
-    default: '#ffffff'
+    default: '#fff'
   twBase.mail.tokens.color.muted:
     label: 'Muted text'
     description: 'Text of the website name and the footer'
@@ -57,7 +57,7 @@ settings:
     description: 'Text of buttons'
     category: twBase.mail.tokens
     type: color
-    default: '#ffffff'
+    default: '#fff'
   twBase.mail.tokens.color.border:
     label: 'Border'
     description: 'Line above the footer'

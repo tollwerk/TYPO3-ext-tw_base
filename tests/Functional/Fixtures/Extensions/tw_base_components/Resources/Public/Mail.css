@@ -1,6 +1,6 @@
 /**
  * Stylesheet of a site for its mails
  */
-.Mail-title {
+.Mail__title {
     color: var(--mail-color-accent);
 }

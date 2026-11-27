@@ -103,9 +103,9 @@ final class MailerTest extends FunctionalTestCase
         self::assertStringContainsString('<title>Dein Code</title>', $html);
         self::assertMatchesRegularExpression('#<h1[^>]*>Dein Code</h1>#', $html);
         self::assertStringContainsString('<strong>123456</strong>', $html);
-        self::assertMatchesRegularExpression('#<p class="Mail-code"[^>]*>123456</p>#', $html);
+        self::assertMatchesRegularExpression('#<p class="MailCode"[^>]*>123456</p>#', $html);
         self::assertStringContainsString('You get this email because you asked for a code.', $html);
-        self::assertStringContainsString('<p class="Mail-footer-line" style="margin: 0 0 16px;">Beispiel</p>', $html);
+        self::assertStringContainsString('<p class="MailFooter__line" style="margin: 0 0 16px;">Beispiel</p>', $html);
         self::assertStringNotContainsString('href=', $html);
         $text = (string) $mail->getTextBody();
         self::assertStringStartsWith("Beispiel\n\nDein Code", trim($text));
@@ -173,9 +173,9 @@ final class MailerTest extends FunctionalTestCase
         ]);
 
         $html = (string) $mail->getHtmlBody();
-        $link = '#<a class="Mail-link" href="mailto:[^"]+" style="color: \#8a0b0b;">#';
+        $link = '#<a class="MailFooter__link" href="mailto:[^"]+" style="color: \#8a0b0b;">#';
         self::assertMatchesRegularExpression($link, $html);
-        self::assertMatchesRegularExpression('#<h1 class="Mail-title" style="[^"]*color: \#8a0b0b;[^"]*">#', $html);
+        self::assertMatchesRegularExpression('#<h1 class="Mail__title" style="[^"]*color: \#8a0b0b;[^"]*">#', $html);
         self::assertStringContainsString('color: #ffb3b3 !important;', $html);
         self::assertStringNotContainsString('var(', $html);
         self::assertSame([], $this->get(AssetCollector::class)->getStyleSheets());

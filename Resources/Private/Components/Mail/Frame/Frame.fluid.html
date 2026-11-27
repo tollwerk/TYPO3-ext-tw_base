@@ -10,12 +10,12 @@
     <meta name="supported-color-schemes" content="light dark">
     <title>{subject}</title>
 </head>
-<body class="Mail-body">
+<body class="Mail__body">
     <div class="Mail" role="article" aria-roledescription="email" aria-label="{subject}" lang="{languageCode}">
         <!--[if mso]><table role="presentation" width="640" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
-        <div class="Mail-content">
-            <p class="Mail-website">{website}</p>
-            <h1 class="Mail-title">{subject}</h1>
+        <div class="Mail__content">
+            <p class="Mail__website">{website}</p>
+            <h1 class="Mail__title">{subject}</h1>
             <f:slot />
             <f:slot name="footer" />
         </div>

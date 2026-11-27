@@ -7,10 +7,10 @@
  */
 :root {
     --mail-color-text: #1a1a1a;
-    --mail-color-background: #ffffff;
+    --mail-color-background: #fff;
     --mail-color-muted: #4d4d4d;
     --mail-color-accent: #0b4f8a;
-    --mail-color-accent-text: #ffffff;
+    --mail-color-accent-text: #fff;
     --mail-color-border: #b3b3b3;
     --mail-dark-color-text: #f2f2f2;
     --mail-dark-color-background: #121212;
@@ -24,7 +24,7 @@
     --mail-width: 40em;
 }
 
-.Mail-body {
+.Mail__body {
     margin: 0;
     padding: 0;
     background: var(--mail-color-background);
@@ -40,38 +40,30 @@
     line-height: 1.5;
 }
 
-.Mail-content {
+.Mail__content {
     max-width: var(--mail-width);
     margin: 0 auto;
 }
 
-.Mail-website {
+.Mail__website {
     margin: 0 0 24px;
     color: var(--mail-color-muted);
 }
 
-.Mail-title {
+.Mail__title {
     margin: 0 0 24px;
     font-size: 24px;
     line-height: 1.25;
 }
 
-.Mail-link {
-    color: var(--mail-color-accent);
-}
-
 @media (prefers-color-scheme: dark) {
-    .Mail-body,
+    .Mail__body,
     .Mail {
         background: var(--mail-dark-color-background) !important;
         color: var(--mail-dark-color-text) !important;
     }
 
-    .Mail-website {
+    .Mail__website {
         color: var(--mail-dark-color-muted) !important;
-    }
-
-    .Mail-link {
-        color: var(--mail-dark-color-accent) !important;
     }
 }
