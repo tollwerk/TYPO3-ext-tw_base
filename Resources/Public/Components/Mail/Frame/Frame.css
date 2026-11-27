@@ -1,0 +1,77 @@
+/**
+ * Frame of a mail and the tokens of all mail components
+ *
+ * Sites change a token with the setting "twBase.mail.tokens.*": "twBase.mail.tokens.color.text" sets
+ * "--mail-color-text", "twBase.mail.tokens.dark.color.accentText" sets "--mail-dark-color-accent-text". The mailer
+ * resolves the tokens and writes the rules into the style attributes; the rules for the dark mode go into the head.
+ */
+:root {
+    --mail-color-text: #1a1a1a;
+    --mail-color-background: #ffffff;
+    --mail-color-muted: #4d4d4d;
+    --mail-color-accent: #0b4f8a;
+    --mail-color-accent-text: #ffffff;
+    --mail-color-border: #b3b3b3;
+    --mail-dark-color-text: #f2f2f2;
+    --mail-dark-color-background: #121212;
+    --mail-dark-color-muted: #c4c4c4;
+    --mail-dark-color-accent: #9ccaff;
+    --mail-dark-color-accent-text: #121212;
+    --mail-dark-color-border: #6b6b6b;
+    --mail-font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mail-font-code: ui-monospace, menlo, consolas, monospace;
+    --mail-font-size: 16px;
+    --mail-width: 40em;
+}
+
+.Mail-body {
+    margin: 0;
+    padding: 0;
+    background: var(--mail-color-background);
+    color: var(--mail-color-text);
+}
+
+.Mail {
+    padding: 16px;
+    background: var(--mail-color-background);
+    color: var(--mail-color-text);
+    font-family: var(--mail-font-family);
+    font-size: var(--mail-font-size);
+    line-height: 1.5;
+}
+
+.Mail-content {
+    max-width: var(--mail-width);
+    margin: 0 auto;
+}
+
+.Mail-website {
+    margin: 0 0 24px;
+    color: var(--mail-color-muted);
+}
+
+.Mail-title {
+    margin: 0 0 24px;
+    font-size: 24px;
+    line-height: 1.25;
+}
+
+.Mail-link {
+    color: var(--mail-color-accent);
+}
+
+@media (prefers-color-scheme: dark) {
+    .Mail-body,
+    .Mail {
+        background: var(--mail-dark-color-background) !important;
+        color: var(--mail-dark-color-text) !important;
+    }
+
+    .Mail-website {
+        color: var(--mail-dark-color-muted) !important;
+    }
+
+    .Mail-link {
+        color: var(--mail-dark-color-accent) !important;
+    }
+}

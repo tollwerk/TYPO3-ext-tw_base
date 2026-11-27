@@ -7,6 +7,10 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 ### Hinzugefügt
 
 - `Mailer` und das Layout `TwBase` für Mails als Text und barrierefreies HTML.
+- Fluid-Komponenten unter `Tollwerk\Components` mit dem Präfix `twc` und der Priorität 10; ein Listener meldet die Ressourcen jeder gerenderten Komponente beim AssetCollector an, `Examples` liest die Beispiele neben dem Template und `ExampleRenderer` rendert sie.
+- Komponenten für Mails unter `twc:mail.*`: Rahmen, Fußzeile, Absatz, Button, Code, Angaben und Hinweis, gestaltet über Tokens, die eine Site in den Einstellungen `twBase.mail.tokens.*` ändert; `StyleInliner` schreibt die Styles beim Versand inline, mit `tijsverkoyen/css-to-inline-styles`.
+- Das Site Set `tollwerk/tw-base` mit Absender, Kontaktadresse und Impressum für die Fußzeile der Mails; Antworten gehen an die Kontaktadresse.
+- Ein Verzeichnis der Mails aller Extensions aus `Configuration/Mails.php`, `Mailer::composeExample()` und `MailInspector` für die Tests, auch für den Kontrast.
 
 ### Geändert
 

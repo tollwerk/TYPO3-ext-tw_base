@@ -1,0 +1,10 @@
+/**
+ * Code in a mail, on a line of its own
+ */
+.Mail-code {
+    margin: 24px 0;
+    font-family: var(--mail-font-code);
+    font-size: 32px;
+    font-weight: bold;
+    letter-spacing: 0.15em;
+}

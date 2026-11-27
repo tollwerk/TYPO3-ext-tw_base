@@ -1,0 +1,7 @@
+<f:argument name="items" type="array" description="Facts, each with &quot;label&quot; and &quot;value&quot;" />
+<dl class="Mail-facts">
+    <f:for each="{items}" as="item">
+        <dt class="Mail-facts-label">{item.label}</dt>
+        <dd class="Mail-facts-value">{item.value}</dd>
+    </f:for>
+</dl>

@@ -1,0 +1,24 @@
+/**
+ * Footer of a mail
+ */
+.Mail-footer {
+    margin: 32px 0 0;
+    padding: 16px 0 0;
+    border-top: 1px solid var(--mail-color-border);
+    color: var(--mail-color-muted);
+}
+
+.Mail-footer-line {
+    margin: 0 0 16px;
+}
+
+.Mail-footer-link {
+    margin: 0 0 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .Mail-footer {
+        border-color: var(--mail-dark-color-border) !important;
+        color: var(--mail-dark-color-muted) !important;
+    }
+}

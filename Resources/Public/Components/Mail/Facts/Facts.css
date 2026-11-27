@@ -1,0 +1,15 @@
+/**
+ * Facts in a mail
+ */
+.Mail-facts {
+    margin: 0 0 16px;
+}
+
+.Mail-facts-label {
+    margin: 0;
+    font-weight: bold;
+}
+
+.Mail-facts-value {
+    margin: 0 0 8px;
+}

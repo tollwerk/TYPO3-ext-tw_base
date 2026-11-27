@@ -1,10 +1,11 @@
 {
     "name": "tollwerk/tw-base",
-    "description": "Headings, structured data, responsive images, link information and file attribution for TYPO3",
+    "description": "Headings, structured data, responsive images, link information, file attribution, components and accessible mails for TYPO3",
     "license": "GPL-2.0-or-later",
     "type": "typo3-cms-extension",
     "require": {
         "php": "^8.5",
+        "tijsverkoyen/css-to-inline-styles": "^2.4",
         "typo3/cms-core": "^14.3",
         "typo3/cms-extbase": "^14.3",
         "typo3/cms-filemetadata": "^14.3",

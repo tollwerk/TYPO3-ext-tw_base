@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Mails as text and accessible HTML in the language of the site
+ * Compose and send a mail from a template of an extension
  *
  * @category  Tollwerk
  * @package   Tollwerk\TwBase
@@ -20,17 +20,25 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
+use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use UnexpectedValueException;
 
 /**
  * Compose and send a mail from a template of an extension
  *
  * A template lives in a template root path of $GLOBALS['TYPO3_CONF_VARS']['MAIL'], once as ".fluid.html" and once
- * as ".fluid.txt", and uses the layout "TwBase", which gives the HTML the language, the title and a plain structure.
- * Texts in the templates come from f:translate, in the language of the request.
+ * as ".fluid.txt", and uses the layout "TwBase", which puts the HTML into the components "twc:mail.frame" and
+ * "twc:mail.footer", and writes the styles of the components into the HTML, see StyleInliner. The footer names
+ * the sender, the contact address and the legal notice from the settings
+ * "twBase.mail.*" of the site, and why the person gets the mail, from the section "Reason" of the template. Texts in
+ * the templates come from f:translate, in the language of the request.
  *
  * @category  Tollwerk
  * @package   Tollwerk\TwBase
@@ -45,9 +53,51 @@ final readonly class Mailer
     /**
      * Constructor
      *
-     * @param MailerInterface $mailer Mailer of the core
+     * @param MailerInterface        $mailer                 Mailer of the core
+     * @param LanguageServiceFactory $languageServiceFactory Factory of language services, for the footer
+     * @param MailRegistry           $registry               Mails of all extensions, for their examples
+     * @param StyleInliner           $inliner                Writes the styles of the components into the HTML
      */
-    public function __construct(private MailerInterface $mailer) {}
+    public function __construct(
+        private MailerInterface $mailer,
+        private LanguageServiceFactory $languageServiceFactory,
+        private MailRegistry $registry,
+        private StyleInliner $inliner,
+    ) {}
+
+    /**
+     * Compose a registered mail with one of its examples, for its preview and its tests
+     *
+     * @param ServerRequestInterface $request Request, for the site and its language
+     * @param string                 $key     Key of the mail, such as "tw_accounts.code"
+     * @param string                 $example Name of the example
+     * @param Address|null           $to      Recipient, a person at example.org if none
+     *
+     * @return FluidEmail
+     *
+     * @throws UnexpectedValueException If there is no such mail or example
+     * @throws InvalidArgumentException If the format of mails or the contact address is invalid
+     */
+    public function composeExample(
+        ServerRequestInterface $request,
+        string $key,
+        string $example,
+        ?Address $to = null,
+    ): FluidEmail {
+        $mail = $this->registry->get($key);
+        $configuration = $mail->examples[$example] ?? throw new UnexpectedValueException(
+            \sprintf('The mail "%s" has no example "%s"', $key, $example),
+            1795776307,
+        );
+
+        return $this->compose(
+            $request,
+            $to ?? new Address('person@example.org', 'Ada Lovelace'),
+            $mail->template,
+            $configuration->subject,
+            $configuration->variables,
+        );
+    }
 
     /**
      * Compose a mail
@@ -60,7 +110,7 @@ final readonly class Mailer
      *
      * @return FluidEmail
      *
-     * @throws InvalidArgumentException If the format of mails is unknown
+     * @throws InvalidArgumentException If the format of mails or the contact address is invalid
      */
     public function compose(
         ServerRequestInterface $request,
@@ -70,6 +120,13 @@ final readonly class Mailer
         array $variables = [],
     ): FluidEmail {
         $language = $request->getAttribute('language');
+        $language = $language instanceof SiteLanguage ? $language : null;
+        $site = $request->getAttribute('site');
+        $site = $site instanceof Site ? $site : null;
+        $website = $this->website($site, $language);
+        $contact = $this->setting($site, 'twBase.mail.contact');
+        $sender = $this->setting($site, 'twBase.mail.sender');
+
         $mail = GeneralUtility::makeInstance(FluidEmail::class);
         $mail->setRequest($request)
             ->to($to)
@@ -79,8 +136,16 @@ final readonly class Mailer
             ->assignMultiple([
                 ...$variables,
                 'subject' => $subject,
-                'languageCode' => $language instanceof SiteLanguage ? $language->getLocale()->getName() : 'en',
+                'languageCode' => $language?->getLocale()->getName() ?? 'en',
+                'website' => $website,
+                'sender' => '' === $sender ? $website : $sender,
+                'footerLinks' => $this->footerLinks($site, $language, $contact),
             ]);
+        if ('' !== $contact) {
+            $mail->replyTo(new Address($contact, $website));
+        }
+
+        $this->inliner->inline($mail, $site);
 
         return $mail;
     }
@@ -97,7 +162,7 @@ final readonly class Mailer
      * @return void
      *
      * @throws TransportExceptionInterface If the mail cannot be sent
-     * @throws InvalidArgumentException If the format of mails is unknown
+     * @throws InvalidArgumentException If the format of mails or the contact address is invalid
      */
     public function send(
         ServerRequestInterface $request,
@@ -107,5 +172,92 @@ final readonly class Mailer
         array $variables = [],
     ): void {
         $this->mailer->send($this->compose($request, $to, $template, $subject, $variables));
+    }
+
+    /**
+     * Title of the website in the language, or of the site
+     *
+     * @param Site|null         $site     Site
+     * @param SiteLanguage|null $language Language
+     *
+     * @return string
+     */
+    private function website(?Site $site, ?SiteLanguage $language): string
+    {
+        $title = $language?->getWebsiteTitle() ?? '';
+        if ('' === $title && $site instanceof Site) {
+            $configured = $site->getConfiguration()['websiteTitle'] ?? '';
+            $title = \is_string($configured) ? $configured : '';
+        }
+
+        return $title;
+    }
+
+    /**
+     * A setting of the site that is a string
+     *
+     * @param Site|null $site Site
+     * @param string    $name Name
+     *
+     * @return string
+     */
+    private function setting(?Site $site, string $name): string
+    {
+        $value = $site?->getSettings()->getAllFlat()[$name] ?? '';
+
+        return \is_string($value) ? trim($value) : '';
+    }
+
+    /**
+     * Links for the footer: the contact address and the legal notice, as far as the site has them
+     *
+     * @param Site|null         $site     Site
+     * @param SiteLanguage|null $language Language
+     * @param string            $contact  Contact address
+     *
+     * @return list<array{label: string, href: string, address: string}>
+     */
+    private function footerLinks(?Site $site, ?SiteLanguage $language, string $contact): array
+    {
+        $labels = $this->labels($language);
+        $links = [];
+        if ('' !== $contact) {
+            $links[] = [
+                'label' => \sprintf($labels->sL('tw_base.messages:mail.footer.contact'), $contact),
+                'href' => 'mailto:' . $contact,
+                'address' => '',
+            ];
+        }
+
+        $imprint = $site?->getSettings()->getAllFlat()['twBase.mail.imprint'] ?? 0;
+        if ($site instanceof Site && \is_int($imprint) && $imprint > 0) {
+            try {
+                $parameters = $language instanceof SiteLanguage ? ['_language' => $language] : [];
+                $url = (string) $site->getRouter()->generateUri($imprint, $parameters);
+                $links[] = [
+                    'label' => $labels->sL('tw_base.messages:mail.footer.imprint'),
+                    'href' => $url,
+                    'address' => $url,
+                ];
+            } catch (InvalidRouteArgumentsException) {
+                // A page that cannot be linked has no place in the footer
+            }
+        }
+
+        return $links;
+    }
+
+    /**
+     * Labels in the language of the mail
+     *
+     * @param SiteLanguage|null $language Language
+     *
+     * @return LanguageService
+     */
+    private function labels(?SiteLanguage $language): LanguageService
+    {
+        return $language instanceof SiteLanguage
+            ? $this->languageServiceFactory->createFromSiteLanguage($language)
+            : $this->languageServiceFactory->create('en');
     }
 }

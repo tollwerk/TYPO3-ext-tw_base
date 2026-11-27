@@ -1,0 +1,23 @@
+/**
+ * Button of a mail, a link that looks like a button
+ */
+.Mail-action {
+    margin: 24px 0;
+}
+
+.Mail-button {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 4px;
+    background: var(--mail-color-accent);
+    color: var(--mail-color-accent-text);
+    font-weight: bold;
+    text-decoration: none;
+}
+
+@media (prefers-color-scheme: dark) {
+    .Mail-button {
+        background: var(--mail-dark-color-accent) !important;
+        color: var(--mail-dark-color-accent-text) !important;
+    }
+}

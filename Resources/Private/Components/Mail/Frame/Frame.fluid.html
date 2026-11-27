@@ -1,0 +1,25 @@
+<f:argument name="languageCode" type="string" description="Language of the mail, such as &quot;en-US&quot;" />
+<f:argument name="subject" type="string" description="Subject, which is also the title and the only heading of the first level" />
+<f:argument name="website" type="string" description="Name of the website that sends the mail" />
+<!DOCTYPE html>
+<html lang="{languageCode}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>{subject}</title>
+</head>
+<body class="Mail-body">
+    <div class="Mail" role="article" aria-roledescription="email" aria-label="{subject}" lang="{languageCode}">
+        <!--[if mso]><table role="presentation" width="640" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <div class="Mail-content">
+            <p class="Mail-website">{website}</p>
+            <h1 class="Mail-title">{subject}</h1>
+            <f:slot />
+            <f:slot name="footer" />
+        </div>
+        <!--[if mso]></td></tr></table><![endif]-->
+    </div>
+</body>
+</html>

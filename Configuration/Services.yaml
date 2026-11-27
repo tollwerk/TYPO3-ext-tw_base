@@ -7,6 +7,13 @@ services:
   Tollwerk\TwBase\:
     resource: '../Classes/*'
     exclude:
+      - '../Classes/Component/Component.php'
+      - '../Classes/Component/Example/Example.php'
+      - '../Classes/Component/Example/Examples.php'
+      - '../Classes/Component/Example/Within.php'
+      - '../Classes/Component/Resources.php'
       - '../Classes/FileMetadata/Attribution.php'
       - '../Classes/FileMetadata/License.php'
       - '../Classes/Heading/HeadingContext.php'
+      - '../Classes/Mail/MailDefinition.php'
+      - '../Classes/Mail/MailExample.php'

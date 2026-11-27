@@ -1,0 +1,120 @@
+categories:
+  twBase.mail:
+    label: 'Mails'
+  twBase.mail.tokens:
+    label: 'Design'
+    parent: twBase.mail
+
+settings:
+  twBase.mail.sender:
+    label: 'Sender'
+    description: 'Who sends the mails, such as the name and address of the organisation, for the footer of every mail; empty for the title of the website'
+    category: twBase.mail
+    type: string
+    default: ''
+  twBase.mail.contact:
+    label: 'Contact address'
+    description: 'Email address for questions, linked in the footer of every mail and the address replies go to'
+    category: twBase.mail
+    type: string
+    default: ''
+  twBase.mail.imprint:
+    label: 'Legal notice'
+    description: 'Page with the legal notice, linked in the footer of every mail'
+    category: twBase.mail
+    type: page
+    default: 0
+  twBase.mail.stylesheet:
+    label: 'Stylesheet'
+    description: 'Additional stylesheet for mails, such as EXT:my_site/Resources/Private/Mail.css, whose rules follow those of the components; it may use the tokens as custom properties'
+    category: twBase.mail
+    type: string
+    default: ''
+  twBase.mail.tokens.color.text:
+    label: 'Text'
+    category: twBase.mail.tokens
+    type: color
+    default: '#1a1a1a'
+  twBase.mail.tokens.color.background:
+    label: 'Background'
+    category: twBase.mail.tokens
+    type: color
+    default: '#ffffff'
+  twBase.mail.tokens.color.muted:
+    label: 'Muted text'
+    description: 'Text of the website name and the footer'
+    category: twBase.mail.tokens
+    type: color
+    default: '#4d4d4d'
+  twBase.mail.tokens.color.accent:
+    label: 'Accent'
+    description: 'Links, buttons and the border of notices'
+    category: twBase.mail.tokens
+    type: color
+    default: '#0b4f8a'
+  twBase.mail.tokens.color.accentText:
+    label: 'Text on the accent'
+    description: 'Text of buttons'
+    category: twBase.mail.tokens
+    type: color
+    default: '#ffffff'
+  twBase.mail.tokens.color.border:
+    label: 'Border'
+    description: 'Line above the footer'
+    category: twBase.mail.tokens
+    type: color
+    default: '#b3b3b3'
+  twBase.mail.tokens.dark.color.text:
+    label: 'Text in dark mode'
+    category: twBase.mail.tokens
+    type: color
+    default: '#f2f2f2'
+  twBase.mail.tokens.dark.color.background:
+    label: 'Background in dark mode'
+    category: twBase.mail.tokens
+    type: color
+    default: '#121212'
+  twBase.mail.tokens.dark.color.muted:
+    label: 'Muted text in dark mode'
+    category: twBase.mail.tokens
+    type: color
+    default: '#c4c4c4'
+  twBase.mail.tokens.dark.color.accent:
+    label: 'Accent in dark mode'
+    category: twBase.mail.tokens
+    type: color
+    default: '#9ccaff'
+  twBase.mail.tokens.dark.color.accentText:
+    label: 'Text on the accent in dark mode'
+    category: twBase.mail.tokens
+    type: color
+    default: '#121212'
+  twBase.mail.tokens.dark.color.border:
+    label: 'Border in dark mode'
+    category: twBase.mail.tokens
+    type: color
+    default: '#6b6b6b'
+  twBase.mail.tokens.font.family:
+    label: 'Font'
+    description: 'Font stack of the text'
+    category: twBase.mail.tokens
+    type: string
+    default: 'system-ui, -apple-system, "Segoe UI", sans-serif'
+  twBase.mail.tokens.font.code:
+    label: 'Font of codes'
+    description: 'Font stack of codes'
+    category: twBase.mail.tokens
+    type: string
+    default: 'ui-monospace, menlo, consolas, monospace'
+  twBase.mail.tokens.font.size:
+    label: 'Font size'
+    description: 'Size of the text, at least 16px'
+    category: twBase.mail.tokens
+    type: string
+    default: '16px'
+  twBase.mail.tokens.width:
+    label: 'Width'
+    description: 'Largest width of the content'
+    category: twBase.mail.tokens
+    type: string
+    default: '40em'

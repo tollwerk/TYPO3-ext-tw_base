@@ -10,7 +10,7 @@ Dieses Projekt übernimmt die Basis der guidelines und diese Profile, wie in `gu
 
 ## Über dieses Projekt
 
-`tw_base` bringt Grundlagen für Websites mit TYPO3 14: Überschriften mit passender Ebene, strukturierte Daten als JSON-LD, responsive Bilder, Informationen zu Links und die Urheberangaben von Dateien. Die Dokumentation ist Deutsch, Code, Kommentare und Commit-Nachrichten sind Englisch.
+`tw_base` bringt Grundlagen für Websites mit TYPO3 14: Überschriften mit passender Ebene, strukturierte Daten als JSON-LD, responsive Bilder, Informationen zu Links, die Urheberangaben von Dateien, die Infrastruktur für Fluid-Komponenten und barrierefreie Mails. Die Dokumentation ist Deutsch, Code, Kommentare und Commit-Nachrichten sind Englisch.
 
 - **Prüfungen:** `composer check` führt `guidelines gate` aus, dieselben Prüfungen wie die Pipeline.
 - **Entwicklung:** Websites binden diesen Klon während der Entwicklung ein; getestet wird die Extension für sich allein in einer leeren Instanz von TYPO3.

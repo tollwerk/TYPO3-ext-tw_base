@@ -13,7 +13,9 @@
 
 declare(strict_types=1);
 
-// The namespace "base" of the earlier major versions, so templates move over unchanged
+// The namespace "base" of the earlier major versions, so templates move over unchanged, and "twc", which all
+// packages of tollwerk share for their components
 return [
     'base' => ['Tollwerk\\TwBase\\ViewHelpers'],
+    'twc' => ['Tollwerk\\Components'],
 ];

@@ -1,18 +1,12 @@
 <f:comment>
-    Accessible HTML of a mail: the language and the subject as title, one heading, no images and no tables for layout
+    Accessible HTML of a mail in the frame of tw_base. A template has the section "Main" and optionally "Reason",
+    which says in one sentence why the person gets the mail.
     @param string languageCode Language of the site, such as "en-US"
     @param string subject Subject
-</f:comment><!DOCTYPE html>
-<html lang="{languageCode}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{subject}</title>
-</head>
-<body style="font-family: system-ui, sans-serif; font-size: 1rem; line-height: 1.5; color: #1a1a1a; background: #fff; margin: 0; padding: 1rem;">
-    <main style="max-width: 40rem;">
-        <h1 style="font-size: 1.25rem;">{subject}</h1>
-        <f:render section="Main" />
-    </main>
-</body>
-</html>
+    @param string website Title of the website
+    @param string sender Who sends the mail
+    @param array footerLinks Links for the footer, each with "label", "href" and "address", the address for the text part if the label lacks it
+</f:comment><twc:mail.frame languageCode="{languageCode}" subject="{subject}" website="{website}">
+    <f:fragment><f:render section="Main" /></f:fragment>
+    <f:fragment name="footer"><twc:mail.footer sender="{sender}" reason="{f:render(section: 'Reason', optional: true) -> f:format.trim()}" links="{footerLinks}" /></f:fragment>
+</twc:mail.frame>
