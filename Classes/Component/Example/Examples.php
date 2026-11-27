@@ -193,7 +193,41 @@ final readonly class Examples
             $within = new Within($parts[0], $parts[1], $parts[2] ?? 'default');
         }
 
-        return new Example($name, $label, $group, $arguments, $slots, $within);
+        return new Example(
+            $name,
+            $label,
+            $group,
+            $arguments,
+            $slots,
+            $within,
+            self::uid($example, 'page', $name, $file),
+            self::uid($example, 'language', $name, $file),
+        );
+    }
+
+    /**
+     * The uid of the page or the language of an example
+     *
+     * @param array<array-key, mixed> $example Configuration of the example
+     * @param string                  $key     "page" or "language"
+     * @param string                  $name    Name of the example, for messages
+     * @param string                  $file    File, for messages
+     *
+     * @return integer|null Uid; null if the example names none
+     *
+     * @throws UnexpectedValueException If the value is no uid
+     */
+    private static function uid(array $example, string $key, string $name, string $file): ?int
+    {
+        $uid = $example[$key] ?? null;
+        if (null !== $uid && (!\is_int($uid) || $uid < 0)) {
+            throw new UnexpectedValueException(
+                \sprintf('The %s of the example "%s" in "%s" is no uid', $key, $name, $file),
+                1795776110,
+            );
+        }
+
+        return $uid;
     }
 
     /**

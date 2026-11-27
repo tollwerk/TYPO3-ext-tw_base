@@ -20,6 +20,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Tollwerk\TwBase\Component\Component;
 use Tollwerk\TwBase\Component\ComponentLocator;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
+use TYPO3\CMS\Core\Context\LanguageAspect;
+use TYPO3\CMS\Core\Context\LanguageAspectFactory;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Fluid\Core\Component\ComponentCollectionRegistry;
 use TYPO3\CMS\Fluid\Core\Component\DeclarativeComponentCollection;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
@@ -47,11 +52,15 @@ final readonly class ExampleRenderer
      * @param ComponentCollectionRegistry $registry Collections of components
      * @param ComponentLocator            $locator  Locator of components
      * @param RenderingContextFactory     $factory  Factory of rendering contexts
+     * @param Records                     $records  Records that examples name in place of models
+     * @param Context                     $context  Context, for the language of the records
      */
     public function __construct(
         private ComponentCollectionRegistry $registry,
         private ComponentLocator $locator,
         private RenderingContextFactory $factory,
+        private Records $records,
+        private Context $context,
     ) {}
 
     /**
@@ -93,7 +102,8 @@ final readonly class ExampleRenderer
      *
      * @return string HTML
      *
-     * @throws UnexpectedValueException If there is no such component or example, or examples are within each other
+     * @throws UnexpectedValueException If there is no such component or example, examples are within each other, or a
+     *                                  record is missing
      */
     public function render(string $component, string $example, ?ServerRequestInterface $request = null): string
     {
@@ -102,7 +112,26 @@ final readonly class ExampleRenderer
             $context->setAttribute(ServerRequestInterface::class, $request);
         }
 
-        return $this->renderWithin($component, $example, $context, null, []);
+        $language = $request?->getAttribute('language');
+        if (!$language instanceof SiteLanguage) {
+            return $this->renderWithin($component, $example, $context, null, []);
+        }
+
+        // Records load in the language of the request, as on the website
+        try {
+            $previous = $this->context->getAspect('language');
+        } catch (AspectNotFoundException) {
+            // The context creates the language aspect when asked for it, so this does not happen
+            $previous = new LanguageAspect();
+        }
+
+        $this->context->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
+
+        try {
+            return $this->renderWithin($component, $example, $context, null, []);
+        } finally {
+            $this->context->setAspect('language', $previous);
+        }
     }
 
     /**
@@ -144,7 +173,7 @@ final readonly class ExampleRenderer
 
         $html = $collection->getComponentRenderer()->renderComponent(
             $located->name,
-            $configuration->arguments,
+            $this->records->resolve($configuration->arguments),
             $slots,
             $context,
         );

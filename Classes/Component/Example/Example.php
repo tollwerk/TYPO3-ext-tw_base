@@ -36,6 +36,8 @@ final readonly class Example
      * @param array<string, mixed>  $arguments Arguments
      * @param array<string, string> $slots     HTML of each slot, by the name of the slot
      * @param Within|null           $within    Example of another component in whose slot this example appears
+     * @param integer|null          $page      Page to render on; the root page of the site if null
+     * @param integer|null          $language  Language to render in; the default language of the site if null
      */
     public function __construct(
         public string $name,
@@ -44,5 +46,7 @@ final readonly class Example
         public array $arguments = [],
         public array $slots = [],
         public ?Within $within = null,
+        public ?int $page = null,
+        public ?int $language = null,
     ) {}
 }

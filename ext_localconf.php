@@ -21,3 +21,13 @@ if (is_array($layouts)) {
     $layouts['tw_base'] = 'EXT:tw_base/Resources/Private/Layouts/Email/';
     $GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths'] = $layouts;
 }
+
+// The address of an example of a component needs no cache hash, see Tollwerk\TwBase\Component\Example\ExampleEndpoint
+$excluded = $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'] ?? [];
+if (is_array($excluded)) {
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'] = [
+        ...$excluded,
+        Tollwerk\TwBase\Component\Example\ExampleEndpoint::PARAMETER,
+        Tollwerk\TwBase\Component\Example\ExampleEndpoint::SIGNATURE,
+    ];
+}
