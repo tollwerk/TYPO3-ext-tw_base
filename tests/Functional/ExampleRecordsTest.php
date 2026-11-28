@@ -24,6 +24,8 @@ use RuntimeException;
 use Tollwerk\TwBase\Component\Example\ExampleEndpoint;
 use Tollwerk\TwBase\Component\Example\Records;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\SiteFinder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -189,6 +191,34 @@ final class ExampleRecordsTest extends FunctionalTestCase
 
         self::assertSame([1795776304, 1795776303, 1795776301], $codes);
         self::assertSame(['value' => ['record' => 'pages']], $records->resolve(['value' => ['record' => 'pages']]));
+    }
+
+    /**
+     * Files and references to files name the class of the core
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws UnexpectedValueException If a file is missing
+     */
+    #[Test]
+    public function filesOfTheCoreLoad(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Files.csv');
+        $records = $this->get(Records::class);
+        $resolved = $records->resolve([
+            'reference' => ['record' => 'sys_file_reference', 'uid' => 1, 'model' => FileReference::class],
+            'file' => ['record' => 'sys_file', 'uid' => 1, 'model' => File::class],
+        ]);
+
+        $reference = $resolved['reference'] ?? null;
+        $file = $resolved['file'] ?? null;
+        self::assertInstanceOf(FileReference::class, $reference);
+        self::assertSame('Logo', $reference->getTitle());
+        self::assertInstanceOf(File::class, $file);
+        self::assertSame('logo.png', $file->getName());
+        $this->expectExceptionCode(1795776302);
+        $records->resolve(['file' => ['record' => 'sys_file', 'uid' => 99, 'model' => File::class]]);
     }
 
     /**

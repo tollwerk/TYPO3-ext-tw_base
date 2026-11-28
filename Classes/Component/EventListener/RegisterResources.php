@@ -24,8 +24,9 @@ use TYPO3\CMS\Fluid\Event\RenderComponentEvent;
 /**
  * Register the resources of each component the page renders, once per page
  *
- * The asset collector keeps them in the page cache, so a cached page has them as well. Components render from
- * the outside in, so the resources of the component for the page come first.
+ * The asset collector keeps them in the page cache, so a cached page has them as well. The stylesheet of the page of
+ * a site, such as "twc:a11yclub.page", comes before all others, since every component of the site builds on it, even
+ * if the page renders its content first.
  *
  * @category  Tollwerk
  * @package   Tollwerk\TwBase
@@ -72,7 +73,12 @@ final readonly class RegisterResources
         }
 
         if (null !== $resources->styleSheet) {
-            $this->assetCollector->addStyleSheet($resources->identifier, $resources->styleSheet);
+            $this->assetCollector->addStyleSheet(
+                $resources->identifier,
+                $resources->styleSheet,
+                [],
+                $component->isPage() ? ['priority' => true] : [],
+            );
         }
 
         if (null === $resources->module) {

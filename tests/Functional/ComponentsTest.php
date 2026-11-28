@@ -82,7 +82,8 @@ final class ComponentsTest extends FunctionalTestCase
     }
 
     /**
-     * Each rendered component registers its stylesheet, its CSS for the head and its module once
+     * Each rendered component registers its stylesheet, its CSS for the head and its module once; the stylesheet of the
+     * page comes first
      *
      * @return void
      *
@@ -95,6 +96,7 @@ final class ComponentsTest extends FunctionalTestCase
         $renderer = $this->get(ExampleRenderer::class);
         $renderer->render('twc:test.item', 'open');
         $renderer->render('twc:test.item', 'done');
+        $renderer->render('twc:test.page', 'default');
         $assets = $this->get(AssetCollector::class);
 
         $styleSheets = $this->sources($assets->getStyleSheets(false));
@@ -104,6 +106,10 @@ final class ComponentsTest extends FunctionalTestCase
             'tw_base_components:Test/Item/Item' => $public . 'Test/Item/Item.css',
             'tw_base_components:Test/List/List' => $public . 'Test/List/List.css',
         ], $styleSheets);
+        self::assertSame(
+            ['tw_base_components:Test/Page/Page' => $public . 'Test/Page/Page.css'],
+            $this->sources($assets->getStyleSheets(true)),
+        );
         $critical = $this->sources($assets->getInlineStyleSheets(true));
         self::assertSame(['tw_base_components:Test/Item/Item'], array_keys($critical));
         self::assertStringContainsString('.Item--done', $critical['tw_base_components:Test/Item/Item'] ?? '');

@@ -65,6 +65,18 @@ final readonly class Component
     ) {}
 
     /**
+     * Whether the component is the page of a site, such as "a11yclub.page"
+     *
+     * Its resources hold what every component of the site builds on, so they load before those of the others.
+     *
+     * @return boolean
+     */
+    public function isPage(): bool
+    {
+        return 1 === preg_match('/^[^.]+\.page$/', $this->name);
+    }
+
+    /**
      * Absolute path of the file with the examples, which may not exist
      *
      * @return string

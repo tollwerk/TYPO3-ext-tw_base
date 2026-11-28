@@ -1,0 +1,9 @@
+"sys_file_storage"
+,"uid","pid","name","driver","configuration","is_default","is_browsable","is_public","is_writable","is_online"
+,1,0,"fileadmin","Local","<?xml version=""1.0"" encoding=""utf-8"" standalone=""yes"" ?><T3FlexForms><data><sheet index=""sDEF""><language index=""lDEF""><field index=""basePath""><value index=""vDEF"">fileadmin/</value></field><field index=""pathType""><value index=""vDEF"">relative</value></field></language></sheet></data></T3FlexForms>",1,1,1,1,1
+"sys_file"
+,"uid","pid","storage","identifier","name","type","mime_type","extension","size"
+,1,0,1,"/logo.png","logo.png",2,"image/png","png",100
+"sys_file_reference"
+,"uid","pid","uid_local","uid_foreign","tablenames","fieldname","title","sorting_foreign"
+,1,1,1,1,"pages","media","Logo",1
