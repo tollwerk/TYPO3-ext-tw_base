@@ -200,7 +200,7 @@ final class ViewHelpersTest extends FunctionalTestCase
      * @throws InvalidArgumentException If the request is invalid
      * @throws JsonException If the graph cannot be encoded
      */
-    public function testStructuredData(): void
+    public function testTemplatesBuildOneGraph(): void
     {
         $output = $this->render(<<<'HTML'
             <base:structuredData.set id="#event" key="name" value="Summit" />
@@ -230,7 +230,7 @@ final class ViewHelpersTest extends FunctionalTestCase
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the request is invalid
      */
-    public function testLinkInfo(): void
+    public function testLinkTargetsResolveIntoTheirParts(): void
     {
         $output = $this->render(<<<'HTML'
             <f:for each="{links}" as="link">{f:variable(name: 'info', value: '{base:link.info(typolink: link)}')}

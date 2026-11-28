@@ -120,7 +120,7 @@ final class DefinitionFilesTest extends UnitTestCase
     }
 
     /**
-     * Files are found by the name of their component, and a slot defaults to "default"
+     * Files are found by the name of their component
      *
      * @return void
      * @throws UnexpectedValueException If a file is invalid
@@ -128,15 +128,28 @@ final class DefinitionFilesTest extends UnitTestCase
     #[Test]
     public function examplesAreFoundByComponent(): void
     {
-        $file = $this->file(
-            'Resources/Private/Components/Event/Teaser/Teaser.examples.php',
-            '["examples" => ["a" => ["label" => "A", "within" => ["twc:event.list", "default"]]]]',
-        );
+        $file = $this->file('Resources/Private/Components/Event/Teaser/Teaser.examples.php', '["examples" => []]');
 
         self::assertSame(
             ['twc:event.teaser' => $file],
             Examples::find($this->folder . '/Resources/Private/Components'),
         );
+    }
+
+    /**
+     * An example within another one goes into its slot "default" unless it names one
+     *
+     * @return void
+     * @throws UnexpectedValueException If a file is invalid
+     */
+    #[Test]
+    public function exampleWithinAnotherOneFillsItsDefaultSlot(): void
+    {
+        $file = $this->file(
+            'Resources/Private/Components/Event/Teaser/Teaser.examples.php',
+            '["examples" => ["a" => ["label" => "A", "within" => ["twc:event.list", "default"]]]]',
+        );
+
         self::assertSame('default', (Examples::fromFile($file)->examples['a'] ?? null)?->within?->slot);
     }
 

@@ -58,11 +58,11 @@ final class AttributionTest extends UnitTestCase
     }
 
     /**
-     * Custom licences come from the metadata, and files without creator or licence have no attribution
+     * A custom licence names itself in the metadata
      *
      * @return void
      */
-    public function testCustomAndMissingLicences(): void
+    public function testCustomLicenceComesFromTheMetadata(): void
     {
         $custom = Attribution::fromMetadata([
             'tx_twbase_license' => 'custom',
@@ -77,11 +77,29 @@ final class AttributionTest extends UnitTestCase
         self::assertNull($custom->year);
         self::assertSame('Press photo', $custom->licenseName);
         self::assertSame('https://example.org/press', $custom->licenseUrl);
+    }
 
+    /**
+     * A file with a creator but no licence has an attribution without licence
+     *
+     * @return void
+     */
+    public function testCreatorWithoutLicence(): void
+    {
         $creatorOnly = Attribution::fromMetadata(['creator' => 'Grace Hopper'], $this->translate(...));
         self::assertNotNull($creatorOnly);
         self::assertNull($creatorOnly->license);
         self::assertSame('', $creatorOnly->licenseName);
+    }
+
+    /**
+     * A file without creator and without a known licence has no attribution
+     *
+     * @return void
+     */
+    public function testNoAttributionWithoutCreatorAndLicence(): void
+    {
+        self::assertNull(Attribution::fromMetadata([], $this->translate(...)));
         self::assertNull(Attribution::fromMetadata(['tx_twbase_license' => 'unknown'], $this->translate(...)));
     }
 

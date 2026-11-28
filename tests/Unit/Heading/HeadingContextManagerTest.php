@@ -54,26 +54,49 @@ final class HeadingContextManagerTest extends UnitTestCase
     }
 
     /**
-     * Skipped levels are recorded, visual types can differ, and high levels hide the heading
+     * A heading that skips levels records them
      *
      * @return void
      */
-    public function testSkippedTypedAndHiddenHeadings(): void
+    public function testSkippedLevelsAreRecorded(): void
     {
         $manager = new HeadingContextManager(new NullLogger());
-        $skipping = $manager->setUp(3, 1);
 
-        self::assertSame([1, 2], $skipping->skipped);
-        self::assertSame('xx-large', $skipping->visualType);
+        self::assertSame([1, 2], $manager->setUp(3)->skipped);
+        self::assertSame([], $manager->setUp(4)->skipped);
+    }
+
+    /**
+     * The visual type can differ from the level; omitted or 0, it is the type of the level
+     *
+     * @return void
+     */
+    public function testVisualTypeCanDifferFromTheLevel(): void
+    {
+        $manager = new HeadingContextManager(new NullLogger());
+
+        self::assertSame('xx-large', $manager->setUp(3, 1)->visualType);
         self::assertSame(1, $manager->currentType());
+        self::assertSame('x-large', $manager->setUp(2, 0)->visualType);
+        self::assertSame(2, $manager->currentType());
+        self::assertSame('large', $manager->setUp(3)->visualType);
+    }
+
+    /**
+     * Levels from HIDDEN_LEVELS on hide the heading at the next level, and levels below six look like six
+     *
+     * @return void
+     */
+    public function testHighLevelsHideTheHeading(): void
+    {
+        $manager = new HeadingContextManager(new NullLogger());
+        $manager->setUp(3);
 
         $hidden = $manager->setUp(HeadingContextManager::HIDDEN_LEVELS);
         self::assertTrue($hidden->hidden);
         self::assertSame(4, $hidden->level);
         self::assertSame('medium', $hidden->visualType);
         self::assertSame('x-small', $manager->setUp(9)->visualType);
-        self::assertSame('x-large', $manager->setUp(2, 0)->visualType);
-        self::assertSame(2, $manager->currentType());
     }
 
     /**
