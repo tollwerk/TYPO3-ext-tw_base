@@ -23,7 +23,10 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tollwerk\TwBase\Component\Example\ExampleEndpoint;
 use Tollwerk\TwBase\Component\Example\ExampleRenderer;
+use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Resource\Event\GeneratePublicUrlForResourceEvent;
+use TYPO3\CMS\Frontend\Resource\PublicUrlPrefixer;
 use UnexpectedValueException;
 
 /**
@@ -41,9 +44,10 @@ final readonly class ExampleResponse implements MiddlewareInterface
     /**
      * Constructor
      *
-     * @param ExampleRenderer $renderer Renderer of examples
+     * @param ExampleRenderer  $renderer  Renderer of examples
+     * @param ListenerProvider $listeners Listeners of events, for the prefix of the addresses of files
      */
-    public function __construct(private ExampleRenderer $renderer) {}
+    public function __construct(private ExampleRenderer $renderer, private ListenerProvider $listeners) {}
 
     /**
      * Render the example the request asks for, instead of the page
@@ -62,6 +66,14 @@ final readonly class ExampleResponse implements MiddlewareInterface
         if (!\is_array($requested) || !\is_string($requested[0] ?? null) || !\is_string($requested[1] ?? null)) {
             return $handler->handle($request);
         }
+
+        // As the RequestHandler of the frontend does before it renders a page, which the example replaces
+        $GLOBALS['TYPO3_REQUEST'] = $request;
+        $this->listeners->addListener(
+            GeneratePublicUrlForResourceEvent::class,
+            PublicUrlPrefixer::class,
+            'prefixWithAbsRefPrefix',
+        );
 
         try {
             return new HtmlResponse($this->renderer->render($requested[0], $requested[1], $request));

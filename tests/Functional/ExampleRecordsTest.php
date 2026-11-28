@@ -147,6 +147,29 @@ final class ExampleRecordsTest extends FunctionalTestCase
     }
 
     /**
+     * Addresses of files have the prefix of the page, as on the website, so they work below /de/ as well
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws SiteNotFoundException If the site is missing
+     * @throws UnexpectedValueException If an example or a record is missing
+     * @throws InvalidArgumentException If an address is invalid
+     * @throws DBALException If a page cannot be read
+     */
+    #[Test]
+    public function addressesOfFilesHaveThePrefixOfThePage(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Files.csv');
+        $uri = $this->get(ExampleEndpoint::class)->uri($this->site(), 'twc:test.download', 'german');
+
+        self::assertSame(
+            '<a class="Download" href="/fileadmin/logo.png">logo.png</a>',
+            trim((string) $this->request((string) $uri)->getBody()),
+        );
+    }
+
+    /**
      * An example on a page that the site does not show is an error, not the start page
      *
      * @param string $example Example
