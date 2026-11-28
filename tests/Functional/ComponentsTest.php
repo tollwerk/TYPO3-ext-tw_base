@@ -83,6 +83,26 @@ final class ComponentsTest extends FunctionalTestCase
     }
 
     /**
+     * The outer example renders first, as on a page, so headings and entities nest as there
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws UnexpectedValueException If an example is missing
+     */
+    #[Test]
+    public function outerExamplesRenderFirst(): void
+    {
+        $html = $this->get(ExampleRenderer::class)->render('twc:test.title', 'default');
+
+        self::assertSame(
+            '<section class="Section"><h1 class="Heading Heading--xx-large">Outer</h1>'
+            . '<h2 class="Heading Heading--x-large">Inner</h2><p class="Title__entity">#section</p></section>',
+            preg_replace('/>\s+</', '><', trim($html)),
+        );
+    }
+
+    /**
      * Each rendered component registers its stylesheet, its CSS for the head and its module once; the stylesheet of the
      * page comes first
      *
@@ -103,9 +123,10 @@ final class ComponentsTest extends FunctionalTestCase
         $styleSheets = $this->sources($assets->getStyleSheets(false));
 
         $public = 'EXT:tw_base_components/Resources/Public/Components/';
+        // As on a page, the list renders before its items
         self::assertSame([
-            'tw_base_components:Test/Item/Item' => $public . 'Test/Item/Item.css',
             'tw_base_components:Test/List/List' => $public . 'Test/List/List.css',
+            'tw_base_components:Test/Item/Item' => $public . 'Test/Item/Item.css',
         ], $styleSheets);
         self::assertSame(
             ['tw_base_components:Test/Page/Page' => $public . 'Test/Page/Page.css'],

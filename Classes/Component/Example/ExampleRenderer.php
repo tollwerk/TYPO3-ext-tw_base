@@ -114,7 +114,7 @@ final readonly class ExampleRenderer
 
         $language = $request?->getAttribute('language');
         if (!$language instanceof SiteLanguage) {
-            return $this->renderWithin($component, $example, $context, null, []);
+            return $this->renderWithin($component, $example, $context);
         }
 
         // Records load in the language of the request, as on the website
@@ -128,67 +128,92 @@ final readonly class ExampleRenderer
         $this->context->setAspect('language', LanguageAspectFactory::createFromSiteLanguage($language));
 
         try {
-            return $this->renderWithin($component, $example, $context, null, []);
+            return $this->renderWithin($component, $example, $context);
         } finally {
             $this->context->setAspect('language', $previous);
         }
     }
 
     /**
-     * Render an example, within the example it appears in
+     * Render an example, within the examples it appears in
      *
-     * @param string                           $component Component with its prefix
-     * @param string                           $example   Name of the example
-     * @param RenderingContextInterface        $context   Rendering context
-     * @param array{0: string, 1: string}|null $inner     Slot and HTML of an example within this one
-     * @param list<string>                     $seen      Examples on the way here, to stop a cycle
+     * The outermost example renders first, and the slot that holds an inner example renders it when the outer one
+     * outputs it, as on a page. State that rendering builds, such as the levels of headings and the main entity,
+     * so nests as on the website.
+     *
+     * @param string                    $component Component with its prefix
+     * @param string                    $example   Name of the example
+     * @param RenderingContextInterface $context   Rendering context
      *
      * @return string
      *
-     * @throws UnexpectedValueException If there is no such component or example, or examples are within each other
+     * @throws UnexpectedValueException If there is no such component or example, examples are within each other, or a
+     *                                  record is missing
      */
-    private function renderWithin(
-        string $component,
-        string $example,
-        RenderingContextInterface $context,
-        ?array $inner,
-        array $seen,
-    ): string {
-        $key = $component . '#' . $example;
-        if (\in_array($key, $seen, true)) {
-            throw new UnexpectedValueException(\sprintf('The example "%s" is within itself', $key), 1795776201);
-        }
+    private function renderWithin(string $component, string $example, RenderingContextInterface $context): string
+    {
+        $render = null;
+        $inner = null;
+        foreach ($this->chain($component, $example, $context) as [$collection, $name, $configuration, $arguments]) {
+            $slots = array_map(static fn(string $html): Closure => static fn(): string => $html, $configuration->slots);
+            if (null !== $inner) {
+                $slots[$inner[0]] = $inner[1];
+            }
 
-        [$collection, $located] = $this->locate($component, $context);
-        $examples = Examples::fromFile($located->examplesFile());
-        $configuration = $examples->examples[$example] ?? throw new UnexpectedValueException(
-            \sprintf('The component "%s" has no example "%s"', $component, $example),
-            1795776202,
-        );
-
-        $slots = array_map(static fn(string $html): Closure => static fn(): string => $html, $configuration->slots);
-        if (null !== $inner) {
-            $slots[$inner[0]] = static fn(): string => $inner[1];
-        }
-
-        $html = $collection->getComponentRenderer()->renderComponent(
-            $located->name,
-            $this->records->resolve($configuration->arguments),
-            $slots,
-            $context,
-        );
-
-        $within = $configuration->within;
-
-        return null === $within
-            ? $html
-            : $this->renderWithin(
-                $within->component,
-                $within->example,
+            $render = static fn(): string => $collection->getComponentRenderer()->renderComponent(
+                $name,
+                $arguments,
+                $slots,
                 $context,
-                [$within->slot, $html],
-                [...$seen, $key],
             );
+            $inner = (null === $configuration->within) ? null : [$configuration->within->slot, $render];
+        }
+
+        return (null === $render) ? '' : $render();
+    }
+
+    /**
+     * An example and the examples it is within, the requested one first, with their records loaded
+     *
+     * All records load before anything renders, so that a missing one is an error for the whole example.
+     *
+     * @param string                    $component Component with its prefix
+     * @param string                    $example   Name of the example
+     * @param RenderingContextInterface $context   Rendering context
+     *
+     * @return list<array{DeclarativeComponentCollection, string, Example, array<string, mixed>}> Collection, name of
+     *                                                                                             the component,
+     *                                                                                             example and arguments
+     *
+     * @throws UnexpectedValueException If there is no such component or example, examples are within each other, or a
+     *                                  record is missing
+     */
+    private function chain(string $component, string $example, RenderingContextInterface $context): array
+    {
+        $chain = [];
+        $seen = [];
+        while (true) {
+            $key = $component . '#' . $example;
+            if (\in_array($key, $seen, true)) {
+                throw new UnexpectedValueException(\sprintf('The example "%s" is within itself', $key), 1795776201);
+            }
+
+            $seen[] = $key;
+            [$collection, $located] = $this->locate($component, $context);
+            $configuration = Examples::fromFile($located->examplesFile())->examples[$example]
+                ?? throw new UnexpectedValueException(
+                    \sprintf('The component "%s" has no example "%s"', $component, $example),
+                    1795776202,
+                );
+            $arguments = $this->records->resolve($configuration->arguments);
+            $chain[] = [$collection, $located->name, $configuration, $arguments];
+            if (null === $configuration->within) {
+                return $chain;
+            }
+
+            $component = $configuration->within->component;
+            $example = $configuration->within->example;
+        }
     }
 
     /**
