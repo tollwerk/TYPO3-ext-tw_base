@@ -24,10 +24,10 @@ use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
+use TYPO3\CMS\Core\Mail\TemplatedEmailFactory;
 use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use UnexpectedValueException;
 
 /**
@@ -54,12 +54,14 @@ final readonly class Mailer
      * Constructor
      *
      * @param MailerInterface        $mailer                 Mailer of the core
+     * @param TemplatedEmailFactory  $emails                 Factory of mails, with the paths of the site
      * @param LanguageServiceFactory $languageServiceFactory Factory of language services, for the footer
      * @param MailRegistry           $registry               Mails of all extensions, for their examples
      * @param StyleInliner           $inliner                Writes the styles of the components into the HTML
      */
     public function __construct(
         private MailerInterface $mailer,
+        private TemplatedEmailFactory $emails,
         private LanguageServiceFactory $languageServiceFactory,
         private MailRegistry $registry,
         private StyleInliner $inliner,
@@ -127,9 +129,9 @@ final readonly class Mailer
         $contact = $this->setting($site, 'twBase.mail.contact');
         $sender = $this->setting($site, 'twBase.mail.sender');
 
-        $mail = GeneralUtility::makeInstance(FluidEmail::class);
-        $mail->setRequest($request)
-            ->to($to)
+        // The paths of the site for mails apply, the format of the site does not: the mail always has both parts
+        $mail = $this->emails->createFromRequest($request);
+        $mail->to($to)
             ->subject($subject)
             ->format(FluidEmail::FORMAT_BOTH)
             ->setTemplate($template)

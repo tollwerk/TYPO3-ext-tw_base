@@ -6,10 +6,10 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 
 ### Hinzugefügt
 
-- `Mailer` und das Layout `TwBase` für Mails als Text und barrierefreies HTML.
+- `Mailer` und das Layout `TwBase` für Mails als Text und barrierefreies HTML. Der Mailer erzeugt die Mails mit der `TemplatedEmailFactory` des Core, sodass die Pfade einer Site für Mails gelten, auch mit dem Set `typo3/email`; das Layout liegt unter der Zahl 20 in `$GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths']`.
 - Fluid-Komponenten unter `Tollwerk\Components` mit dem Präfix `twc` und der Priorität 10; ein Listener meldet die Ressourcen jeder gerenderten Komponente beim AssetCollector an, das Stylesheet der Seite einer Site vor allen anderen, `Examples` liest die Beispiele neben dem Template und `ExampleRenderer` rendert sie; `ExampleEndpoint` rendert ein Beispiel im Frontend seiner Seite und in seiner Sprache, über eine signierte Adresse, und `Records` lädt die Datensätze, die Beispiele für Models und Dateien nennen.
 - Die gemeinsame Laufzeit für JavaScript der Komponenten: `enhance()` unter `@tollwerk/tw-base/JavaScript/enhance.js`.
-- Komponenten für Mails unter `twc:mail.*`: Rahmen, Fußzeile, Absatz, Button, Code, Angaben und Hinweis, gestaltet über Tokens, die eine Site in den Einstellungen `twBase.mail.tokens.*` ändert; `StyleInliner` schreibt die Styles beim Versand inline, mit `tijsverkoyen/css-to-inline-styles`.
+- Komponenten für Mails unter `twc:mail.*`: Rahmen, Fußzeile, Absatz, Button, Code, Angaben und Hinweis, gestaltet über Tokens, die eine Site in den Einstellungen `twBase.mail.tokens.*` ändert; `StyleInliner` schreibt die Styles inline, mit `tijsverkoyen/css-to-inline-styles`, und beim Versand noch einmal, damit spätere Änderungen an der Mail sie nicht verwerfen.
 - Das Site Set `tollwerk/tw-base` mit Absender, Kontaktadresse und Impressum für die Fußzeile der Mails; Antworten gehen an die Kontaktadresse.
 - Ein Verzeichnis der Mails aller Extensions aus `Configuration/Mails.php`, `Mailer::composeExample()` und `MailInspector` für die Tests, auch für den Kontrast.
 

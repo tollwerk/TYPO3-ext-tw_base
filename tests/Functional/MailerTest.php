@@ -19,15 +19,19 @@ use InvalidArgumentException;
 use Override;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Tollwerk\TwBase\Mail\Mailer;
 use Tollwerk\TwBase\Mail\MailInspector;
 use Tollwerk\TwBase\Mail\MailRegistry;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Mail\FluidEmail;
+use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
+use TYPO3\CMS\Core\Settings\Settings;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteSettings;
+use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use UnexpectedValueException;
 
@@ -77,7 +81,7 @@ final class MailerTest extends FunctionalTestCase
         }
 
         $GLOBALS['TYPO3_CONF_VARS'] = array_replace_recursive($configuration, [
-            'MAIL' => ['templateRootPaths' => [100 => __DIR__ . '/Fixtures/Email/']],
+            'MAIL' => ['templateRootPaths' => [100 => __DIR__ . '/Fixtures/Email/'], 'transport' => 'null'],
         ]);
     }
 
@@ -182,6 +186,50 @@ final class MailerTest extends FunctionalTestCase
     }
 
     /**
+     * The paths of the site for mails apply, also with the list of the set "typo3/email"
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the address of the request is invalid
+     */
+    #[Test]
+    public function pathsOfTheSiteApply(): void
+    {
+        $mail = $this->compose([], [
+            'layoutRootPaths' => [''],
+            'templateRootPaths' => [__DIR__ . '/Fixtures/SiteEmail/'],
+        ]);
+
+        $html = (string) $mail->getHtmlBody();
+        self::assertStringContainsString('The site has its own template for <strong>123456</strong>.', $html);
+        self::assertStringContainsString('The site has its own template for 123456.', (string) $mail->getTextBody());
+    }
+
+    /**
+     * A mail that changes after it was composed is sent with the change and with its styles
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws TransportExceptionInterface If the mail cannot be sent
+     */
+    #[Test]
+    public function changedMailKeepsItsStyles(): void
+    {
+        $mail = $this->compose([]);
+        $mail->assign('code', '654321');
+        $this->get(MailerInterface::class)->send($mail);
+
+        $html = (string) $mail->getHtmlBody();
+        self::assertMatchesRegularExpression('#<p class="MailCode"[^>]*style="[^"]+"[^>]*>654321</p>#', $html);
+        self::assertMatchesRegularExpression('#<h1 class="Mail__title" style="[^"]+">#', $html);
+        self::assertStringNotContainsString('var(', $html);
+        self::assertSame([], $this->get(AssetCollector::class)->getStyleSheets());
+    }
+
+    /**
      * The registry has the mails of all extensions, and each example composes an accessible mail
      *
      * @return void
@@ -241,13 +289,14 @@ final class MailerTest extends FunctionalTestCase
      * Compose the mail of the fixture in German, for a site with mail settings
      *
      * @param array<string, mixed> $settings Settings "twBase.mail.*"
+     * @param array<string, mixed> $email    Settings "email.*" of the core
      *
      * @return FluidEmail
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
      */
-    private function compose(array $settings): FluidEmail
+    private function compose(array $settings, array $email = []): FluidEmail
     {
         $configuration = [
             'base' => 'https://example.org/',
@@ -257,7 +306,14 @@ final class MailerTest extends FunctionalTestCase
                 ['languageId' => 1, 'locale' => 'de_DE.UTF-8', 'base' => '/de/', 'title' => 'Deutsch'],
             ],
         ];
-        $siteSettings = SiteSettings::createFromSettingsTree(['twBase' => ['mail' => $settings]]);
+        // As in a site with the definitions of the core, the paths of "email.*" are lists below their full name
+        $tree = ['twBase' => ['mail' => $settings]];
+        $flat = [...ArrayUtility::flattenPlain($tree)];
+        foreach ($email as $name => $value) {
+            $flat['email.' . $name] = $value;
+        }
+
+        $siteSettings = new SiteSettings(new Settings($flat), [...$tree, 'email' => $email], []);
         $site = new Site('example', 1, $configuration, $siteSettings);
         $request = new ServerRequest('https://example.org/de/')
             ->withAttribute('site', $site)

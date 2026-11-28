@@ -15,10 +15,11 @@ declare(strict_types=1);
 
 defined('TYPO3') || die();
 
-// The layout "TwBase" for mails, see Tollwerk\TwBase\Mail\Mailer
+// The layout "TwBase" for mails, see Tollwerk\TwBase\Mail\Mailer. The key is a number, as TYPO3 sorts the paths by
+// their numbers and appends those of a site with the next one; the core has 0 and 10
 $layouts = $GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths'] ?? null;
 if (is_array($layouts)) {
-    $layouts['tw_base'] = 'EXT:tw_base/Resources/Private/Layouts/Email/';
+    $layouts[20] = 'EXT:tw_base/Resources/Private/Layouts/Email/';
     $GLOBALS['TYPO3_CONF_VARS']['MAIL']['layoutRootPaths'] = $layouts;
 }
 

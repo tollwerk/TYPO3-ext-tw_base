@@ -16,11 +16,13 @@ declare(strict_types=1);
 namespace Tollwerk\TwBase\Mail;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Symfony\Component\Mime\RawMessage;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use WeakMap;
 
 /**
  * Write the styles of the mail components into the HTML of a mail
@@ -31,6 +33,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * with its value and writes the rules into the style attributes. Rules for media, such as the dark mode, go into the
  * head. A site changes a token with a setting below "twBase.mail.tokens": "twBase.mail.tokens.color.accentText" sets
  * "--mail-color-accent-text". The stylesheets of the mail never reach the page that sends it.
+ *
+ * FluidEmail renders again after every change, such as assign(), and loses the styles. The inliner therefore
+ * remembers the mails it wrote the styles into and writes them again just before such a mail is sent, see
+ * EventListener\InlineStyles.
  *
  * @category  Tollwerk
  * @package   Tollwerk\TwBase
@@ -57,11 +63,21 @@ final readonly class StyleInliner
     private const string MEDIA = '/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/';
 
     /**
+     * Mails with styles, with their sites
+     *
+     * @var WeakMap<FluidEmail, Site|null>
+     */
+    private WeakMap $mails;
+
+    /**
      * Constructor
      *
      * @param AssetCollector $assetCollector Asset collector, which collects the stylesheets of the components
      */
-    public function __construct(private AssetCollector $assetCollector) {}
+    public function __construct(private AssetCollector $assetCollector)
+    {
+        $this->mails = new WeakMap();
+    }
 
     /**
      * Render the HTML of a mail and write its styles into it
@@ -82,7 +98,8 @@ final readonly class StyleInliner
         $empty = array_map(static fn(mixed $value): mixed => \is_array($value) ? [] : $value, $state);
         $this->assetCollector->updateState($empty);
         try {
-            $html = (string) $mail->getHtmlBody();
+            // Rendering anew collects the stylesheets of the components even if the mail has its HTML already
+            $html = (string) $mail->getHtmlBody(true);
             $sources = [
                 ...array_column($this->assetCollector->getInlineStyleSheets(), 'source'),
                 ...array_map($this->file(...), array_column($this->assetCollector->getStyleSheets(), 'source')),
@@ -105,6 +122,23 @@ final readonly class StyleInliner
         }
 
         $mail->html($inlined);
+        $this->mails[$mail] = $site;
+    }
+
+    /**
+     * Write the styles again into a mail that had them, as it may have changed since
+     *
+     * @param RawMessage $message Message that is about to be sent
+     *
+     * @return void
+     */
+    public function refresh(RawMessage $message): void
+    {
+        if (!($message instanceof FluidEmail) || !$this->mails->offsetExists($message)) {
+            return;
+        }
+
+        $this->inline($message, $this->mails[$message]);
     }
 
     /**

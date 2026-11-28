@@ -61,7 +61,7 @@ public function exampleRenders(string $component, string $example): void
 
 ## Mails
 
-`Tollwerk\TwBase\Mail\Mailer` verschickt Mails mit `FluidEmail` des Core, immer als Text und als HTML. Eine Extension legt ihre Vorlagen unter einem eigenen Schlüssel in `$GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']` ab, je eine Datei `.fluid.html` und `.fluid.txt` mit `<f:layout name="TwBase" />`, dem Abschnitt `Main` und dem Abschnitt `Reason`, der in einem Satz sagt, warum die Person die Mail bekommt:
+`Tollwerk\TwBase\Mail\Mailer` verschickt Mails mit `FluidEmail` des Core, immer als Text und als HTML. Der Mailer erzeugt sie mit der `TemplatedEmailFactory`, also gelten auch die Pfade einer Site in `email.templateRootPaths` und `email.layoutRootPaths`. Eine Extension legt ihre Vorlagen unter einer eigenen Zahl in `$GLOBALS['TYPO3_CONF_VARS']['MAIL']['templateRootPaths']` ab, denn TYPO3 ordnet die Pfade nach ihren Zahlen und hängt die einer Site mit der nächsten Zahl an; ein Schlüssel aus Text bricht die Mails aller Extensions ab. Der Core belegt 0 und 10, `tw_base` legt sein Layout unter 20 ab. Eine Vorlage hat je eine Datei `.fluid.html` und `.fluid.txt` mit `<f:layout name="TwBase" />`, dem Abschnitt `Main` und dem Abschnitt `Reason`, der in einem Satz sagt, warum die Person die Mail bekommt:
 
 ```php
 $mailer->send($request, new Address($email, $name), 'TwAccounts/Code', $subject, ['code' => $code]);
