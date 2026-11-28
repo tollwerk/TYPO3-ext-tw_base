@@ -19,7 +19,11 @@ return [
         'purpose' => 'Sends a code',
         'recipient' => 'The person who asked for it',
         'examples' => [
-            'default' => ['label' => 'Default', 'subject' => 'Your code', 'variables' => ['code' => '482916']],
+            'default' => [
+                'label' => 'Default',
+                'subject' => 'Your code',
+                'variables' => ['code' => '482916', 'name' => 'Ada'],
+            ],
         ],
     ],
 ];

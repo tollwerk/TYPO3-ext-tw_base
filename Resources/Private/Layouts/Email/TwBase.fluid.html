@@ -8,5 +8,5 @@
     @param array footerLinks Links for the footer, each with "label", "href" and "address", the address for the text part if the label lacks it
 </f:comment><twc:mail.frame languageCode="{languageCode}" subject="{subject}" website="{website}">
     <f:fragment><f:render section="Main" /></f:fragment>
-    <f:fragment name="footer"><twc:mail.footer sender="{sender}" reason="{f:render(section: 'Reason', optional: true) -> f:format.trim()}" links="{footerLinks}" /></f:fragment>
+    <f:fragment name="footer"><twc:mail.footer sender="{sender}" links="{footerLinks}"><f:fragment name="reason"><f:render section="Reason" optional="1" /></f:fragment></twc:mail.footer></f:fragment>
 </twc:mail.frame>

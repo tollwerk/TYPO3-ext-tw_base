@@ -18,19 +18,19 @@ return [
     'examples' => [
         'complete' => [
             'label' => 'With reason and links',
-            'within' => ['twc:mail.frame', 'default'],
+            'within' => ['twc:mail.frame', 'default', 'footer'],
             'arguments' => [
                 'sender' => 'Example Organisation, Example Street 1, 12345 Example City',
-                'reason' => 'You get this email because someone entered your address to register.',
                 'links' => [
                     ['label' => 'Write to us: hello@example.org', 'href' => 'mailto:hello@example.org'],
                     ['label' => 'Legal notice', 'href' => 'https://example.org/legal-notice'],
                 ],
             ],
+            'slots' => ['reason' => 'You get this email because someone entered your address to register.'],
         ],
         'minimal' => [
             'label' => 'Sender only',
-            'within' => ['twc:mail.frame', 'default'],
+            'within' => ['twc:mail.frame', 'default', 'footer'],
             'arguments' => ['sender' => 'Example Organisation'],
         ],
     ],

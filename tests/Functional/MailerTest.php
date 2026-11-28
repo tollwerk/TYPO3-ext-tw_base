@@ -108,13 +108,17 @@ final class MailerTest extends FunctionalTestCase
         self::assertMatchesRegularExpression('#<h1[^>]*>Dein Code</h1>#', $html);
         self::assertStringContainsString('<strong>123456</strong>', $html);
         self::assertMatchesRegularExpression('#<p class="MailCode"[^>]*>123456</p>#', $html);
-        self::assertStringContainsString('You get this email because you asked for a code.', $html);
+        self::assertStringContainsString('You get this email because Ada &amp; Grace', $html);
         self::assertStringContainsString('<p class="MailFooter__line" style="margin: 0 0 16px;">Beispiel</p>', $html);
-        self::assertStringNotContainsString('href=', $html);
+        self::assertStringNotContainsString('MailFooter__item', $html);
         $text = (string) $mail->getTextBody();
         self::assertStringStartsWith("Beispiel\n\nDein Code", trim($text));
         self::assertStringContainsString('Your code is 123456.', $text);
-        self::assertStringContainsString("--\nYou get this email because you asked for a code.\n\nBeispiel", $text);
+        self::assertStringContainsString(
+            "--\nYou get this email because Ada & Grace's team asked for a code, see why: https://example.org/why\n\n"
+            . 'Beispiel',
+            $text,
+        );
         self::assertStringNotContainsString('<', $text);
     }
 
@@ -140,6 +144,11 @@ final class MailerTest extends FunctionalTestCase
         self::assertSame(['"Beispiel" <hallo@example.org>'], $replyTo);
         $html = (string) $mail->getHtmlBody();
         self::assertStringContainsString('Beispiel e. V., Hauptstraße 1, 12345 Beispielstadt', $html);
+        // The reason reaches the footer as HTML, escaped once
+        self::assertMatchesRegularExpression(
+            '#because Ada &amp; Grace(\'|&\#039;)s team asked for a code, <a href="https://example.org/why"[^>]*>see#',
+            $html,
+        );
         self::assertMatchesRegularExpression(
             '#<a [^>]*href="mailto:hallo@example.org"[^>]*>Write to us: hallo@example.org</a>#',
             $html,
@@ -326,7 +335,7 @@ final class MailerTest extends FunctionalTestCase
             new Address('ada@example.org', 'Ada Lovelace'),
             'TwBase/Test',
             'Dein Code',
-            ['code' => '123456'],
+            ['code' => '123456', 'name' => "Ada & Grace's team"],
         );
     }
 }

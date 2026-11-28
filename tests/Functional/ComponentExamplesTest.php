@@ -71,7 +71,8 @@ final class ComponentExamplesTest extends FunctionalTestCase
     }
 
     /**
-     * Each mail example is a document with a language, a title and one heading; links have text, ids are unique
+     * Each mail example is a document with a language, a title, one heading and one footer at the end; links have
+     * text, ids are unique
      *
      * @param string $component Component
      * @param string $example   Example
@@ -92,6 +93,9 @@ final class ComponentExamplesTest extends FunctionalTestCase
         self::assertNotSame('', trim($document->title));
         self::assertCount(1, $document->querySelectorAll('h1'));
         self::assertCount(0, $document->querySelectorAll('table'));
+        // A footer replaces the one of the frame, after the content
+        self::assertCount(1, $document->querySelectorAll('.MailFooter'));
+        self::assertNull($document->querySelector('.MailFooter ~ :not(.MailFooter)'));
         foreach ($document->querySelectorAll('a') as $link) {
             self::assertInstanceOf(Element::class, $link);
             self::assertNotSame('', trim($link->textContent ?? ''));
