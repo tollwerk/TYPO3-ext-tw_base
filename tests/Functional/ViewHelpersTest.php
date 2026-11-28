@@ -24,6 +24,7 @@ use JsonException;
 use Override;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Tollwerk\TwBase\Link\LinkInfoFactory;
 use Tollwerk\TwBase\StructuredData\StructuredDataGraph;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
@@ -31,6 +32,7 @@ use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
@@ -249,6 +251,30 @@ final class ViewHelpersTest extends FunctionalTestCase
         self::assertStringContainsString('[page||||7|]', $output);
         self::assertStringContainsString('[none|||||]', $output);
         self::assertStringContainsString('[unknown|||||]', $output);
+    }
+
+    /**
+     * An absolute address of the site, of any of its languages, is no external link
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     */
+    public function testOwnAddressesAreNotExternal(): void
+    {
+        $site = new Site('example', 1, [
+            'base' => 'https://example.org/',
+            'languages' => [
+                ['languageId' => 0, 'locale' => 'en_US.UTF-8', 'base' => '/', 'title' => 'English'],
+                ['languageId' => 1, 'locale' => 'de_DE.UTF-8', 'base' => 'https://example.de/', 'title' => 'Deutsch'],
+            ],
+        ]);
+        $links = $this->get(LinkInfoFactory::class);
+
+        self::assertFalse($links->create('https://example.org/contact', $site)->isExternal());
+        self::assertFalse($links->create('https://EXAMPLE.de/kontakt', $site)->isExternal());
+        self::assertTrue($links->create('https://www.example.org/contact', $site)->isExternal());
+        self::assertTrue($links->create('https://example.org/contact')->isExternal());
     }
 
     /**

@@ -16,6 +16,7 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 ### Geändert
 
 - Neu geschrieben für TYPO3 14, bisher als Pfad-Paket in der Website des Accessibility Club entwickelt. Die Fassung davor liegt im Zweig `4.x`.
+- `LinkInfo::isExternal()` gilt nur für Adressen, deren Host nicht zur aktuellen Site gehört, zu ihrer Basis oder der einer ihrer Sprachen; eine absolute Adresse der eigenen Website ist kein externer Link mehr. `LinkInfoFactory::create()` nimmt dafür die Site.
 - Ein Beispiel bereitet die Anfrage vor wie der `RequestHandler` des Frontends, den es ersetzt: Adressen von Dateien haben das Präfix der Seite, etwa `/fileadmin/logo.png` statt `fileadmin/logo.png` unter `/de/`, und Dateien aus nicht öffentlichen Speichern bekommen ihre Adresse über `eID=dumpFile`.
 - Ein Beispiel in einem anderen rendert wie auf der Seite nach dem äußeren, im Slot, wenn das äußere ihn ausgibt; Ebenen der Überschriften und die Main Entity verschachteln sich so wie auf der Website. Alle Datensätze der Kette laden vorher, sodass ein fehlender weiter das ganze Beispiel scheitern lässt.
 - Ein Beispiel lädt auch ein Model, das Extbase nur nach dem Namen seiner Klasse einer Tabelle zuordnet, wenn der Verweis die Klasse als `model` nennt; ohne `model` sagt die Meldung, dass die Klasse fehlt.

@@ -35,13 +35,14 @@ final readonly class LinkInfo
     /**
      * Constructor
      *
-     * @param string             $type   Type of target as TYPO3 names it, such as "page", "url", "email" or "file"
-     * @param string             $target Target as given, such as "t3://page?uid=1" or "https://example.org"
-     * @param string|null        $host   Host of an external address or of an email address
-     * @param string|null        $email  Email address
-     * @param string|null        $phone  Phone number
-     * @param integer|null       $page   Uid of a page
-     * @param FileInterface|null $file   File
+     * @param string             $type     Type of target as TYPO3 names it, such as "page", "url", "email" or "file"
+     * @param string             $target   Target as given, such as "t3://page?uid=1" or "https://example.org"
+     * @param string|null        $host     Host of an external address or of an email address
+     * @param string|null        $email    Email address
+     * @param string|null        $phone    Phone number
+     * @param integer|null       $page     Uid of a page
+     * @param FileInterface|null $file     File
+     * @param boolean            $external Whether the target is outside of the website
      */
     public function __construct(
         public string $type,
@@ -51,6 +52,7 @@ final readonly class LinkInfo
         public ?string $phone = null,
         public ?int $page = null,
         public ?FileInterface $file = null,
+        private bool $external = false,
     ) {}
 
     /**
@@ -60,6 +62,6 @@ final readonly class LinkInfo
      */
     public function isExternal(): bool
     {
-        return $this->type === 'url';
+        return $this->external;
     }
 }

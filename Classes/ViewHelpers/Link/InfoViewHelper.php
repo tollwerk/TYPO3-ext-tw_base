@@ -18,6 +18,7 @@ namespace Tollwerk\TwBase\ViewHelpers\Link;
 use Tollwerk\TwBase\Link\LinkInfo;
 use Tollwerk\TwBase\Link\LinkInfoFactory;
 use Tollwerk\TwBase\ViewHelpers\TypedArguments;
+use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -60,6 +61,11 @@ final class InfoViewHelper extends AbstractViewHelper
      */
     public function render(): LinkInfo
     {
-        return $this->linkInfoFactory->create($this->stringArgument('typolink') ?? '');
+        $site = $this->request()?->getAttribute('site');
+
+        return $this->linkInfoFactory->create(
+            $this->stringArgument('typolink') ?? '',
+            ($site instanceof Site) ? $site : null,
+        );
     }
 }

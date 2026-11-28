@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\LinkHandling\Exception\UnknownLinkHandlerException;
 use TYPO3\CMS\Core\LinkHandling\LinkService;
 use TYPO3\CMS\Core\LinkHandling\TypoLinkCodecService;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Site\Entity\Site;
 
 /**
  * Resolves typolinks into information about their target
@@ -46,11 +47,12 @@ final readonly class LinkInfoFactory
     /**
      * Information about the target of a typolink
      *
-     * @param string $typolink Typolink, such as "t3://page?uid=1 _blank" or "https://example.org"
+     * @param string    $typolink Typolink, such as "t3://page?uid=1 _blank" or "https://example.org"
+     * @param Site|null $site     Site of the page, whose own addresses are no external links
      *
      * @return LinkInfo
      */
-    public function create(string $typolink): LinkInfo
+    public function create(string $typolink, ?Site $site = null): LinkInfo
     {
         $target = $this->typoLinkCodecService->decode($typolink)['url'];
         if ($target === '') {
@@ -66,7 +68,7 @@ final readonly class LinkInfoFactory
         $type = \is_string($data['type'] ?? null) ? $data['type'] : 'unknown';
 
         return match ($type) {
-            'url' => $this->url($target, $data),
+            'url' => $this->url($target, $data, $site),
             'email' => $this->email($target, $data),
             'telephone' => new LinkInfo($type, $target, phone: $this->string($data, 'telephone')),
             'page' => new LinkInfo($type, $target, page: (int) $this->string($data, 'pageuid')),
@@ -80,18 +82,49 @@ final readonly class LinkInfoFactory
     }
 
     /**
-     * Information about an external address
+     * Information about an address, which is external unless the site has its host
      *
      * @param string       $target Target
      * @param array<mixed> $data   Resolved target
+     * @param Site|null    $site   Site of the page
      *
      * @return LinkInfo
      */
-    private function url(string $target, array $data): LinkInfo
+    private function url(string $target, array $data, ?Site $site): LinkInfo
     {
         $host = parse_url($this->string($data, 'url'), PHP_URL_HOST);
+        $host = \is_string($host) ? strtolower($host) : null;
 
-        return new LinkInfo('url', $target, host: \is_string($host) ? $host : null);
+        return new LinkInfo(
+            'url',
+            $target,
+            host: $host,
+            external: (null !== $host) && !\in_array($host, $this->hosts($site), true),
+        );
+    }
+
+    /**
+     * Hosts of a site, of its base and of the bases of its languages
+     *
+     * @param Site|null $site Site
+     *
+     * @return list<string>
+     */
+    private function hosts(?Site $site): array
+    {
+        if (!$site instanceof Site) {
+            return [];
+        }
+
+        $hosts = [$site->getBase()->getHost()];
+        foreach ($site->getAllLanguages() as $language) {
+            $hosts[] = $language->getBase()->getHost();
+        }
+
+        return array_values(array_unique(array_filter(
+            array_map(strtolower(...), $hosts),
+            static fn(string $host): bool => $host !== '',
+        )));
     }
 
     /**
