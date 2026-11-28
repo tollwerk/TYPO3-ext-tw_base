@@ -15,9 +15,11 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Tests\Functional;
 
+use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use Override;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
@@ -106,6 +108,7 @@ final class ExampleRecordsTest extends FunctionalTestCase
      * @throws SiteNotFoundException If the site is missing
      * @throws UnexpectedValueException If an example or a record is missing
      * @throws InvalidArgumentException If an address is invalid
+     * @throws DBALException If a page cannot be read
      */
     #[Test]
     public function recordsBecomeModels(): void
@@ -128,6 +131,7 @@ final class ExampleRecordsTest extends FunctionalTestCase
      * @throws SiteNotFoundException If the site is missing
      * @throws UnexpectedValueException If an example or a record is missing
      * @throws InvalidArgumentException If an address is invalid
+     * @throws DBALException If a page cannot be read
      */
     #[Test]
     public function exampleRendersOnItsPageInItsLanguage(): void
@@ -142,6 +146,30 @@ final class ExampleRecordsTest extends FunctionalTestCase
     }
 
     /**
+     * An example on a page that the site does not show is an error, not the start page
+     *
+     * @param string $example Example
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws SiteNotFoundException If the site is missing
+     * @throws UnexpectedValueException If an example is missing
+     * @throws DBALException If a page cannot be read
+     * @throws InvalidArgumentException If an address cannot be built
+     */
+    #[Test]
+    #[TestWith(['hiddenPage'])]
+    #[TestWith(['deletedPage'])]
+    #[TestWith(['unknownPage'])]
+    public function examplesNeedAPageTheSiteShows(string $example): void
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionCode(1795776403);
+        $this->get(ExampleEndpoint::class)->uri($this->site(), 'twc:test.category', $example);
+    }
+
+    /**
      * Without a valid signature, the address shows the page; an example that cannot render answers with status 404
      *
      * @return void
@@ -150,6 +178,7 @@ final class ExampleRecordsTest extends FunctionalTestCase
      * @throws SiteNotFoundException If the site is missing
      * @throws UnexpectedValueException If an example or a record is missing
      * @throws InvalidArgumentException If an address is invalid
+     * @throws DBALException If a page cannot be read
      */
     #[Test]
     public function onlySignedAddressesRenderExamples(): void

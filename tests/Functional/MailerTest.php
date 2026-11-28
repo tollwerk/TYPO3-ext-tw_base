@@ -15,16 +15,21 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Tests\Functional;
 
+use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use Override;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
 use Tollwerk\TwBase\Mail\Mailer;
 use Tollwerk\TwBase\Mail\MailInspector;
 use Tollwerk\TwBase\Mail\MailRegistry;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Log\Writer\FileWriter;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Page\AssetCollector;
@@ -67,6 +72,18 @@ final class MailerTest extends FunctionalTestCase
     protected array $coreExtensionsToLoad = ['filemetadata'];
 
     /**
+     * Warnings of the mailer go into a log of their own
+     *
+     * @var array<string, mixed>
+     */
+    #[Override]
+    protected array $configurationToUseInTestInstance = [
+        'LOG' => ['Tollwerk' => ['TwBase' => ['Mail' => ['Mailer' => ['writerConfiguration' => [
+            LogLevel::WARNING => [FileWriter::class => ['logFileInfix' => 'mailer']],
+        ]]]]]],
+    ];
+
+    /**
      * Point the template root path of the test to the fixtures
      *
      * @return void
@@ -92,6 +109,8 @@ final class MailerTest extends FunctionalTestCase
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
      */
     #[Test]
     public function mailHasTextAndHtml(): void
@@ -129,6 +148,8 @@ final class MailerTest extends FunctionalTestCase
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
      */
     #[Test]
     public function footerHasTheSettingsOfTheSite(): void
@@ -166,12 +187,44 @@ final class MailerTest extends FunctionalTestCase
     }
 
     /**
+     * A legal notice that the site does not show is left out of the footer, with a warning, instead of linking the
+     * start page
+     *
+     * @param integer $page Page of the legal notice
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
+     */
+    #[Test]
+    #[TestWith([3])]
+    #[TestWith([4])]
+    #[TestWith([999])]
+    public function legalNoticeThatTheSiteDoesNotShowIsLeftOut(int $page): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Pages.csv');
+        $mail = $this->compose(['sender' => 'Beispiel', 'contact' => 'hallo@example.org', 'imprint' => $page]);
+
+        self::assertStringNotContainsString('Legal notice', (string) $mail->getHtmlBody());
+        self::assertStringNotContainsString('Legal notice', (string) $mail->getTextBody());
+        self::assertStringContainsString('Write to us', (string) $mail->getHtmlBody());
+        $files = glob(Environment::getVarPath() . '/log/typo3_mailer_*.log');
+        $log = implode('', array_map(file_get_contents(...), ($files === false) ? [] : $files));
+        self::assertStringContainsString('The legal notice ' . $page . ' of the site example is not a page', $log);
+    }
+
+    /**
      * Tokens and a stylesheet of the site change the styles, which go inline and never reach the page
      *
      * @return void
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
      */
     #[Test]
     public function siteChangesTheStyles(): void
@@ -203,6 +256,8 @@ final class MailerTest extends FunctionalTestCase
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
      */
     #[Test]
     public function pathsOfTheSiteApply(): void
@@ -225,6 +280,8 @@ final class MailerTest extends FunctionalTestCase
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
      * @throws TransportExceptionInterface If the mail cannot be sent
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
      */
     #[Test]
     public function changedMailKeepsItsStyles(): void
@@ -248,6 +305,7 @@ final class MailerTest extends FunctionalTestCase
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
      * @throws UnexpectedValueException If an example or mail is missing
+     * @throws DBALException If a page cannot be read
      */
     #[Test]
     public function registeredExampleIsAccessible(): void
@@ -270,6 +328,7 @@ final class MailerTest extends FunctionalTestCase
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
      * @throws UnexpectedValueException If an example or mail is missing
+     * @throws DBALException If a page cannot be read
      */
     #[Test]
     public function unknownExampleIsAnError(): void
@@ -306,6 +365,8 @@ final class MailerTest extends FunctionalTestCase
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the address of the request is invalid
+     * @throws DBALException If a page cannot be read
+     * @throws UnexpectedValueException If a page cannot be read
      */
     private function compose(array $settings, array $email = []): FluidEmail
     {

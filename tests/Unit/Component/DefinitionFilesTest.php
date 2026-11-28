@@ -84,6 +84,8 @@ final class DefinitionFilesTest extends UnitTestCase
         yield 'within too short' => [$example('"within" => ["twc:event.list"]'), 1795776107];
         yield 'arguments no array' => [$example('"arguments" => "x"'), 1795776108];
         yield 'requires no list' => ['["requires" => [1], "examples" => ["a" => ["label" => "A"]]]', 1795776109];
+        yield 'page 0' => [$example('"page" => 0'), 1795776110];
+        yield 'language below 0' => [$example('"language" => -1'), 1795776110];
     }
 
     /**

@@ -32,5 +32,8 @@ return [
             'label' => 'Missing',
             'arguments' => ['category' => ['record' => 'sys_category', 'uid' => 99]],
         ],
+        'hiddenPage' => ['label' => 'On a hidden page', 'page' => 3, 'arguments' => []],
+        'deletedPage' => ['label' => 'On a deleted page', 'page' => 4, 'arguments' => []],
+        'unknownPage' => ['label' => 'On a page that does not exist', 'page' => 999, 'arguments' => []],
     ],
 ];

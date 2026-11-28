@@ -200,8 +200,9 @@ final readonly class Examples
             $arguments,
             $slots,
             $within,
-            self::uid($example, 'page', $name, $file),
-            self::uid($example, 'language', $name, $file),
+            // Pages start at 1, languages at 0, the default language
+            self::uid($example, 'page', $name, $file, 1),
+            self::uid($example, 'language', $name, $file, 0),
         );
     }
 
@@ -212,15 +213,16 @@ final readonly class Examples
      * @param string                  $key     "page" or "language"
      * @param string                  $name    Name of the example, for messages
      * @param string                  $file    File, for messages
+     * @param integer                 $minimum Smallest uid
      *
      * @return integer|null Uid; null if the example names none
      *
      * @throws UnexpectedValueException If the value is no uid
      */
-    private static function uid(array $example, string $key, string $name, string $file): ?int
+    private static function uid(array $example, string $key, string $name, string $file, int $minimum): ?int
     {
         $uid = $example[$key] ?? null;
-        if (null !== $uid && (!\is_int($uid) || $uid < 0)) {
+        if (null !== $uid && (!\is_int($uid) || $uid < $minimum)) {
             throw new UnexpectedValueException(
                 \sprintf('The %s of the example "%s" in "%s" is no uid', $key, $name, $file),
                 1795776110,

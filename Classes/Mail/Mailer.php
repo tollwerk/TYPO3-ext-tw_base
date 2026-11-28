@@ -15,17 +15,20 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Mail;
 
+use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\UriInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
+use Tollwerk\TwBase\Routing\PageUri;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Mail\TemplatedEmailFactory;
-use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use UnexpectedValueException;
@@ -58,6 +61,8 @@ final readonly class Mailer
      * @param LanguageServiceFactory $languageServiceFactory Factory of language services, for the footer
      * @param MailRegistry           $registry               Mails of all extensions, for their examples
      * @param StyleInliner           $inliner                Writes the styles of the components into the HTML
+     * @param PageUri                $pageUri                Address of the legal notice, if the site shows it
+     * @param LoggerInterface        $logger                 Logger, for a legal notice that cannot be linked
      */
     public function __construct(
         private MailerInterface $mailer,
@@ -65,6 +70,8 @@ final readonly class Mailer
         private LanguageServiceFactory $languageServiceFactory,
         private MailRegistry $registry,
         private StyleInliner $inliner,
+        private PageUri $pageUri,
+        private LoggerInterface $logger,
     ) {}
 
     /**
@@ -79,6 +86,7 @@ final readonly class Mailer
      *
      * @throws UnexpectedValueException If there is no such mail or example
      * @throws InvalidArgumentException If the format of mails or the contact address is invalid
+     * @throws DBALException If the page of the legal notice cannot be read
      */
     public function composeExample(
         ServerRequestInterface $request,
@@ -113,6 +121,8 @@ final readonly class Mailer
      * @return FluidEmail
      *
      * @throws InvalidArgumentException If the format of mails or the contact address is invalid
+     * @throws DBALException If the page of the legal notice cannot be read
+     * @throws UnexpectedValueException If the page of the legal notice cannot be read
      */
     public function compose(
         ServerRequestInterface $request,
@@ -165,6 +175,8 @@ final readonly class Mailer
      *
      * @throws TransportExceptionInterface If the mail cannot be sent
      * @throws InvalidArgumentException If the format of mails or the contact address is invalid
+     * @throws DBALException If the page of the legal notice cannot be read
+     * @throws UnexpectedValueException If the page of the legal notice cannot be read
      */
     public function send(
         ServerRequestInterface $request,
@@ -218,6 +230,10 @@ final readonly class Mailer
      * @param string            $contact  Contact address
      *
      * @return list<array{label: string, href: string, address: string}>
+     *
+     * @throws DBALException If the page of the legal notice cannot be read
+     * @throws InvalidArgumentException If the address of the legal notice cannot be built
+     * @throws UnexpectedValueException If the page of the legal notice cannot be read
      */
     private function footerLinks(?Site $site, ?SiteLanguage $language, string $contact): array
     {
@@ -233,16 +249,19 @@ final readonly class Mailer
 
         $imprint = $site?->getSettings()->getAllFlat()['twBase.mail.imprint'] ?? 0;
         if ($site instanceof Site && \is_int($imprint) && $imprint > 0) {
-            try {
-                $parameters = $language instanceof SiteLanguage ? ['_language' => $language] : [];
-                $url = (string) $site->getRouter()->generateUri($imprint, $parameters);
+            $url = $this->pageUri->ofPage($site, $imprint, $language);
+            if (!$url instanceof UriInterface) {
+                // The mail still goes out, as it may carry a code that the person waits for
+                $this->logger->warning(
+                    'The legal notice {page} of the site {site} is not a page the site shows, so mails lack the link',
+                    ['page' => $imprint, 'site' => $site->getIdentifier()],
+                );
+            } else {
                 $links[] = [
                     'label' => $labels->sL('tw_base.messages:mail.footer.imprint'),
-                    'href' => $url,
-                    'address' => $url,
+                    'href' => (string) $url,
+                    'address' => (string) $url,
                 ];
-            } catch (InvalidRouteArgumentsException) {
-                // A page that cannot be linked has no place in the footer
             }
         }
 

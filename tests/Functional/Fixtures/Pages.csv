@@ -1,4 +1,6 @@
 "pages"
-,"uid","pid","title","slug","doktype"
-,1,0,"Home","/",1
-,2,1,"Legal notice","/legal-notice",1
+,"uid","pid","title","slug","doktype","hidden","deleted"
+,1,0,"Home","/",1,0,0
+,2,1,"Legal notice","/legal-notice",1,0,0
+,3,1,"Hidden","/hidden",1,1,0
+,4,1,"Deleted","/deleted",1,0,1

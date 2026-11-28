@@ -15,13 +15,14 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Component\Example;
 
+use Doctrine\DBAL\Exception as DBALException;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Tollwerk\TwBase\Routing\PageUri;
 use TYPO3\CMS\Core\Crypto\HashAlgo;
 use TYPO3\CMS\Core\Crypto\HashService;
-use TYPO3\CMS\Core\Routing\InvalidRouteArgumentsException;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use UnexpectedValueException;
 
@@ -71,8 +72,13 @@ final readonly class ExampleEndpoint
      *
      * @param ExampleRenderer $renderer Renderer of examples
      * @param HashService     $hashes   Service for the signature
+     * @param PageUri         $pageUri  Address of the page of an example, if the site shows it
      */
-    public function __construct(private ExampleRenderer $renderer, private HashService $hashes) {}
+    public function __construct(
+        private ExampleRenderer $renderer,
+        private HashService $hashes,
+        private PageUri $pageUri,
+    ) {}
 
     /**
      * The address that renders a component with one of its examples
@@ -84,6 +90,8 @@ final readonly class ExampleEndpoint
      * @return UriInterface
      *
      * @throws UnexpectedValueException If there is no such component or example, or the site lacks its page or language
+     * @throws DBALException If the page of the example cannot be read
+     * @throws InvalidArgumentException If the address cannot be built
      */
     public function uri(Site $site, string $component, string $example): UriInterface
     {
@@ -95,23 +103,20 @@ final readonly class ExampleEndpoint
         $key = $component . '#' . $example;
         $page = $configuration->page ?? $site->getRootPageId();
 
+        $error = \sprintf('The site "%s" cannot render the example "%s"', $site->getIdentifier(), $key);
         try {
             $language = null === $configuration->language
                 ? $site->getDefaultLanguage()
                 : $site->getLanguageById($configuration->language);
-
-            return $site->getRouter()->generateUri($page, [
-                '_language' => $language,
-                self::PARAMETER => $key,
-                self::SIGNATURE => $this->signature($key),
-            ]);
-        } catch (InvalidArgumentException|InvalidRouteArgumentsException $exception) {
-            throw new UnexpectedValueException(
-                \sprintf('The site "%s" cannot render the example "%s"', $site->getIdentifier(), $key),
-                1795776402,
-                $exception,
-            );
+        } catch (InvalidArgumentException $exception) {
+            throw new UnexpectedValueException($error, 1795776402, $exception);
         }
+
+        // The router would build the address of the start page for a page it cannot load
+        return $this->pageUri->ofPage($site, $page, $language, [
+            self::PARAMETER => $key,
+            self::SIGNATURE => $this->signature($key),
+        ]) ?? throw new UnexpectedValueException($error . ', as it does not show the page ' . $page, 1795776403);
     }
 
     /**
