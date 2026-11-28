@@ -71,7 +71,7 @@ public function exampleRenders(string $component, string $example): void
 $mailer->send($request, new Address($email, $name), 'TwAccounts/Code', $subject, ['code' => $code]);
 ```
 
-Die Vorlage erhält die übergebenen Variablen, dazu `subject`, `languageCode`, `website`, `sender` und `footerLinks`.
+Die Vorlage erhält die übergebenen Variablen, dazu `subject`, `languageCode`, `website`, `sender`, `footerLinks` und `roleDescription`, die Rolle der Mail für Hilfsmittel in ihrer Sprache.
 
 - **Rahmen:** Das Layout setzt das HTML in `twc:mail.frame` mit Sprache, Betreff als Titel und einziger Überschrift der ersten Ebene, Namen der Website und einer Fassung für den dunklen Modus, und darunter `twc:mail.footer`. Für Classic Outlook steht eine Tabelle mit `role="presentation"` in bedingten Kommentaren, die alle anderen Programme nicht sehen.
 - **Fußzeile aus der Site:** Das Site Set `tollwerk/tw-base` hat die Einstellungen `twBase.mail.sender` für Absender und Anschrift, `twBase.mail.contact` für die Adresse für Fragen, an die auch Antworten gehen, und `twBase.mail.imprint` für die Seite mit dem Impressum. Eine Site setzt sie im Modul „Sites“ des Backends oder in ihrer `settings.yaml`. Zeigt die Site die Seite des Impressums nicht, weil sie fehlt, gelöscht, verborgen oder abgelaufen ist oder zu einer anderen Site gehört, geht die Mail ohne den Link hinaus, und eine Warnung steht im Log.
