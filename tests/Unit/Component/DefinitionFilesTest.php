@@ -27,6 +27,7 @@ use Tollwerk\TwBase\Exception;
 use Tollwerk\TwBase\Mail\MailDefinition;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Package\PackageManager;
+use TYPO3\CMS\Core\Service\DependencyOrderingService;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 use UnexpectedValueException;
 
@@ -224,7 +225,7 @@ final class DefinitionFilesTest extends UnitTestCase
 
         $this->expectException(LogicException::class);
         $this->expectExceptionCode(1795776001);
-        new ComponentLocator(self::createStub(PackageManager::class))->resources($component);
+        $this->locator()->resources($component);
     }
 
     /**
@@ -248,9 +249,25 @@ final class DefinitionFilesTest extends UnitTestCase
             'Event/Teaser/Teaser',
         );
 
-        $resources = new ComponentLocator(self::createStub(PackageManager::class))->resources($component);
+        $resources = $this->locator()->resources($component);
 
         self::assertSame('@tollwerk/tw-events/Components/Event/Teaser/Teaser.js', $resources->module);
+    }
+
+    /**
+     * Locator of components with a package manager that knows no packages, as no other component is involved
+     *
+     * @return ComponentLocator
+     */
+    private function locator(): ComponentLocator
+    {
+        $packages = new PackageManager(
+            new DependencyOrderingService(),
+            $this->folder . '/PackageStates.php',
+            $this->folder . '/',
+        );
+
+        return new ComponentLocator($packages);
     }
 
     /**

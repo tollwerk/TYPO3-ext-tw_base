@@ -25,6 +25,7 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 - Der Alternativtext in den Metadaten ist wieder Pflicht wie in 4.x, und Videos haben wieder ein Feld dafür.
 - Jeder Code einer Exception kommt einmal vor: Die Fehler der Datensätze von Beispielen haben neue Codes, die vorher auch Fehler in `Configuration/Mails.php` hatten.
 - phpcs, PHPStan, Rector und PHP CS Fixer prüfen auch `ext_localconf.php` und das PHP der Komponenten.
+- Die Tests des `ComponentLocator` nehmen einen `PackageManager` ohne Pakete statt eines anonymen Stubs.
 - Tests, die mehrere Verhalten unter einem Namen prüften, sind nach Verhalten aufgeteilt und benannt.
 - `LinkInfo::isExternal()` gilt nur für Adressen, deren Host nicht zur aktuellen Site gehört, zu ihrer Basis oder der einer ihrer Sprachen; eine absolute Adresse der eigenen Website ist kein externer Link mehr. `LinkInfoFactory::create()` nimmt dafür die Site.
 - Ein Beispiel bereitet die Anfrage vor wie der `RequestHandler` des Frontends, den es ersetzt: Adressen von Dateien haben das Präfix der Seite, etwa `/fileadmin/logo.png` statt `fileadmin/logo.png` unter `/de/`, und Dateien aus nicht öffentlichen Speichern bekommen ihre Adresse über `eID=dumpFile`.
