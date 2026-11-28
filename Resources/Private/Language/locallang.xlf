@@ -3,11 +3,17 @@
     <file source-language="en" datatype="plaintext" original="EXT:tw_base/Resources/Private/Language/locallang.xlf" product-name="tw_base">
         <header/>
         <body>
+            <trans-unit id="license.all" resname="license.all">
+                <source>All rights reserved</source>
+            </trans-unit>
             <trans-unit id="mail.footer.contact" resname="mail.footer.contact">
                 <source>Write to us: %s</source>
             </trans-unit>
             <trans-unit id="mail.footer.imprint" resname="mail.footer.imprint">
                 <source>Legal notice</source>
+            </trans-unit>
+            <trans-unit id="mail.roledescription" resname="mail.roledescription">
+                <source>email</source>
             </trans-unit>
         </body>
     </file>

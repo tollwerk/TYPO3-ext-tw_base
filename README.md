@@ -2,6 +2,8 @@
 
 `tw_base` bringt Grundlagen für Websites mit TYPO3 14: Überschriften mit passender Ebene, strukturierte Daten als JSON-LD, responsive Bilder, Informationen zu Links, die Urheberangaben von Dateien, die Infrastruktur für Fluid-Komponenten aller Pakete von tollwerk und barrierefreie Mails.
 
+Texte der Mails, des Backends und der Einstellungen gibt es auf Englisch, Deutsch, Spanisch, Französisch und Italienisch.
+
 ## Installation
 
 Für TYPO3 14 im Composer-Modus:

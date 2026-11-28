@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\FileMetadata;
 
+use Closure;
+
 /**
  * Licence of a file
  *
@@ -41,6 +43,13 @@ enum License: string
     case Custom = 'custom';
 
     /**
+     * Label of the name of the licence that is no proper name
+     *
+     * @var string
+     */
+    public const string ALL_RIGHTS_RESERVED = 'tw_base.messages:license.all';
+
+    /**
      * Version of the Creative Commons licences
      *
      * @var string
@@ -50,12 +59,15 @@ enum License: string
     /**
      * Name of the licence
      *
+     * @param Closure(string): string $translate Translation of a label, such as LanguageService::sL()
+     *
      * @return string|null Name, or NULL for a custom licence, which names itself
      */
-    public function title(): ?string
+    public function title(Closure $translate): ?string
     {
+        // The names of the Creative Commons licences are proper names in every language
         return match ($this) {
-            self::AllRightsReserved => 'All rights reserved',
+            self::AllRightsReserved => $translate(self::ALL_RIGHTS_RESERVED),
             self::Cc0 => 'CC0 1.0',
             self::Custom => null,
             default => 'CC ' . $this->value . ' ' . self::CC_VERSION,

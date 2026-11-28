@@ -15,6 +15,8 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\FileMetadata;
 
+use Closure;
+
 /**
  * Who made a file and under which licence it may be used
  *
@@ -54,11 +56,12 @@ final readonly class Attribution
     /**
      * Attribution from the metadata of a file
      *
-     * @param array<mixed> $metadata Metadata, as from sys_file_metadata
+     * @param array<mixed>            $metadata  Metadata, as from sys_file_metadata
+     * @param Closure(string): string $translate Translation of a label, for the name of a licence
      *
      * @return self|null Attribution, or NULL if the metadata names neither creator nor licence
      */
-    public static function fromMetadata(array $metadata): ?self
+    public static function fromMetadata(array $metadata, Closure $translate): ?self
     {
         $license = License::tryFrom(self::string($metadata, 'tx_twbase_license'));
         $creator = self::string($metadata, 'creator');
@@ -75,7 +78,7 @@ final readonly class Attribution
             self::string($metadata, 'source'),
             ((int) $year > 0) ? (int) $year : null,
             $license,
-            $custom ? self::string($metadata, 'tx_twbase_license_name') : ($license?->title() ?? ''),
+            $custom ? self::string($metadata, 'tx_twbase_license_name') : ($license?->title($translate) ?? ''),
             $custom ? self::string($metadata, 'tx_twbase_license_url') : ($license?->url() ?? ''),
         );
     }

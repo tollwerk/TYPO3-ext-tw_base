@@ -45,7 +45,7 @@ final class AttributionTest extends UnitTestCase
             'tx_twbase_creation_year' => 1843,
             'tx_twbase_license' => 'BY-NC-SA',
             'tx_twbase_license_name' => 'Ignored',
-        ]);
+        ], $this->translate(...));
 
         self::assertNotNull($attribution);
         self::assertSame('Ada Lovelace', $attribution->creator);
@@ -70,7 +70,7 @@ final class AttributionTest extends UnitTestCase
             'tx_twbase_license_url' => 'https://example.org/press',
             'tx_twbase_creation_year' => 0,
             'creator' => [],
-        ]);
+        ], $this->translate(...));
 
         self::assertNotNull($custom);
         self::assertSame('', $custom->creator);
@@ -78,26 +78,38 @@ final class AttributionTest extends UnitTestCase
         self::assertSame('Press photo', $custom->licenseName);
         self::assertSame('https://example.org/press', $custom->licenseUrl);
 
-        $creatorOnly = Attribution::fromMetadata(['creator' => 'Grace Hopper']);
+        $creatorOnly = Attribution::fromMetadata(['creator' => 'Grace Hopper'], $this->translate(...));
         self::assertNotNull($creatorOnly);
         self::assertNull($creatorOnly->license);
         self::assertSame('', $creatorOnly->licenseName);
-        self::assertNull(Attribution::fromMetadata(['tx_twbase_license' => 'unknown']));
+        self::assertNull(Attribution::fromMetadata(['tx_twbase_license' => 'unknown'], $this->translate(...)));
     }
 
     /**
-     * Every licence has a name, except a custom one
+     * Every licence has a name, except a custom one; only "All rights reserved" is a translation
      *
      * @return void
      */
     public function testLicenceNamesAndTexts(): void
     {
-        self::assertSame('All rights reserved', License::AllRightsReserved->title());
+        self::assertSame('[tw_base.messages:license.all]', License::AllRightsReserved->title($this->translate(...)));
         self::assertNull(License::AllRightsReserved->url());
-        self::assertSame('CC0 1.0', License::Cc0->title());
+        self::assertSame('CC0 1.0', License::Cc0->title($this->translate(...)));
         self::assertSame('https://creativecommons.org/publicdomain/zero/1.0/', License::Cc0->url());
-        self::assertNull(License::Custom->title());
+        self::assertNull(License::Custom->title($this->translate(...)));
         self::assertNull(License::Custom->url());
-        self::assertSame('CC BY 4.0', License::By->title());
+        self::assertSame('CC BY 4.0', License::By->title($this->translate(...)));
+    }
+
+    /**
+     * Translation of a label, as a marker
+     *
+     * @param string $label Label
+     *
+     * @return string
+     */
+    private function translate(string $label): string
+    {
+        return '[' . $label . ']';
     }
 }

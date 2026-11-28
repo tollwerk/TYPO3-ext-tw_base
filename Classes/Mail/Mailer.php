@@ -152,6 +152,8 @@ final readonly class Mailer
                 'website' => $website,
                 'sender' => '' === $sender ? $website : $sender,
                 'footerLinks' => $this->footerLinks($site, $language, $contact),
+                // Translated here like the footer, as f:translate needs a request of the frontend or backend
+                'roleDescription' => $this->labels($language)->sL('tw_base.messages:mail.roledescription'),
             ]);
         if ('' !== $contact) {
             $mail->replyTo(new Address($contact, $website));

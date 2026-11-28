@@ -1,6 +1,7 @@
 <f:argument name="languageCode" type="string" description="Language of the mail, such as &quot;en-US&quot;" />
 <f:argument name="subject" type="string" description="Subject, which is also the title and the only heading of the first level" />
 <f:argument name="website" type="string" description="Name of the website that sends the mail" />
+<f:argument name="roleDescription" type="string" description="What the mail is to assistive technology, such as &quot;email&quot;, in the language of the mail" />
 <!DOCTYPE html>
 <html lang="{languageCode}">
 <head>
@@ -11,7 +12,7 @@
     <title>{subject}</title>
 </head>
 <body class="Mail__body">
-    <div class="Mail" role="article" aria-roledescription="email" aria-label="{subject}" lang="{languageCode}">
+    <div class="Mail" role="article" aria-roledescription="{roleDescription}" aria-label="{subject}" lang="{languageCode}">
         <!--[if mso]><table role="presentation" width="640" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
         <div class="Mail__content">
             <p class="Mail__website">{website}</p>

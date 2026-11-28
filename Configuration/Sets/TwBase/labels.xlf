@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="EXT:tw_base/Configuration/Sets/TwBase/labels.xlf" product-name="tw_base">
+        <header/>
+        <body>
+            <trans-unit id="label" resname="label">
+                <source>Basics</source>
+            </trans-unit>
+            <trans-unit id="categories.twBase.mail" resname="categories.twBase.mail">
+                <source>Mails</source>
+            </trans-unit>
+            <trans-unit id="categories.twBase.mail.tokens" resname="categories.twBase.mail.tokens">
+                <source>Design</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.sender" resname="settings.twBase.mail.sender">
+                <source>Sender</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.sender" resname="settings.description.twBase.mail.sender">
+                <source>Who sends the mails, such as the name and address of the organisation, for the footer of every mail; empty for the title of the website</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.contact" resname="settings.twBase.mail.contact">
+                <source>Contact address</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.contact" resname="settings.description.twBase.mail.contact">
+                <source>Email address for questions, linked in the footer of every mail and the address replies go to</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.imprint" resname="settings.twBase.mail.imprint">
+                <source>Legal notice</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.imprint" resname="settings.description.twBase.mail.imprint">
+                <source>Page with the legal notice, linked in the footer of every mail</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.stylesheet" resname="settings.twBase.mail.stylesheet">
+                <source>Stylesheet</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.stylesheet" resname="settings.description.twBase.mail.stylesheet">
+                <source>Additional stylesheet for mails, such as EXT:my_site/Resources/Private/Mail.css, whose rules follow those of the components; it may use the tokens as custom properties</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.color.text" resname="settings.twBase.mail.tokens.color.text">
+                <source>Text</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.color.background" resname="settings.twBase.mail.tokens.color.background">
+                <source>Background</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.color.muted" resname="settings.twBase.mail.tokens.color.muted">
+                <source>Muted text</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.color.muted" resname="settings.description.twBase.mail.tokens.color.muted">
+                <source>Text of the website name and the footer</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.color.accent" resname="settings.twBase.mail.tokens.color.accent">
+                <source>Accent</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.color.accent" resname="settings.description.twBase.mail.tokens.color.accent">
+                <source>Links, buttons and the border of notices</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.color.accentText" resname="settings.twBase.mail.tokens.color.accentText">
+                <source>Text on the accent</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.color.accentText" resname="settings.description.twBase.mail.tokens.color.accentText">
+                <source>Text of buttons</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.color.border" resname="settings.twBase.mail.tokens.color.border">
+                <source>Border</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.color.border" resname="settings.description.twBase.mail.tokens.color.border">
+                <source>Line above the footer</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.dark.color.text" resname="settings.twBase.mail.tokens.dark.color.text">
+                <source>Text in dark mode</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.dark.color.background" resname="settings.twBase.mail.tokens.dark.color.background">
+                <source>Background in dark mode</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.dark.color.muted" resname="settings.twBase.mail.tokens.dark.color.muted">
+                <source>Muted text in dark mode</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.dark.color.accent" resname="settings.twBase.mail.tokens.dark.color.accent">
+                <source>Accent in dark mode</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.dark.color.accentText" resname="settings.twBase.mail.tokens.dark.color.accentText">
+                <source>Text on the accent in dark mode</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.dark.color.border" resname="settings.twBase.mail.tokens.dark.color.border">
+                <source>Border in dark mode</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.font.family" resname="settings.twBase.mail.tokens.font.family">
+                <source>Font</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.font.family" resname="settings.description.twBase.mail.tokens.font.family">
+                <source>Font stack of the text</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.font.code" resname="settings.twBase.mail.tokens.font.code">
+                <source>Font of codes</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.font.code" resname="settings.description.twBase.mail.tokens.font.code">
+                <source>Font stack of codes</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.font.size" resname="settings.twBase.mail.tokens.font.size">
+                <source>Font size</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.font.size" resname="settings.description.twBase.mail.tokens.font.size">
+                <source>Size of the text, at least 16px</source>
+            </trans-unit>
+            <trans-unit id="settings.twBase.mail.tokens.width" resname="settings.twBase.mail.tokens.width">
+                <source>Width</source>
+            </trans-unit>
+            <trans-unit id="settings.description.twBase.mail.tokens.width" resname="settings.description.twBase.mail.tokens.width">
+                <source>Largest width of the content</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -17,7 +17,12 @@ return [
     'examples' => [
         'default' => [
             'label' => 'Default',
-            'arguments' => ['languageCode' => 'en-US', 'subject' => 'Your code', 'website' => 'Example Website'],
+            'arguments' => [
+                'languageCode' => 'en-US',
+                'subject' => 'Your code',
+                'website' => 'Example Website',
+                'roleDescription' => 'email',
+            ],
             'slots' => [
                 'default' => '<p class="MailParagraph">Hello,</p>',
                 'footer' => '<div class="MailFooter"><p class="MailFooter__line">Example Organisation</p></div>',

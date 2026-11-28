@@ -16,9 +16,13 @@ declare(strict_types=1);
 namespace Tollwerk\TwBase\ViewHelpers\File;
 
 use Tollwerk\TwBase\FileMetadata\Attribution;
+use Tollwerk\TwBase\ViewHelpers\TypedArguments;
+use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
@@ -34,6 +38,15 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 final class AttributionViewHelper extends AbstractViewHelper
 {
+    use TypedArguments;
+
+    /**
+     * Constructor
+     *
+     * @param LanguageServiceFactory $languageServiceFactory Factory of language services, for the name of a licence
+     */
+    public function __construct(private readonly LanguageServiceFactory $languageServiceFactory) {}
+
     /**
      * Register the arguments
      *
@@ -56,8 +69,26 @@ final class AttributionViewHelper extends AbstractViewHelper
             $file = $file->getOriginalResource();
         }
 
-        return ($file instanceof File || $file instanceof FileReference)
-            ? Attribution::fromMetadata($file->getProperties())
-            : null;
+        if (!$file instanceof File && !$file instanceof FileReference) {
+            return null;
+        }
+
+        $labels = $this->labels();
+
+        return Attribution::fromMetadata($file->getProperties(), $labels->sL(...));
+    }
+
+    /**
+     * Labels in the language of the page
+     *
+     * @return LanguageService
+     */
+    private function labels(): LanguageService
+    {
+        $language = $this->request()?->getAttribute('language');
+
+        return $language instanceof SiteLanguage
+            ? $this->languageServiceFactory->createFromSiteLanguage($language)
+            : $this->languageServiceFactory->create('en');
     }
 }

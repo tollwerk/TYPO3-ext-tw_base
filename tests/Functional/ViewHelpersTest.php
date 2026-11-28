@@ -27,9 +27,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Tollwerk\TwBase\StructuredData\StructuredDataGraph;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
 use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Http\Uri;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 use TYPO3Fluid\Fluid\View\TemplateView;
@@ -250,6 +252,26 @@ final class ViewHelpersTest extends FunctionalTestCase
     }
 
     /**
+     * A licence that is no proper name is named in the language of the page
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the request is invalid
+     */
+    public function testAttributionInTheLanguageOfThePage(): void
+    {
+        $image = $this->file('rights.png');
+        $image->getMetaData()->add(['creator' => 'Ada', 'tx_twbase_license' => 'all'])->save();
+        $german = new SiteLanguage(1, 'de_DE.UTF-8', new Uri('/de/'), ['title' => 'Deutsch']);
+        $source = '<f:variable name="attribution" value="{base:file.attribution(file: image)}" />'
+            . '<p>{attribution.licenseName}</p>';
+
+        self::assertSame('<p>All rights reserved</p>', trim($this->render($source, ['image' => $image])));
+        self::assertSame('<p>Alle Rechte vorbehalten</p>', trim($this->render($source, ['image' => $image], $german)));
+    }
+
+    /**
      * Pictures offer modern formats in several widths, with attribution from the metadata
      *
      * @return void
@@ -352,15 +374,16 @@ final class ViewHelpersTest extends FunctionalTestCase
      *
      * @param string               $source    Template source
      * @param array<string, mixed> $variables Variables
+     * @param SiteLanguage|null    $language  Language of the page, if it has one
      *
      * @return string
      *
      * @throws ContainerExceptionInterface If a service is missing
      * @throws InvalidArgumentException If the request is invalid
      */
-    private function render(string $source, array $variables = []): string
+    private function render(string $source, array $variables = [], ?SiteLanguage $language = null): string
     {
-        $request = $this->request();
+        $request = $this->request($language);
         $context = $this->get(RenderingContextFactory::class)->create([], $request);
         $context->setAttribute(ServerRequestInterface::class, $request);
         $context->getTemplatePaths()->setTemplateSource($source);
@@ -375,14 +398,20 @@ final class ViewHelpersTest extends FunctionalTestCase
     /**
      * Request of a page in the frontend, which is also the request of the test
      *
+     * @param SiteLanguage|null $language Language of the page, if it has one
+     *
      * @return ServerRequestInterface
      *
      * @throws InvalidArgumentException If the request is invalid
      */
-    private function request(): ServerRequestInterface
+    private function request(?SiteLanguage $language = null): ServerRequestInterface
     {
         $request = new ServerRequest('http://localhost/summit')
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE);
+        if ($language instanceof SiteLanguage) {
+            $request = $request->withAttribute('language', $language);
+        }
+
         $GLOBALS['TYPO3_REQUEST'] = $request;
 
         return $request;

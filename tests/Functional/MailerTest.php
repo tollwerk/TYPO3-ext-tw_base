@@ -123,6 +123,8 @@ final class MailerTest extends FunctionalTestCase
         self::assertSame([], $mail->getReplyTo());
         $html = (string) $mail->getHtmlBody();
         self::assertStringContainsString('<html lang="de-DE">', $html);
+        // The texts of the frame and the footer are German, like the mail
+        self::assertStringContainsString('aria-roledescription="E-Mail"', $html);
         self::assertStringContainsString('<title>Dein Code</title>', $html);
         self::assertMatchesRegularExpression('#<h1[^>]*>Dein Code</h1>#', $html);
         self::assertStringContainsString('<strong>123456</strong>', $html);
@@ -171,17 +173,17 @@ final class MailerTest extends FunctionalTestCase
             $html,
         );
         self::assertMatchesRegularExpression(
-            '#<a [^>]*href="mailto:hallo@example.org"[^>]*>Write to us: hallo@example.org</a>#',
+            '#<a [^>]*href="mailto:hallo@example.org"[^>]*>Schreiben Sie uns: hallo@example.org</a>#',
             $html,
         );
         self::assertMatchesRegularExpression(
-            '#<a [^>]*href="https://example.org/de/legal-notice"[^>]*>Legal notice</a>#',
+            '#<a [^>]*href="https://example.org/de/legal-notice"[^>]*>Impressum</a>#',
             $html,
         );
         $text = (string) $mail->getTextBody();
         self::assertStringContainsString(
-            "Beispiel e. V., Hauptstraße 1, 12345 Beispielstadt\nWrite to us: hallo@example.org\n"
-            . 'Legal notice: https://example.org/de/legal-notice',
+            "Beispiel e. V., Hauptstraße 1, 12345 Beispielstadt\nSchreiben Sie uns: hallo@example.org\n"
+            . 'Impressum: https://example.org/de/legal-notice',
             $text,
         );
     }
@@ -208,9 +210,9 @@ final class MailerTest extends FunctionalTestCase
         $this->importCSVDataSet(__DIR__ . '/Fixtures/Pages.csv');
         $mail = $this->compose(['sender' => 'Beispiel', 'contact' => 'hallo@example.org', 'imprint' => $page]);
 
-        self::assertStringNotContainsString('Legal notice', (string) $mail->getHtmlBody());
-        self::assertStringNotContainsString('Legal notice', (string) $mail->getTextBody());
-        self::assertStringContainsString('Write to us', (string) $mail->getHtmlBody());
+        self::assertStringNotContainsString('Impressum', (string) $mail->getHtmlBody());
+        self::assertStringNotContainsString('Impressum', (string) $mail->getTextBody());
+        self::assertStringContainsString('Schreiben Sie uns', (string) $mail->getHtmlBody());
         $files = glob(Environment::getVarPath() . '/log/typo3_mailer_*.log');
         $log = implode('', array_map(file_get_contents(...), ($files === false) ? [] : $files));
         self::assertStringContainsString('The legal notice ' . $page . ' of the site example is not a page', $log);

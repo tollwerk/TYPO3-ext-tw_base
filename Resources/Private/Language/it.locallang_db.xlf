@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="it" datatype="plaintext" original="EXT:tw_base/Resources/Private/Language/locallang_db.xlf" product-name="tw_base">
+        <header/>
+        <body>
+            <trans-unit id="sys_file_metadata.palette.attribution" resname="sys_file_metadata.palette.attribution">
+                <source>Attribution</source>
+                <target state="translated">Attribuzione</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_creation_year" resname="sys_file_metadata.tx_twbase_creation_year">
+                <source>Year of creation</source>
+                <target state="translated">Anno di creazione</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_creator_url" resname="sys_file_metadata.tx_twbase_creator_url">
+                <source>Address of the creator</source>
+                <target state="translated">Indirizzo dell’autore</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license" resname="sys_file_metadata.tx_twbase_license">
+                <source>Licence</source>
+                <target state="translated">Licenza</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.all" resname="sys_file_metadata.tx_twbase_license.all">
+                <source>All rights reserved</source>
+                <target state="translated">Tutti i diritti riservati</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by" resname="sys_file_metadata.tx_twbase_license.by">
+                <source>CC BY 4.0</source>
+                <target state="translated">CC BY 4.0</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc" resname="sys_file_metadata.tx_twbase_license.by-nc">
+                <source>CC BY-NC 4.0</source>
+                <target state="translated">CC BY-NC 4.0</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc-nd" resname="sys_file_metadata.tx_twbase_license.by-nc-nd">
+                <source>CC BY-NC-ND 4.0</source>
+                <target state="translated">CC BY-NC-ND 4.0</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nc-sa" resname="sys_file_metadata.tx_twbase_license.by-nc-sa">
+                <source>CC BY-NC-SA 4.0</source>
+                <target state="translated">CC BY-NC-SA 4.0</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-nd" resname="sys_file_metadata.tx_twbase_license.by-nd">
+                <source>CC BY-ND 4.0</source>
+                <target state="translated">CC BY-ND 4.0</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.by-sa" resname="sys_file_metadata.tx_twbase_license.by-sa">
+                <source>CC BY-SA 4.0</source>
+                <target state="translated">CC BY-SA 4.0</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.cc0" resname="sys_file_metadata.tx_twbase_license.cc0">
+                <source>CC0 1.0 (public domain)</source>
+                <target state="translated">CC0 1.0 (pubblico dominio)</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license.custom" resname="sys_file_metadata.tx_twbase_license.custom">
+                <source>Other licence</source>
+                <target state="translated">Altra licenza</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license_name" resname="sys_file_metadata.tx_twbase_license_name">
+                <source>Name of the licence</source>
+                <target state="translated">Nome della licenza</target>
+            </trans-unit>
+            <trans-unit id="sys_file_metadata.tx_twbase_license_url" resname="sys_file_metadata.tx_twbase_license_url">
+                <source>Address of the licence text</source>
+                <target state="translated">Indirizzo del testo della licenza</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
