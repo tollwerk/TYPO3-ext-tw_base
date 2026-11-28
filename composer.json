@@ -33,6 +33,11 @@
             "Tollwerk\\TwBase\\": "Classes/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tollwerk\\TwBaseComponents\\": "tests/Functional/Fixtures/Extensions/tw_base_components/Classes/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,

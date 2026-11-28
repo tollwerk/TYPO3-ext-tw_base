@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
 use Tollwerk\TwBase\Component\Example\ExampleEndpoint;
 use Tollwerk\TwBase\Component\Example\Records;
+use Tollwerk\TwBaseComponents\Domain\Model\Thing;
 use TYPO3\CMS\Core\Exception\SiteNotFoundException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -220,6 +221,34 @@ final class ExampleRecordsTest extends FunctionalTestCase
 
         self::assertSame([1795776304, 1795776303, 1795776301], $codes);
         self::assertSame(['value' => ['record' => 'pages']], $records->resolve(['value' => ['record' => 'pages']]));
+    }
+
+    /**
+     * A named model counts if Extbase maps it to the table by the name of its class, without Classes.php
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws UnexpectedValueException If the record with its model is missing
+     */
+    #[Test]
+    public function modelsMapByTheirName(): void
+    {
+        $this->importCSVDataSet(__DIR__ . '/Fixtures/Things.csv');
+        $records = $this->get(Records::class);
+        $table = 'tx_twbasecomponents_domain_model_thing';
+
+        $resolved = $records->resolve(['value' => ['record' => $table, 'uid' => 1, 'model' => Thing::class]]);
+        self::assertInstanceOf(Thing::class, $resolved['value'] ?? null);
+        self::assertSame('Lamp', $resolved['value']->getTitle());
+
+        try {
+            $records->resolve(['value' => ['record' => $table, 'uid' => 1]]);
+            self::fail('Without "model", the class of the table is unknown');
+        } catch (UnexpectedValueException $exception) {
+            self::assertSame(1795776304, $exception->getCode());
+            self::assertStringContainsString('the record needs to name its class as "model"', $exception->getMessage());
+        }
     }
 
     /**

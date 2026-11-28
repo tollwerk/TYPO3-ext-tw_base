@@ -19,6 +19,7 @@ use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
@@ -146,6 +147,10 @@ final readonly class Records
     /**
      * The class that maps to a table
      *
+     * A named class counts if Extbase maps it to the table, also by its name alone, such as
+     * Vendor\Ext\Domain\Model\Thing to tx_ext_domain_model_thing. Without a name, only the classes in the files
+     * Configuration/Extbase/Persistence/Classes.php count, as nothing lists the others.
+     *
      * @param string      $table Table
      * @param string|null $model Class the example names, if any
      *
@@ -155,6 +160,17 @@ final readonly class Records
      */
     private function modelClass(string $table, ?string $model): string
     {
+        if (null !== $model) {
+            $maps = class_exists($model)
+                && is_subclass_of($model, DomainObjectInterface::class)
+                && $this->dataMaps->buildDataMap($model)->tableName === $table;
+
+            return $maps ? $model : throw new UnexpectedValueException(
+                \sprintf('The class "%s" maps not to the table "%s"', $model, $table),
+                1795776303,
+            );
+        }
+
         $classes = [];
         foreach (array_keys($this->classes->getConfiguration()) as $class) {
             if (!\is_string($class) || !class_exists($class)) {
@@ -168,16 +184,9 @@ final readonly class Records
             $classes[] = $class;
         }
 
-        if (null !== $model) {
-            return \in_array($model, $classes, true) ? $model : throw new UnexpectedValueException(
-                \sprintf('The class "%s" maps not to the table "%s"', $model, $table),
-                1795776303,
-            );
-        }
-
         if (1 !== \count($classes)) {
             throw new UnexpectedValueException(\sprintf(
-                'The table "%s" maps to %d classes; the record needs to name one as "model"',
+                'The table "%s" maps to %d classes in Classes.php; the record needs to name its class as "model"',
                 $table,
                 \count($classes),
             ), 1795776304);
