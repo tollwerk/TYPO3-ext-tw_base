@@ -181,6 +181,8 @@ final class MailerTest extends FunctionalTestCase
         self::assertMatchesRegularExpression($link, $html);
         self::assertMatchesRegularExpression('#<h1 class="Mail__title" style="[^"]*color: \#8a0b0b;[^"]*">#', $html);
         self::assertStringContainsString('color: #ffb3b3 !important;', $html);
+        self::assertStringContainsString('content: "\\201C\\00a0";', $html);
+        self::assertSame(1, substr_count($html, '</head>'));
         self::assertStringNotContainsString('var(', $html);
         self::assertSame([], $this->get(AssetCollector::class)->getStyleSheets());
     }

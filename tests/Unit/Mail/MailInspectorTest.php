@@ -88,4 +88,38 @@ final class MailInspectorTest extends UnitTestCase
         ], new MailInspector()->problems($html, 'See <b>this</b>'));
         self::assertContains('The text part is empty', new MailInspector()->problems($html, ' '));
     }
+
+    /**
+     * The contrast counts for colors that end in "a", in every notation of the settings, and a color that cannot be
+     * measured is a problem of its own
+     *
+     * @return void
+     */
+    #[Test]
+    public function contrastOfEveryNotation(): void
+    {
+        $html = <<<'HTML'
+            <!DOCTYPE html><html lang="en"><head>
+            <meta name="color-scheme" content="light dark"><title>Colors</title></head>
+            <body style="background: #ffffff !important; color: #1a1a1a"><h1>Colors</h1>
+            <p style="color: #0b4f8a">Accent</p><p style="color: #aaaaaa">Grey</p><p style="color: #7a9bda">Blue</p>
+            <p style="color: rgb(170 170 170)">Rgb</p><p style="color: rgba(118, 118, 118, 1)">Opaque</p>
+            <p style="color: #777777ff">Hex8</p><p style="color: #000a">Hex4</p>
+            <p style="color: rgb(0 0 0 / 50%)">Half</p><p style="color: hsl(0 0% 0%)">Hsl</p>
+            <div style="background: #1a1a1a"><p style="color: #2a2a2a">Dark</p></div></body></html>
+            HTML;
+
+        self::assertSame([
+            'The text "Grey" has a contrast of 2.32:1 instead of 4.5:1',
+            'The text "Blue" has a contrast of 2.79:1 instead of 4.5:1',
+            'The text "Rgb" has a contrast of 2.32:1 instead of 4.5:1',
+            'The text "Hex8" has a contrast of 4.48:1 instead of 4.5:1',
+            'The contrast of the text "Hex4" cannot be checked, as "#000a" is no opaque color in hex or rgb() notation',
+            'The contrast of the text "Half" cannot be checked, as "rgb(0 0 0 / 50%)" is no opaque color in hex or '
+                . 'rgb() notation',
+            'The contrast of the text "Hsl" cannot be checked, as "hsl(0 0% 0%)" is no opaque color in hex or rgb() '
+                . 'notation',
+            'The text "Dark" has a contrast of 1.21:1 instead of 4.5:1',
+        ], new MailInspector()->problems($html, "Colors\n\nAccent Grey Blue Rgb Opaque Hex8 Hex4 Half Hsl Dark"));
+    }
 }

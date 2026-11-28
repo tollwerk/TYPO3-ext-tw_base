@@ -4,3 +4,9 @@
 .Mail__title {
     color: var(--mail-color-accent);
 }
+
+@media (prefers-color-scheme: dark) {
+    .Mail__title::before {
+        content: "\201C\00a0";
+    }
+}

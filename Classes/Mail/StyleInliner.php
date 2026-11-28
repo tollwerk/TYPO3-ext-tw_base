@@ -56,13 +56,6 @@ final readonly class StyleInliner
     private const string TOKENS = 'twBase.mail.tokens.';
 
     /**
-     * Rules for media, as the inliner finds them
-     *
-     * @var string
-     */
-    private const string MEDIA = '/@media [^{]*+{([^{}]++|{[^{}]*+})*+}/';
-
-    /**
      * Mails with styles, with their sites
      *
      * @var WeakMap<FluidEmail, Site|null>
@@ -113,12 +106,13 @@ final readonly class StyleInliner
             $sources[] = $this->file($stylesheet);
         }
 
-        $css = $this->resolve(implode("\n", array_filter($sources, \is_string(...))), $settings);
-        preg_match_all(self::MEDIA, $css, $media);
-        $inlined = new CssToInlineStyles()->convert($html, (string) preg_replace(self::MEDIA, '', $css));
-        if ([] !== $media[0]) {
-            $style = "<style>\n" . implode("\n", $media[0]) . "\n</style>\n</head>";
-            $inlined = (string) preg_replace('#</head>#i', $style, $inlined, 1);
+        $css = new MailStylesheet(implode("\n", array_filter($sources, \is_string(...))), $this->tokens($settings));
+        $inlined = new CssToInlineStyles()->convert($html, $css->inline);
+        if ('' !== $css->head) {
+            // Inserted as it is: as the replacement of preg_replace(), "\201C" would lose its digits
+            $style = "<style>\n" . $css->head . "\n</style>\n";
+            $head = stripos($inlined, '</head>');
+            $inlined = (false === $head) ? $style . $inlined : substr_replace($inlined, $style, $head, 0);
         }
 
         $mail->html($inlined);
@@ -175,25 +169,15 @@ final readonly class StyleInliner
     }
 
     /**
-     * Replace the tokens with their values, from ":root" or from the settings of the site
+     * Tokens that the settings of a site set
      *
-     * @param string               $css      CSS
      * @param array<string, mixed> $settings Settings of the site, flat
      *
-     * @return string CSS without comments, ":root" and tokens
+     * @return array<string, string> Values by custom property without the dashes
      */
-    private function resolve(string $css, array $settings): string
+    private function tokens(array $settings): array
     {
-        $css = (string) preg_replace('#/\*.*?\*/#s', '', $css);
         $tokens = [];
-        preg_match_all('/:root\s*\{([^}]*)\}/', $css, $roots);
-        foreach ($roots[1] as $declarations) {
-            preg_match_all('/--([a-z0-9-]+)\s*:\s*([^;]+);/i', $declarations, $declared, PREG_SET_ORDER);
-            foreach ($declared as [, $name, $value]) {
-                $tokens[$name] = trim($value);
-            }
-        }
-
         foreach ($settings as $key => $value) {
             $property = self::property($key);
             if (null === $property || !\is_string($value) || '' === trim($value)) {
@@ -203,19 +187,6 @@ final readonly class StyleInliner
             $tokens[$property] = trim($value);
         }
 
-        $css = (string) preg_replace('/:root\s*\{[^}]*\}/', '', $css);
-        for ($depth = 0; $depth < 5 && str_contains($css, 'var('); ++$depth) {
-            $css = (string) preg_replace_callback(
-                '/var\(\s*--([a-z0-9-]+)\s*(?:,\s*([^()]*))?\)/i',
-                static function (array $match) use ($tokens): string {
-                    $fallback = trim($match[2] ?? '');
-
-                    return $tokens[$match[1]] ?? ('' === $fallback ? $match[0] : $fallback);
-                },
-                $css,
-            );
-        }
-
-        return $css;
+        return $tokens;
     }
 }

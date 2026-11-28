@@ -182,7 +182,7 @@ final readonly class MailInspector
      *
      * @param Element $element Element
      *
-     * @return string|null The problem, or null if there is none or the colors are unknown
+     * @return string|null The problem, or null if there is none or the element has no colors
      */
     private function contrastProblem(Element $element): ?string
     {
@@ -196,10 +196,22 @@ final readonly class MailInspector
         }
 
         $text = trim((string) preg_replace('/\s+/', ' ', $text));
-        $color = $this->luminance($this->style($element, '/(?:^|;)\s*color\s*:\s*([^;]+)/i'));
-        $background = $this->luminance($this->style($element, '/(?:^|;)\s*background(?:-color)?\s*:\s*([^;]+)/i'));
-        if ('' === $text || null === $color || null === $background) {
+        $colorValue = $this->style($element, '/(?:^|;)\s*color\s*:\s*([^;]+)/i');
+        $backgroundValue = $this->style($element, '/(?:^|;)\s*background(?:-color)?\s*:\s*([^;]+)/i');
+        // A token without a value is a problem of its own
+        $values = $colorValue . $backgroundValue;
+        if (in_array('', [$text, $colorValue, $backgroundValue], true) || str_contains($values, 'var(')) {
             return null;
+        }
+
+        $color = $this->luminance($colorValue);
+        $background = $this->luminance($backgroundValue);
+        if (null === $color || null === $background) {
+            return \sprintf(
+                'The contrast of the text "%s" cannot be checked, as "%s" is no opaque color in hex or rgb() notation',
+                mb_substr($text, 0, 40),
+                (null === $color) ? $colorValue : $backgroundValue,
+            );
         }
 
         $ratio = (max($color, $background) + 0.05) / (min($color, $background) + 0.05);
@@ -233,7 +245,8 @@ final readonly class MailInspector
             if (preg_match_all($pattern, $this->attribute($current, 'style'), $matches) > 0) {
                 $values = $matches[1] ?? [];
 
-                return trim((string) end($values), " \t\n!important");
+                // The value keeps "!important", which luminance() ignores; trim() with it would also take an "a"
+                return trim((string) end($values));
             }
         }
 
@@ -241,30 +254,64 @@ final readonly class MailInspector
     }
 
     /**
-     * Relative luminance of a color in hexadecimal notation
+     * Relative luminance of an opaque color
      *
-     * @param string $color Color, such as "#0b4f8a" or "#fff"
+     * @param string $color Color in hexadecimal or rgb() notation, such as "#0b4f8a", "#fff" or "rgb(11 79 138)"
      *
-     * @return float|null Null if the color has another notation
+     * @return float|null Null if the color has another notation or is transparent
      */
     private function luminance(string $color): ?float
     {
-        $color = strtolower(trim(str_replace('!important', '', $color)));
-        if (1 === preg_match('/^#([0-9a-f])([0-9a-f])([0-9a-f])$/', $color, $short)) {
-            $color = '#' . $short[1] . $short[1] . $short[2] . $short[2] . $short[3] . $short[3];
-        }
-
-        if (1 !== preg_match('/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/', $color, $hex)) {
+        $channels = $this->channels(strtolower(trim(str_replace('!important', '', $color))));
+        if (null === $channels) {
             return null;
         }
 
-        $channels = array_map(static function (string $channel): float {
-            $value = hexdec($channel) / 255;
+        $linear = array_map(static function (float $channel): float {
+            $value = $channel / 255;
 
             return $value <= 0.04045 ? $value / 12.92 : (($value + 0.055) / 1.055) ** 2.4;
-        }, [$hex[1], $hex[2], $hex[3]]);
+        }, $channels);
 
-        return 0.2126 * $channels[0] + 0.7152 * $channels[1] + 0.0722 * $channels[2];
+        return 0.2126 * $linear[0] + 0.7152 * $linear[1] + 0.0722 * $linear[2];
+    }
+
+    /**
+     * Red, green and blue of an opaque color
+     *
+     * @param string $color Color in lower case
+     *
+     * @return array{float, float, float}|null Channels from 0 to 255, or null if the color has another notation or is
+     *                                         transparent
+     */
+    private function channels(string $color): ?array
+    {
+        if (1 === preg_match('/^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/', $color, $hex)) {
+            $digits = (\strlen($hex[1]) <= 4) ? (string) preg_replace('/./', '$0$0', $hex[1]) : $hex[1];
+            $values = array_map(static fn(string $pair): float => (float) hexdec($pair), str_split($digits, 2));
+
+            return (($values[3] ?? 255.0) < 255.0) ? null : [$values[0] ?? 0.0, $values[1] ?? 0.0, $values[2] ?? 0.0];
+        }
+
+        $number = '([\d.]+%?)';
+        $pattern = '#^rgba?\(\s*' . $number . '[\s,]+' . $number . '[\s,]+' . $number
+            . '(?:\s*[,/]\s*' . $number . ')?\s*\)$#';
+        if (1 !== preg_match($pattern, $color, $rgb)) {
+            return null;
+        }
+
+        $alpha = $rgb[4] ?? '1';
+        $alpha = str_ends_with($alpha, '%') ? (float) $alpha / 100 : (float) $alpha;
+        if ($alpha < 1.0) {
+            return null;
+        }
+
+        $channel = static fn(string $value): float => min(
+            255.0,
+            str_ends_with($value, '%') ? (float) $value * 2.55 : (float) $value,
+        );
+
+        return [$channel($rgb[1]), $channel($rgb[2]), $channel($rgb[3])];
     }
 
     /**
