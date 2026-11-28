@@ -16,4 +16,5 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 ### Geändert
 
 - Neu geschrieben für TYPO3 14, bisher als Pfad-Paket in der Website des Accessibility Club entwickelt. Die Fassung davor liegt im Zweig `4.x`.
+- Die IDs der strukturierten Daten gehen von der Adresse aus, die der Router für die Seite baut, nicht von der Adresse der Anfrage, die der Seiten-Cache sonst samt Parametern wie `utm_source` für alle späteren Anfragen behält; `Tollwerk\TwBase\Routing\PageUri` liefert sie auch anderen Extensions. Der Graph beginnt vor jeder Seite leer, auch wenn eine Fehlerseite rendert, während eine andere Seite rendert.
 - `base:picture` erbt nicht mehr von `f:image`. Wie dieses gibt es für eine fehlende, gelöschte oder nicht erreichbare Datei nichts aus. Es bietet nur Formate an, die TYPO3 wirklich schreibt, und kein Kandidat ist breiter als das Bild oder sein Ausschnitt, auch wenn TYPO3 Bilder hochskaliert.

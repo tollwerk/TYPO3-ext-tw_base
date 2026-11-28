@@ -18,12 +18,16 @@ namespace Tollwerk\TwBase\Tests\Unit\EventListener;
 use InvalidArgumentException;
 use JsonException;
 use Psr\Log\NullLogger;
+use ReflectionAttribute;
+use ReflectionMethod;
 use Tollwerk\TwBase\Heading\EventListener\ResetHeadingContext;
 use Tollwerk\TwBase\Heading\HeadingContextManager;
 use Tollwerk\TwBase\StructuredData\EventListener\EmbedStructuredData;
 use Tollwerk\TwBase\StructuredData\StructuredDataGraph;
+use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
+use TYPO3\CMS\Frontend\Event\BeforePageIsResolvedEvent;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -64,6 +68,29 @@ final class PageGeneratedTest extends UnitTestCase
         $graph->register('WebPage', 'https://example.org/');
         new EmbedStructuredData($graph)($fragment);
         self::assertSame('<p>No head</p>', $fragment->getContent());
+    }
+
+    /**
+     * The graph also starts over before a page is resolved, so that an error page that renders while another page
+     * does neither takes its nodes nor its address
+     *
+     * @return void
+     */
+    public function testStructuredDataStartsOverBeforeAPage(): void
+    {
+        $graph = new StructuredDataGraph();
+        $graph->useBaseUri('https://example.org/stopped');
+        $graph->register('Event', '#event');
+        $listener = new ReflectionMethod(EmbedStructuredData::class, 'reset');
+        $events = array_map(
+            static fn(ReflectionAttribute $attribute): mixed => $attribute->newInstance()->event,
+            $listener->getAttributes(AsEventListener::class),
+        );
+        new EmbedStructuredData($graph)->reset();
+
+        self::assertSame([BeforePageIsResolvedEvent::class], $events);
+        self::assertTrue($graph->isEmpty());
+        self::assertSame('', $graph->baseUri());
     }
 
     /**

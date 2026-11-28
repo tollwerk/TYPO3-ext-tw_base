@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\ViewHelpers\StructuredData;
 
+use Tollwerk\TwBase\Routing\PageUri;
 use Tollwerk\TwBase\StructuredData\StructuredDataGraph;
 use Tollwerk\TwBase\ViewHelpers\TypedArguments;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
@@ -36,12 +37,13 @@ abstract class AbstractStructuredDataViewHelper extends AbstractViewHelper
     /**
      * Constructor
      *
-     * @param StructuredDataGraph $graph JSON-LD graph of the page
+     * @param StructuredDataGraph $graph   JSON-LD graph of the page
+     * @param PageUri             $pageUri Address of the page, the base of relative ids
      */
-    public function __construct(protected readonly StructuredDataGraph $graph) {}
+    public function __construct(protected readonly StructuredDataGraph $graph, private readonly PageUri $pageUri) {}
 
     /**
-     * Make ids relative to the page that renders
+     * Make ids relative to the page that renders, by its one address and not by the address of the request
      *
      * @return StructuredDataGraph
      */
@@ -49,7 +51,7 @@ abstract class AbstractStructuredDataViewHelper extends AbstractViewHelper
     {
         $request = $this->request();
         if ($request instanceof \Psr\Http\Message\ServerRequestInterface) {
-            $this->graph->useBaseUri((string) $request->getUri());
+            $this->graph->useBaseUri((string) $this->pageUri->of($request));
         }
 
         return $this->graph;

@@ -19,6 +19,7 @@ use JsonException;
 use Tollwerk\TwBase\StructuredData\StructuredDataGraph;
 use TYPO3\CMS\Core\Attribute\AsEventListener;
 use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
+use TYPO3\CMS\Frontend\Event\BeforePageIsResolvedEvent;
 
 /**
  * Embeds the JSON-LD graph into the head of a page before the page is cached
@@ -33,7 +34,6 @@ use TYPO3\CMS\Frontend\Event\AfterCacheableContentIsGeneratedEvent;
  * @license   https://spdx.org/licenses/GPL-2.0-or-later.html GPL-2.0-or-later
  * @link      https://code.tollwerk.net/tollwerk/typo3/extensions/tw-base
  */
-#[AsEventListener('tw-base/embed-structured-data')]
 final readonly class EmbedStructuredData
 {
     /**
@@ -52,6 +52,7 @@ final readonly class EmbedStructuredData
      *
      * @throws JsonException If a value of the graph cannot be encoded
      */
+    #[AsEventListener('tw-base/embed-structured-data')]
     public function __invoke(AfterCacheableContentIsGeneratedEvent $event): void
     {
         $content = $event->getContent();
@@ -61,6 +62,20 @@ final readonly class EmbedStructuredData
             $event->setContent(substr_replace($content, $script, $head, 0));
         }
 
+        $this->graph->reset();
+    }
+
+    /**
+     * Start over before a page is resolved
+     *
+     * An error page can render while another page does, such as for a record that is not found, and must not take its
+     * nodes or its address.
+     *
+     * @return void
+     */
+    #[AsEventListener('tw-base/reset-structured-data', event: BeforePageIsResolvedEvent::class)]
+    public function reset(): void
+    {
         $this->graph->reset();
     }
 }
