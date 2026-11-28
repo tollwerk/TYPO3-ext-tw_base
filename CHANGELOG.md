@@ -16,6 +16,9 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 ### Geändert
 
 - Neu geschrieben für TYPO3 14, bisher als Pfad-Paket in der Website des Accessibility Club entwickelt. Die Fassung davor liegt im Zweig `4.x`.
+- Name, Adresse und Quelle der Urheberangabe heißen jetzt `creator` und `source` wie in EXT:filemetadata und `tx_twbase_creator_url`, statt `tx_twbase_author`, `tx_twbase_author_url` und `tx_twbase_source_url` aus 4.x. Der Upgrade-Wizard `twBase_attributionFrom4x` überträgt die alten Werte, wo die neuen Felder leer sind, und ersetzt NULL im Jahr und in den Feldern der Lizenz, an dem der Datenbankvergleich sonst scheitert; das README beschreibt die Schritte.
+- Adresse, Jahr, Lizenz und Adresse der Lizenz gelten in jeder Sprache gleich (`l10n_mode` `exclude`), wie `creator`; übersetzte Seiten mischen nach einer Korrektur nicht mehr den neuen Namen mit der alten Lizenz.
+- Der Alternativtext in den Metadaten ist wieder Pflicht wie in 4.x, und Videos haben wieder ein Feld dafür.
 - Tests, die mehrere Verhalten unter einem Namen prüften, sind nach Verhalten aufgeteilt und benannt.
 - `LinkInfo::isExternal()` gilt nur für Adressen, deren Host nicht zur aktuellen Site gehört, zu ihrer Basis oder der einer ihrer Sprachen; eine absolute Adresse der eigenen Website ist kein externer Link mehr. `LinkInfoFactory::create()` nimmt dafür die Site.
 - Ein Beispiel bereitet die Anfrage vor wie der `RequestHandler` des Frontends, den es ersetzt: Adressen von Dateien haben das Präfix der Seite, etwa `/fileadmin/logo.png` statt `fileadmin/logo.png` unter `/de/`, und Dateien aus nicht öffentlichen Speichern bekommen ihre Adresse über `eID=dumpFile`.

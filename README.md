@@ -14,6 +14,18 @@ composer require tollwerk/tw-base
 
 Die Fassung für ältere Versionen von TYPO3 liegt im Zweig `4.x`.
 
+### Update von 4.x
+
+4.x hielt Urheberin oder Urheber einer Datei, ihre Adresse und die Quelle in eigenen Spalten; jetzt stehen sie in `creator` und `source` von EXT:filemetadata und in `tx_twbase_creator_url`. Außerdem erlaubte 4.x NULL im Jahr und in den Feldern der Lizenz, was der Datenbankvergleich nicht in NOT NULL ändern kann. Das Update geht deshalb in drei Schritten:
+
+1. `vendor/bin/typo3 upgrade:run twBase_attributionFrom4x` ersetzt NULL durch 0 und eine leere Zeichenkette und überträgt Name und Quelle, wo die neuen Felder leer sind.
+2. Der Datenbankvergleich legt `tx_twbase_creator_url` an.
+3. Derselbe Wizard überträgt danach die Adressen; er sagt im ersten Lauf, dass er noch einmal laufen muss.
+
+Die alten Spalten bleiben, bis der Datenbankvergleich sie entfernen darf.
+
+Die Urheberangabe gilt in jeder Sprache gleich, wie `creator` im Core; nur der Name einer eigenen Lizenz lässt sich übersetzen. Der Alternativtext ist wie in 4.x Pflicht, auch für Videos.
+
 ## Komponenten
 
 `tw_base` meldet seine Fluid-Komponenten unter dem Namespace `Tollwerk\Components` mit der **Priorität 10** an und bindet dafür das Präfix `twc`, das alle Pakete von tollwerk für ihre Komponenten teilen. Eine Extension nimmt eine eigene Priorität unter 100, ein Sitepackage eine ab 100; die höhere ersetzt eine Komponente unter demselben Namen.
