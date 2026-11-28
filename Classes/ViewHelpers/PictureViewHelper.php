@@ -17,12 +17,15 @@ namespace Tollwerk\TwBase\ViewHelpers;
 
 use Exception;
 use Override;
+use RuntimeException;
 use TYPO3\CMS\Core\Html\Srcset\SrcsetAttribute;
 use TYPO3\CMS\Core\Html\Srcset\SrcsetCandidate;
 use TYPO3\CMS\Core\Html\Srcset\WidthSrcsetCandidate;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\Area;
 use TYPO3\CMS\Core\Imaging\ImageManipulation\CropVariantCollection;
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
+use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Service\ImageService;
@@ -93,13 +96,18 @@ final class PictureViewHelper extends AbstractTagBasedViewHelper
     /**
      * Render the picture
      *
-     * @return string
+     * @return string Picture, or an empty string if the file is not available, as with f:image
      *
      * @throws ViewHelperException If the image is missing or the descriptors are invalid
+     * @throws RuntimeException If the storage of the file cannot be found
      */
     public function render(): string
     {
         $image = $this->image();
+        if ($this->isUnavailable($image)) {
+            return '';
+        }
+
         $this->tag->addAttribute('alt', $this->text($this->arguments['alt'] ?? $image->getProperty('alternative')));
         $this->tag->addAttribute('loading', $this->string('loading'));
         $this->tag->addAttribute('decoding', 'async');
@@ -111,6 +119,8 @@ final class PictureViewHelper extends AbstractTagBasedViewHelper
         }
 
         $crop = $this->cropArea($image);
+        // Even if TYPO3 scales images up, no candidate is wider than the image or its area
+        $maxWidth = (int) round($crop?->getWidth() ?? (float) $this->text($image->getProperty('width')));
         $sizes = $this->string('sizes');
         $sources = '';
         foreach (GeneralUtility::trimExplode(',', $this->string('formats'), true) as $format) {
@@ -119,24 +129,39 @@ final class PictureViewHelper extends AbstractTagBasedViewHelper
                 continue;
             }
 
+            $srcset = $this->srcset($image, $crop, $maxWidth, strtolower($format));
+            if (!($srcset instanceof SrcsetAttribute)) {
+                continue;
+            }
+
             $sources .= \sprintf(
                 '<source type="%s" srcset="%s" sizes="%s">',
                 $type,
-                htmlspecialchars($this->srcset($image, $crop, strtolower($format))->generateSrcset()),
+                htmlspecialchars($srcset->generateSrcset()),
                 htmlspecialchars($sizes),
             );
         }
 
-        $srcset = $this->srcset($image, $crop, null);
+        $srcset = $this->srcset($image, $crop, $maxWidth, null) ?? throw new ViewHelperException(
+            'The image cannot be processed',
+            1795868381,
+        );
         $widths = array_map(
             static fn(SrcsetCandidate $candidate): int => $candidate->getCalculatedWidth(),
             $srcset->getCandidates(),
         );
         $fallback = $this->imageService->applyProcessingInstructions($image, [
             ...(($widths === []) ? [] : ['width' => max($widths)]),
+            ...(($maxWidth > 0) ? ['maxWidth' => $maxWidth] : []),
             'crop' => $crop,
         ]);
-        $this->tag->addAttribute('src', $this->imageService->getImageUri($fallback));
+        $src = $this->imageService->getImageUri($fallback);
+        if ($src === '') {
+            // No public address, such as for a file in a storage that is not public
+            return '';
+        }
+
+        $this->tag->addAttribute('src', $src);
         $this->tag->addAttribute('srcset', $srcset->generateSrcset());
         $this->tag->addAttribute('sizes', $sizes);
         $this->tag->addAttribute('width', $this->text($fallback->getProperty('width')));
@@ -167,6 +192,22 @@ final class PictureViewHelper extends AbstractTagBasedViewHelper
     }
 
     /**
+     * Whether the file of an image is missing, deleted or in a storage that is offline
+     *
+     * @param FileInterface $image Image
+     *
+     * @return boolean
+     *
+     * @throws RuntimeException If the storage of the file cannot be found
+     */
+    private function isUnavailable(FileInterface $image): bool
+    {
+        $file = $image instanceof FileReference ? $image->getOriginalFile() : $image;
+
+        return $file instanceof File && ($file->isMissing() || $file->isDeleted() || !$file->getStorage()->isOnline());
+    }
+
+    /**
      * Area of the image to show
      *
      * @param FileInterface $image Image
@@ -185,15 +226,17 @@ final class PictureViewHelper extends AbstractTagBasedViewHelper
     /**
      * Sources of the image in one format
      *
-     * @param FileInterface $image  Image
-     * @param Area|null     $crop   Area of the image to show
-     * @param string|null   $format File extension of the format, or NULL for the original
+     * @param FileInterface $image    Image
+     * @param Area|null     $crop     Area of the image to show
+     * @param integer       $maxWidth Width of the image or its area, 0 if unknown
+     * @param string|null   $format   File extension of the format, or NULL for the original
      *
-     * @return SrcsetAttribute
+     * @return SrcsetAttribute|null Sources, or NULL if TYPO3 cannot write the format, so that it falls back to the
+     *                              original or to another format
      *
      * @throws ViewHelperException If the descriptors are invalid
      */
-    private function srcset(FileInterface $image, ?Area $crop, ?string $format): SrcsetAttribute
+    private function srcset(FileInterface $image, ?Area $crop, int $maxWidth, ?string $format): ?SrcsetAttribute
     {
         try {
             $srcset = SrcsetAttribute::createFromDescriptors(
@@ -210,11 +253,17 @@ final class PictureViewHelper extends AbstractTagBasedViewHelper
         foreach ($srcset->getCandidates() as $candidate) {
             $processed = $this->imageService->applyProcessingInstructions($image, [
                 'width' => $candidate->getCalculatedWidth(),
+                ...(($maxWidth > 0) ? ['maxWidth' => $maxWidth] : []),
                 'crop' => $crop,
                 ...(($format === null) ? [] : ['fileExtension' => $format]),
             ]);
+            $written = $processed->getExtension() === $format && !$processed->usesOriginalFile();
+            if ($format !== null && !$written) {
+                return null;
+            }
+
             $width = $processed->getProperty('width');
-            // Without upscaling, a candidate wider than the original is as wide as the original
+            // A candidate wider than the image or its area is as wide as it
             $narrower = \is_int($width) && ($width !== $candidate->getCalculatedWidth());
             if ($narrower && $candidate instanceof WidthSrcsetCandidate) {
                 $candidate->setWidth($width);

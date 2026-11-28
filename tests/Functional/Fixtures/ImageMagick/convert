@@ -1,0 +1,12 @@
+#!/bin/sh
+# ImageMagick of the system, except that it cannot write the format in TW_BASE_FAILING_FORMAT, as a processor that
+# lacks the encoder of a format; identify and composite are links to this script
+command=$(basename "$0")
+if [ "$command" = convert ] && [ -n "$TW_BASE_FAILING_FORMAT" ]; then
+    for argument in "$@"; do
+        case "$argument" in
+            *."$TW_BASE_FAILING_FORMAT" | *."$TW_BASE_FAILING_FORMAT"\' | "$TW_BASE_FAILING_FORMAT":*) exit 1 ;;
+        esac
+    done
+fi
+exec "/usr/bin/$command" "$@"

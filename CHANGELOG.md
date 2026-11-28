@@ -16,3 +16,4 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 ### Geändert
 
 - Neu geschrieben für TYPO3 14, bisher als Pfad-Paket in der Website des Accessibility Club entwickelt. Die Fassung davor liegt im Zweig `4.x`.
+- `base:picture` erbt nicht mehr von `f:image`. Wie dieses gibt es für eine fehlende, gelöschte oder nicht erreichbare Datei nichts aus. Es bietet nur Formate an, die TYPO3 wirklich schreibt, und kein Kandidat ist breiter als das Bild oder sein Ausschnitt, auch wenn TYPO3 Bilder hochskaliert.

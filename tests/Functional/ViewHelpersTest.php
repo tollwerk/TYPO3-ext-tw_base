@@ -62,13 +62,14 @@ final class ViewHelpersTest extends FunctionalTestCase
     protected array $coreExtensionsToLoad = ['filemetadata'];
 
     /**
-     * Images are processed with ImageMagick, as in production and in the pipeline
+     * Images are processed with ImageMagick, as in production and in the pipeline, and scaled up as TYPO3 does by
+     * default; the path leads to a wrapper that can fail to write a format
      *
      * @var array<string, mixed>
      */
     #[Override]
     protected array $configurationToUseInTestInstance = [
-        'GFX' => ['processor' => 'ImageMagick', 'processor_path' => '/usr/bin/', 'processor_allowUpscaling' => false],
+        'GFX' => ['processor' => 'ImageMagick', 'processor_path' => __DIR__ . '/Fixtures/ImageMagick/'],
     ];
 
     /**
@@ -230,6 +231,47 @@ final class ViewHelpersTest extends FunctionalTestCase
         self::assertSame('50vw', $img->getAttribute('sizes'));
         self::assertStringContainsString('200w', (string) $img->getAttribute('srcset'));
         self::assertSame('Ada, CC BY 4.0', trim((string) $page->querySelector('p')?->textContent));
+    }
+
+    /**
+     * A format that TYPO3 cannot write gets no source, instead of one with the original or another format
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the request is invalid
+     */
+    public function testPictureLeavesOutFormatsThatFail(): void
+    {
+        // TYPO3 runs ImageMagick with Symfony Process, which passes $_ENV on to it
+        $_ENV['TW_BASE_FAILING_FORMAT'] = 'avif';
+        try {
+            $page = $this->document('<base:picture image="{image}" srcset="200w, 400w" />', [
+                'image' => $this->file('failing.png'),
+            ]);
+        } finally {
+            unset($_ENV['TW_BASE_FAILING_FORMAT']);
+        }
+
+        $sources = $page->querySelectorAll('picture source');
+        self::assertCount(1, $sources);
+        self::assertSame('image/webp', $sources->item(0)?->getAttribute('type'));
+    }
+
+    /**
+     * A file that is missing renders nothing, as with f:image
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the request is invalid
+     */
+    public function testMissingPictureRendersNothing(): void
+    {
+        $image = $this->file('missing.png');
+        $image->setMissing(true);
+
+        self::assertSame('', trim($this->render('<base:picture image="{image}" />', ['image' => $image])));
     }
 
     /**
