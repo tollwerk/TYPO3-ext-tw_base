@@ -28,6 +28,10 @@ use TYPO3\CMS\Fluid\Event\RenderComponentEvent;
  * a site, such as "twc:a11yclub.page", comes before all others, since every component of the site builds on it, even
  * if the page renders its content first.
  *
+ * A component with an ES module also gets the runtime of tw_base, which its module imports enhance() from. TYPO3
+ * puts a prefix in the import map of the frontend only for packages whose modules a page loads and for their
+ * dependencies, and a package does not need to name tw_base as one.
+ *
  * @category  Tollwerk
  * @package   Tollwerk\TwBase
  * @author    Joschi Kuphal <joschi@tollwerk.de>
@@ -37,6 +41,13 @@ use TYPO3\CMS\Fluid\Event\RenderComponentEvent;
  */
 final readonly class RegisterResources
 {
+    /**
+     * Module of the runtime that components import enhance() from
+     *
+     * @var string
+     */
+    public const string RUNTIME = '@tollwerk/tw-base/JavaScript/enhance.js';
+
     /**
      * Constructor
      *
@@ -85,6 +96,7 @@ final readonly class RegisterResources
             return;
         }
 
+        $this->assetCollector->addJavaScriptModule(self::RUNTIME);
         $this->assetCollector->addJavaScriptModule($resources->module);
     }
 }

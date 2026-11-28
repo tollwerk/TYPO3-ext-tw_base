@@ -18,6 +18,7 @@ namespace Tollwerk\TwBase\Tests\Functional;
 use Override;
 use PHPUnit\Framework\Attributes\Test;
 use Psr\Container\ContainerExceptionInterface;
+use Tollwerk\TwBase\Component\EventListener\RegisterResources;
 use Tollwerk\TwBase\Component\Example\ExampleRenderer;
 use TYPO3\CMS\Core\Page\AssetCollector;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
@@ -114,7 +115,7 @@ final class ComponentsTest extends FunctionalTestCase
         self::assertSame(['tw_base_components:Test/Item/Item'], array_keys($critical));
         self::assertStringContainsString('.Item--done', $critical['tw_base_components:Test/Item/Item'] ?? '');
         self::assertSame(
-            ['@tollwerk/tw-base-components/Components/Test/Item/Item.js'],
+            [RegisterResources::RUNTIME, '@tollwerk/tw-base-components/Components/Test/Item/Item.js'],
             array_values($assets->getJavaScriptModules()),
         );
     }

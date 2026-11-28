@@ -191,9 +191,12 @@ final class ComponentLocator
     /**
      * Imports of the package of a component
      *
+     * An import maps its specifier to a path, or to an array with the path and the files it excludes. Excluded
+     * files still resolve through the prefix, so only the path counts.
+     *
      * @param Component $component Component
      *
-     * @return array<string, string>
+     * @return array<string, string> Paths by specifier
      */
     private function imports(Component $component): array
     {
@@ -203,11 +206,17 @@ final class ComponentLocator
             $imports = \is_array($configuration) && \is_array($configuration['imports'] ?? null)
                 ? $configuration['imports']
                 : [];
-            $this->imports[$component->packageKey] = array_filter(
-                $imports,
-                static fn(mixed $path, int|string $specifier): bool => \is_string($path) && \is_string($specifier),
-                ARRAY_FILTER_USE_BOTH,
-            );
+            $paths = [];
+            foreach ($imports as $specifier => $path) {
+                $path = \is_array($path) ? $path['path'] ?? null : $path;
+                if (!\is_string($specifier) || !\is_string($path)) {
+                    continue;
+                }
+
+                $paths[$specifier] = $path;
+            }
+
+            $this->imports[$component->packageKey] = $paths;
         }
 
         return $this->imports[$component->packageKey];

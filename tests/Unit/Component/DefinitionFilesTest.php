@@ -195,6 +195,32 @@ final class DefinitionFilesTest extends UnitTestCase
     }
 
     /**
+     * An import may map its path with the files it excludes
+     *
+     * @return void
+     * @throws LogicException If the module has no import
+     */
+    #[Test]
+    public function importMayExcludeFiles(): void
+    {
+        file_put_contents($this->folder . '/Resources/Public/Components/Event/Teaser/Teaser.js', 'export {};');
+        $this->file('Configuration/JavaScriptModules.php', '["imports" => ["@tollwerk/tw-events/" => ['
+            . '"path" => "EXT:tw_events/Resources/Public/", "exclude" => ["EXT:tw_events/Resources/Public/Build/"]]]]');
+        $component = new Component(
+            'Tollwerk\Components',
+            'event.teaser',
+            $this->folder . '/Resources/Private/Components/Event/Teaser/Teaser.fluid.html',
+            'tw_events',
+            $this->folder . '/',
+            'Event/Teaser/Teaser',
+        );
+
+        $resources = new ComponentLocator(self::createStub(PackageManager::class))->resources($component);
+
+        self::assertSame('@tollwerk/tw-events/Components/Event/Teaser/Teaser.js', $resources->module);
+    }
+
+    /**
      * Write a PHP file that returns an expression
      *
      * @param string $path    Path in the folder

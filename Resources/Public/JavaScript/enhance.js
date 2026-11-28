@@ -45,7 +45,12 @@ function run(registration, element) {
 
     ran.add(registration);
     done.set(element, ran);
-    registration.enhancer(element);
+    try {
+        registration.enhancer(element);
+    } catch (error) {
+        // One element that fails must not keep the others from their enhancement; the error still reaches the console
+        reportError(error);
+    }
 }
 
 /**
@@ -79,14 +84,16 @@ function added(mutations) {
  * Enhance every element that matches a selector, now and when it appears later
  *
  * @param {string} selector CSS selector
- * @param {function(Element): void} enhancer Function that enhances one element; it runs once per element
+ * @param {function(Element): void} enhancer Function that enhances one element; it runs once per element, and an
+ *     error it throws is reported without stopping the others
  */
 export function enhance(selector, enhancer) {
     const registration = { selector, enhancer };
     registrations.push(registration);
-    scan(registration, document.documentElement);
     if (observer === null) {
         observer = new MutationObserver(added);
         observer.observe(document.documentElement, { childList: true, subtree: true });
     }
+
+    scan(registration, document.documentElement);
 }

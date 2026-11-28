@@ -68,3 +68,51 @@ describe('enhance', () => {
         expect(second).toHaveBeenCalledTimes(3);
     });
 });
+
+describe('enhance with an enhancer that throws', () => {
+    let reported;
+
+    beforeEach(() => {
+        reported = vi.fn();
+        vi.stubGlobal('reportError', reported);
+        document.body.innerHTML = '<p class="Item" id="first">One</p><p class="Item">Two</p>';
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    const failing = (element) => {
+        if (element.id === 'first') {
+            throw new Error('No button');
+        }
+    };
+
+    it('still enhances the other elements and reports the error', () => {
+        const enhancer = vi.fn(failing);
+        enhance('.Item', enhancer);
+
+        expect(enhancer).toHaveBeenCalledTimes(2);
+        expect(reported).toHaveBeenCalledWith(new Error('No button'));
+    });
+
+    it('still runs the other registrations for added elements', async () => {
+        const other = vi.fn();
+        enhance('.Item', failing);
+        enhance('.Other', other);
+        document.body.insertAdjacentHTML('beforeend', '<div><p class="Item" id="first">Three</p></div>');
+        document.querySelector('div').insertAdjacentHTML('beforeend', '<p class="Other">Four</p>');
+        await settle();
+
+        expect(other).toHaveBeenCalledTimes(1);
+    });
+
+    it('still observes the document after a first call that failed', async () => {
+        const enhancer = vi.fn(failing);
+        enhance('.Item', enhancer);
+        document.body.insertAdjacentHTML('beforeend', '<p class="Item">Five</p>');
+        await settle();
+
+        expect(enhancer).toHaveBeenCalledTimes(3);
+    });
+});
