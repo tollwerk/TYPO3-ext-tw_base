@@ -3,6 +3,8 @@
     <file>Classes</file>
     <file>Configuration</file>
     <file>tests</file>
+    <file>ext_localconf.php</file>
+    <file>Resources/Private/Components</file>
     <arg name="extensions" value="php"/>
     <arg name="colors"/>
     <arg value="sp"/>

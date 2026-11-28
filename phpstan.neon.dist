@@ -6,3 +6,5 @@ parameters:
     - Classes
     - Configuration
     - tests
+    - ext_localconf.php
+    - Resources/Private/Components

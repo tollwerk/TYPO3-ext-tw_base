@@ -13,12 +13,17 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 - Das Site Set `tollwerk/tw-base` mit Absender, Kontaktadresse und Impressum für die Fußzeile der Mails; Antworten gehen an die Kontaktadresse.
 - Ein Verzeichnis der Mails aller Extensions aus `Configuration/Mails.php`, `Mailer::composeExample()` und `MailInspector` für die Tests, auch für den Kontrast.
 
+- Abhängigkeiten: `tijsverkoyen/css-to-inline-styles` schreibt die Styles der Mails in die Attribute `style`, weil viele Programme für Mails Stylesheets im Kopf übergehen; `typo3/cms-filemetadata` bringt die Felder `creator` und `source` der Urheberangabe; `jsdom` gibt den Tests des JavaScript ein DOM ohne Browser.
+- `docs/datenschutz.md` nennt die personenbezogenen Daten, die die Extension verarbeitet.
+
 ### Geändert
 
 - Neu geschrieben für TYPO3 14, bisher als Pfad-Paket in der Website des Accessibility Club entwickelt. Die Fassung davor liegt im Zweig `4.x`.
 - Name, Adresse und Quelle der Urheberangabe heißen jetzt `creator` und `source` wie in EXT:filemetadata und `tx_twbase_creator_url`, statt `tx_twbase_author`, `tx_twbase_author_url` und `tx_twbase_source_url` aus 4.x. Der Upgrade-Wizard `twBase_attributionFrom4x` überträgt die alten Werte, wo die neuen Felder leer sind, und ersetzt NULL im Jahr und in den Feldern der Lizenz, an dem der Datenbankvergleich sonst scheitert; das README beschreibt die Schritte.
 - Adresse, Jahr, Lizenz und Adresse der Lizenz gelten in jeder Sprache gleich (`l10n_mode` `exclude`), wie `creator`; übersetzte Seiten mischen nach einer Korrektur nicht mehr den neuen Namen mit der alten Lizenz.
 - Der Alternativtext in den Metadaten ist wieder Pflicht wie in 4.x, und Videos haben wieder ein Feld dafür.
+- Jeder Code einer Exception kommt einmal vor: Die Fehler der Datensätze von Beispielen haben neue Codes, die vorher auch Fehler in `Configuration/Mails.php` hatten.
+- phpcs, PHPStan, Rector und PHP CS Fixer prüfen auch `ext_localconf.php` und das PHP der Komponenten.
 - Tests, die mehrere Verhalten unter einem Namen prüften, sind nach Verhalten aufgeteilt und benannt.
 - `LinkInfo::isExternal()` gilt nur für Adressen, deren Host nicht zur aktuellen Site gehört, zu ihrer Basis oder der einer ihrer Sprachen; eine absolute Adresse der eigenen Website ist kein externer Link mehr. `LinkInfoFactory::create()` nimmt dafür die Site.
 - Ein Beispiel bereitet die Anfrage vor wie der `RequestHandler` des Frontends, den es ersetzt: Adressen von Dateien haben das Präfix der Seite, etwa `/fileadmin/logo.png` statt `fileadmin/logo.png` unter `/de/`, und Dateien aus nicht öffentlichen Speichern bekommen ihre Adresse über `eID=dumpFile`.

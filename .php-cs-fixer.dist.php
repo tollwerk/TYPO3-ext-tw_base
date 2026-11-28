@@ -4,4 +4,4 @@ declare(strict_types=1);
 
 use Tollwerk\Guidelines\PhpCsFixer\ConfigFactory;
 
-return ConfigFactory::create(__DIR__, ['Classes', 'Configuration', 'tests']);
+return ConfigFactory::create(__DIR__, ['Classes', 'Configuration', 'tests', 'ext_localconf.php', 'Resources/Private/Components']);

@@ -104,13 +104,13 @@ final readonly class Records
         $uid = $value['uid'] ?? null;
         $model = $value['model'] ?? null;
         if (!\is_string($table) || !\is_int($uid) || (null !== $model && !\is_string($model))) {
-            throw new UnexpectedValueException('A record needs a table, a uid and a class, if any', 1795776301);
+            throw new UnexpectedValueException('A record needs a table, a uid and a class, if any', 1795871878);
         }
 
         $object = null === $model ? null : $this->file($table, $uid, $model);
         $object ??= $this->persistence->getObjectByIdentifier($uid, $this->modelClass($table, $model));
         if (!\is_object($object)) {
-            throw new UnexpectedValueException(\sprintf('There is no record %s:%d', $table, $uid), 1795776302);
+            throw new UnexpectedValueException(\sprintf('There is no record %s:%d', $table, $uid), 1795871879);
         }
 
         return $object;
@@ -138,7 +138,7 @@ final readonly class Records
         } catch (ResourceDoesNotExistException $exception) {
             throw new UnexpectedValueException(
                 \sprintf('There is no record %s:%d', $table, $uid),
-                1795776302,
+                1795871880,
                 $exception,
             );
         }
@@ -167,7 +167,7 @@ final readonly class Records
 
             return $maps ? $model : throw new UnexpectedValueException(
                 \sprintf('The class "%s" maps not to the table "%s"', $model, $table),
-                1795776303,
+                1795871881,
             );
         }
 
@@ -189,7 +189,7 @@ final readonly class Records
                 'The table "%s" maps to %d classes in Classes.php; the record needs to name its class as "model"',
                 $table,
                 \count($classes),
-            ), 1795776304);
+            ), 1795871882);
         }
 
         return $classes[0];

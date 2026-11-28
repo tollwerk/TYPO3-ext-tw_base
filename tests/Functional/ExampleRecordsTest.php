@@ -242,7 +242,7 @@ final class ExampleRecordsTest extends FunctionalTestCase
             }
         }
 
-        self::assertSame([1795776304, 1795776303, 1795776301], $codes);
+        self::assertSame([1795871882, 1795871881, 1795871878], $codes);
         self::assertSame(['value' => ['record' => 'pages']], $records->resolve(['value' => ['record' => 'pages']]));
     }
 
@@ -269,7 +269,7 @@ final class ExampleRecordsTest extends FunctionalTestCase
             $records->resolve(['value' => ['record' => $table, 'uid' => 1]]);
             self::fail('Without "model", the class of the table is unknown');
         } catch (UnexpectedValueException $exception) {
-            self::assertSame(1795776304, $exception->getCode());
+            self::assertSame(1795871882, $exception->getCode());
             self::assertStringContainsString('the record needs to name its class as "model"', $exception->getMessage());
         }
     }
@@ -298,7 +298,7 @@ final class ExampleRecordsTest extends FunctionalTestCase
         self::assertSame('Logo', $reference->getTitle());
         self::assertInstanceOf(File::class, $file);
         self::assertSame('logo.png', $file->getName());
-        $this->expectExceptionCode(1795776302);
+        $this->expectExceptionCode(1795871880);
         $records->resolve(['file' => ['record' => 'sys_file', 'uid' => 99, 'model' => File::class]]);
     }
 

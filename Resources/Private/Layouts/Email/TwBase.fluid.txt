@@ -1,11 +1,11 @@
-{website -> f:format.raw()}
+<f:comment>The text part is no HTML: escaped, "&" would show as "&amp;". Nothing here reaches a browser.</f:comment>{website -> f:format.raw()}
 
 {subject -> f:format.raw()}
 
 <f:render section="Main" />
 
 --
-<f:if condition="{f:render(section: 'Reason', optional: true) -> f:format.trim()}">{f:render(section: 'Reason', optional: true) -> f:format.trim() -> f:format.raw()}
+<f:comment>As above, the reason, the sender and the links are text, not HTML.</f:comment><f:if condition="{f:render(section: 'Reason', optional: true) -> f:format.trim()}">{f:render(section: 'Reason', optional: true) -> f:format.trim() -> f:format.raw()}
 
 </f:if>{sender -> f:format.raw()}
 <f:for each="{footerLinks}" as="link">{link.label -> f:format.raw()}<f:if condition="{link.address}">: {link.address -> f:format.raw()}</f:if>

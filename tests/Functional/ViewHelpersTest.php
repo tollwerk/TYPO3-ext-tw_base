@@ -180,8 +180,9 @@ final class ViewHelpersTest extends FunctionalTestCase
                 </base:heading>
                 HTML);
             self::fail('The missing partial is an error');
-        } catch (Exception) {
+        } catch (Exception $exception) {
             // Expected, as in a content element whose error TYPO3 shows
+            self::assertStringContainsString('Missing', $exception->getMessage());
         }
 
         $page = $this->document('<base:heading content="Next" /><p>{base:structuredData.entityContext.get()}</p>');

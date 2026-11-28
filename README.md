@@ -14,6 +14,8 @@ composer require tollwerk/tw-base
 
 Die Fassung für ältere Versionen von TYPO3 liegt im Zweig `4.x`.
 
+Welche personenbezogenen Daten die Extension verarbeitet, steht in [docs/datenschutz.md](docs/datenschutz.md).
+
 ### Update von 4.x
 
 4.x hielt Urheberin oder Urheber einer Datei, ihre Adresse und die Quelle in eigenen Spalten; jetzt stehen sie in `creator` und `source` von EXT:filemetadata und in `tx_twbase_creator_url`. Außerdem erlaubte 4.x NULL im Jahr und in den Feldern der Lizenz, was der Datenbankvergleich nicht in NOT NULL ändern kann. Das Update geht deshalb in drei Schritten:
