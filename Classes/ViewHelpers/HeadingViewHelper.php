@@ -64,7 +64,7 @@ final class HeadingViewHelper extends AbstractTagBasedViewHelper
         parent::initializeArguments();
         $this->registerArgument('content', 'string', 'Content of the heading, which may contain markup', true);
         $this->registerArgument('level', 'int', 'Level, if the position does not decide it', false);
-        $this->registerArgument('type', 'int', 'Visual type as a level, if it differs from the level', false);
+        $this->registerArgument('type', 'int', 'Visual type as a level; omitted or 0 for the type of the level', false);
         $this->registerArgument('hidden', 'bool', 'Whether the heading is only for assistive technology', false, false);
         $this->registerArgument('restoreContext', 'bool', 'Whether the section ends with this ViewHelper', false, true);
     }
@@ -98,12 +98,13 @@ final class HeadingViewHelper extends AbstractTagBasedViewHelper
             \is_string($class) ? trim($class) : '',
         ], static fn(string $name): bool => $name !== '')));
         $this->tag->setContent(trim($this->stringArgument('content') ?? ''));
-        $section = $this->tag->render() . $this->renderedChildren();
-
-        if ($this->boolArgument('restoreContext')) {
-            $this->headingContextManager->tearDown($context);
+        // In production, TYPO3 shows the error of a content element and renders on, so the section ends either way
+        try {
+            return $this->tag->render() . $this->renderedChildren();
+        } finally {
+            if ($this->boolArgument('restoreContext')) {
+                $this->headingContextManager->tearDown($context);
+            }
         }
-
-        return $section;
     }
 }

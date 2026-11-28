@@ -36,6 +36,7 @@ final readonly class HeadingContext
      * @param integer       $afterLevel Level after the heading and its section
      * @param boolean       $hidden     Whether the heading is only for assistive technology
      * @param list<integer> $skipped    Levels the heading skips, which is an error in the outline
+     * @param integer       $type       Visual type of the heading as a level
      */
     public function __construct(
         public string $marker,
@@ -44,5 +45,6 @@ final readonly class HeadingContext
         public int $afterLevel,
         public bool $hidden = false,
         public array $skipped = [],
+        public int $type = 1,
     ) {}
 }

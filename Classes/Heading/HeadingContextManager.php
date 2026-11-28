@@ -92,7 +92,7 @@ final class HeadingContextManager
      * Set up the context of a heading
      *
      * @param integer|null $level      Level, or NULL for the next level
-     * @param integer|null $visualType Visual type as a level, or NULL for the type of the level
+     * @param integer|null $visualType Visual type as a level, or NULL or 0 for the type of the level
      * @param boolean      $hidden     Whether the heading is only for assistive technology
      *
      * @return HeadingContext
@@ -109,7 +109,8 @@ final class HeadingContextManager
         }
 
         $this->currentLevel = $level;
-        $this->currentType = max(1, $visualType ?? $level);
+        // 0 means the type of the level, as in earlier major versions; Fluid also turns an empty integer into 0
+        $this->currentType = (($visualType ?? 0) > 0) ? $visualType : $level;
         $context = new HeadingContext(
             'heading-' . ++$this->sequence,
             $level,
@@ -117,6 +118,7 @@ final class HeadingContextManager
             $afterLevel,
             $hidden,
             $skipped,
+            $this->currentType,
         );
         $this->contexts[] = $context;
 
@@ -158,9 +160,9 @@ final class HeadingContextManager
     }
 
     /**
-     * Visual type of the current heading as a level
+     * Visual type of the heading of the current context as a level
      *
-     * @return integer
+     * @return integer Type, or 0 before the first heading
      */
     public function currentType(): int
     {
@@ -194,6 +196,7 @@ final class HeadingContextManager
         $marker = trim($marker);
         if ($marker === '') {
             $this->currentLevel = ($root || ($this->currentLevel === 0)) ? 0 : 1;
+            $this->currentType = 0;
             $this->contexts = [];
 
             return $this->currentLevel;
@@ -203,6 +206,8 @@ final class HeadingContextManager
             $context = array_pop($this->contexts);
             $this->currentLevel = $context->afterLevel;
         }
+
+        $this->currentType = array_last($this->contexts)->type ?? 0;
 
         return $this->currentLevel;
     }

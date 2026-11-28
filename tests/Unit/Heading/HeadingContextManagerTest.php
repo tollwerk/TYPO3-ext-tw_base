@@ -72,6 +72,27 @@ final class HeadingContextManagerTest extends UnitTestCase
         self::assertSame(4, $hidden->level);
         self::assertSame('medium', $hidden->visualType);
         self::assertSame('x-small', $manager->setUp(9)->visualType);
+        self::assertSame('x-large', $manager->setUp(2, 0)->visualType);
+        self::assertSame(2, $manager->currentType());
+    }
+
+    /**
+     * After restoring a marker, the type is that of the heading of the restored context
+     *
+     * @return void
+     */
+    public function testRestoringATypeWithItsContext(): void
+    {
+        $manager = new HeadingContextManager(new NullLogger());
+        $manager->setUp(1);
+        $marker = $manager->currentMarker();
+        $manager->setUp(2, 6);
+        $manager->setUp(3, 5);
+
+        $manager->restore($marker);
+        self::assertSame(1, $manager->currentType());
+        $manager->restore('');
+        self::assertSame(0, $manager->currentType());
     }
 
     /**

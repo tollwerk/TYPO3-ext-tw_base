@@ -59,9 +59,11 @@ final class WrapViewHelper extends AbstractStructuredDataViewHelper
     {
         $graph = $this->graph();
         $graph->pushMainEntity($this->stringArgument('id') ?? '');
-        $content = $this->renderedChildren();
-        $graph->popMainEntity();
-
-        return $content;
+        // In production, TYPO3 shows the error of a content element and renders on, so the entity ends either way
+        try {
+            return $this->renderedChildren();
+        } finally {
+            $graph->popMainEntity();
+        }
     }
 }

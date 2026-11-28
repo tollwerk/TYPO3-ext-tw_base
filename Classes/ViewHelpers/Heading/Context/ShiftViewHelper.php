@@ -75,10 +75,14 @@ final class ShiftViewHelper extends AbstractViewHelper
         }
 
         $marker = $this->headingContextManager->currentMarker();
+        // Without a marker, the levels return to where they were: 0 at the root, 1 after a heading
+        $root = $this->headingContextManager->currentLevel() === 0;
         $this->headingContextManager->setUp($this->headingContextManager->currentLevel() + $by);
-        $content = $this->renderedChildren();
-        $this->headingContextManager->restore($marker, true);
-
-        return $content;
+        // In production, TYPO3 shows the error of a content element and renders on, so the shift ends either way
+        try {
+            return $this->renderedChildren();
+        } finally {
+            $this->headingContextManager->restore($marker, $root);
+        }
     }
 }

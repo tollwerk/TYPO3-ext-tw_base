@@ -17,6 +17,7 @@ namespace Tollwerk\TwBase\Tests\Functional;
 
 use Dom\Element;
 use Dom\HTMLDocument;
+use Exception;
 use GdImage;
 use InvalidArgumentException;
 use JsonException;
@@ -130,6 +131,60 @@ final class ViewHelpersTest extends FunctionalTestCase
         $deep = $page->querySelector('[role="heading"]');
         self::assertSame('8', $deep?->getAttribute('aria-level'));
         self::assertSame('Heading Heading--x-small Heading--skipped', $deep->getAttribute('class'));
+    }
+
+    /**
+     * A shift after a restore to the start of the page keeps the first level, so no second h1 follows it
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the request is invalid
+     */
+    public function testShiftAfterAnEmptyMarker(): void
+    {
+        $page = $this->document(<<<'HTML'
+            <base:heading content="Title" />
+            <base:heading.context.restore context="" />
+            <base:heading.context.shift by="1"><p>Accordion</p></base:heading.context.shift>
+            <base:heading content="After" />
+            HTML);
+
+        self::assertSame('After', $page->querySelector('h2')?->textContent);
+        self::assertCount(1, $page->querySelectorAll('h1'));
+    }
+
+    /**
+     * A content element that fails closes its heading, shift and entity, as TYPO3 renders the rest of the page in
+     * production
+     *
+     * @return void
+     *
+     * @throws ContainerExceptionInterface If a service is missing
+     * @throws InvalidArgumentException If the request is invalid
+     */
+    public function testFailingContentLeavesNoState(): void
+    {
+        try {
+            $this->render(<<<'HTML'
+                <base:heading content="Broken">
+                    <base:heading.context.shift by="1">
+                        <base:structuredData.entityContext.wrap id="#broken">
+                            <f:render partial="Missing" />
+                        </base:structuredData.entityContext.wrap>
+                    </base:heading.context.shift>
+                </base:heading>
+                HTML);
+            self::fail('The missing partial is an error');
+        } catch (Exception) {
+            // Expected, as in a content element whose error TYPO3 shows
+        }
+
+        $page = $this->document('<base:heading content="Next" /><p>{base:structuredData.entityContext.get()}</p>');
+
+        // As after the section of a heading of the first level that rendered
+        self::assertSame('Next', $page->querySelector('h2')?->textContent);
+        self::assertSame('', $page->querySelector('p')?->textContent);
     }
 
     /**
