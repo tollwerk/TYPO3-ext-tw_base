@@ -16,6 +16,6 @@ stages:
   - test
 
 include:
-  - component: $CI_SERVER_FQDN/tollwerk/guidelines/base@f332805f5fcad46045fa13d0abfe975e715b700a
-  - component: $CI_SERVER_FQDN/tollwerk/guidelines/php@f332805f5fcad46045fa13d0abfe975e715b700a
-  - component: $CI_SERVER_FQDN/tollwerk/guidelines/node@f332805f5fcad46045fa13d0abfe975e715b700a
+  - component: $CI_SERVER_FQDN/tollwerk/guidelines/base@c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6
+  - component: $CI_SERVER_FQDN/tollwerk/guidelines/php@c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6
+  - component: $CI_SERVER_FQDN/tollwerk/guidelines/node@c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6

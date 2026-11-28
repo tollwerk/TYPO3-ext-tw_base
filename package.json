@@ -6,7 +6,7 @@
     "license": "GPL-2.0-or-later",
     "type": "module",
     "devDependencies": {
-        "@tollwerk/guidelines": "git+ssh://git@code.tollwerk.net/tollwerk/guidelines.git#f332805f5fcad46045fa13d0abfe975e715b700a",
+        "@tollwerk/guidelines": "git+ssh://git@code.tollwerk.net/tollwerk/guidelines.git#c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6",
         "jsdom": "31.0.1"
     }
 }

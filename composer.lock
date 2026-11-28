@@ -12775,12 +12775,12 @@
             "source": {
                 "type": "git",
                 "url": "git@code.tollwerk.net:tollwerk/guidelines.git",
-                "reference": "f332805f5fcad46045fa13d0abfe975e715b700a"
+                "reference": "c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://code.tollwerk.net/api/v4/projects/tollwerk%2Fguidelines/repository/archive.zip?sha=f332805f5fcad46045fa13d0abfe975e715b700a",
-                "reference": "f332805f5fcad46045fa13d0abfe975e715b700a",
+                "url": "https://code.tollwerk.net/api/v4/projects/tollwerk%2Fguidelines/repository/archive.zip?sha=c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6",
+                "reference": "c1f56949bcdf5e48ef5f2aa4cc60467ef9d88bf6",
                 "shasum": ""
             },
             "require": {
@@ -12849,7 +12849,7 @@
                 "source": "https://code.tollwerk.net/tollwerk/guidelines/-/tree/main",
                 "issues": "https://code.tollwerk.net/tollwerk/guidelines/-/issues"
             },
-            "time": "2026-11-25T20:28:51+01:00"
+            "time": "2026-11-28T12:41:26+01:00"
         },
         {
             "name": "tomasvotruba/type-coverage",
