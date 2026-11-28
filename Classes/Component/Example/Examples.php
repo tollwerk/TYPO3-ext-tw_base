@@ -18,7 +18,7 @@ namespace Tollwerk\TwBase\Component\Example;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-use UnexpectedValueException;
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 
 /**
  * The examples of a component and the components it requires, from "<Name>.examples.php" next to its template
@@ -118,9 +118,13 @@ final readonly class Examples
     {
         $files = [];
         $folder = rtrim($folder, '/') . '/';
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
-        );
+        try {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),
+            );
+        } catch (\UnexpectedValueException $exception) {
+            throw new UnexpectedValueException(\sprintf('There is no folder %s', $folder), 1795871883, $exception);
+        }
         foreach ($iterator as $file) {
             if (!$file instanceof SplFileInfo || !str_ends_with($file->getFilename(), '.examples.php')) {
                 continue;

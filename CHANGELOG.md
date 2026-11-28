@@ -13,6 +13,7 @@ Alle nennenswerten Änderungen an der Extension. Das Format folgt [Keep a Change
 - Das Site Set `tollwerk/tw-base` mit Absender, Kontaktadresse und Impressum für die Fußzeile der Mails; Antworten gehen an die Kontaktadresse.
 - Ein Verzeichnis der Mails aller Extensions aus `Configuration/Mails.php`, `Mailer::composeExample()` und `MailInspector` für die Tests, auch für den Kontrast.
 
+- Das Interface `Tollwerk\TwBase\Exception`, das jede Exception von tw_base implementiert. Die Exceptions unter `Tollwerk\TwBase\Exception\` erben von ihrer Klasse der Standardbibliothek oder, für View-Helper, von der Exception der View-Helper von Fluid; wer `UnexpectedValueException` fängt, fängt sie weiter. Ein Beispiel antwortet nur auf Fehler von tw_base mit dem Status 404, andere gehen an die Behandlung von TYPO3.
 - Abhängigkeiten: `tijsverkoyen/css-to-inline-styles` schreibt die Styles der Mails in die Attribute `style`, weil viele Programme für Mails Stylesheets im Kopf übergehen; `typo3/cms-filemetadata` bringt die Felder `creator` und `source` der Urheberangabe; `jsdom` gibt den Tests des JavaScript ein DOM ohne Browser.
 - `docs/datenschutz.md` nennt die personenbezogenen Daten, die die Extension verarbeitet.
 

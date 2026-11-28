@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Mail;
 
-use UnexpectedValueException;
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 
 /**
  * A mail an extension sends, from its "Configuration/Mails.php"

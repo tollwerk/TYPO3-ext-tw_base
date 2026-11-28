@@ -15,6 +15,7 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Component\Example;
 
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 use TYPO3\CMS\Core\Resource\Exception\ResourceDoesNotExistException;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
@@ -23,7 +24,6 @@ use TYPO3\CMS\Extbase\DomainObject\DomainObjectInterface;
 use TYPO3\CMS\Extbase\Persistence\ClassesConfiguration;
 use TYPO3\CMS\Extbase\Persistence\Generic\Mapper\DataMapFactory;
 use TYPO3\CMS\Extbase\Persistence\PersistenceManagerInterface;
-use UnexpectedValueException;
 
 /**
  * Records that examples name in place of models

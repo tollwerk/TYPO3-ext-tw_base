@@ -23,11 +23,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Tollwerk\TwBase\Component\Example\ExampleEndpoint;
 use Tollwerk\TwBase\Component\Example\ExampleRenderer;
+use Tollwerk\TwBase\Exception;
 use TYPO3\CMS\Core\EventDispatcher\ListenerProvider;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Resource\Event\GeneratePublicUrlForResourceEvent;
 use TYPO3\CMS\Frontend\Resource\PublicUrlPrefixer;
-use UnexpectedValueException;
 
 /**
  * Answer a request for an example with its HTML, once the frontend prepared the page
@@ -77,7 +77,7 @@ final readonly class ExampleResponse implements MiddlewareInterface
 
         try {
             return new HtmlResponse($this->renderer->render($requested[0], $requested[1], $request));
-        } catch (UnexpectedValueException $exception) {
+        } catch (Exception $exception) {
             return new HtmlResponse(htmlspecialchars($exception->getMessage()), 404);
         }
     }

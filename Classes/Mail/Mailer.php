@@ -23,6 +23,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mime\Address;
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 use Tollwerk\TwBase\Routing\PageUri;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
@@ -31,7 +32,6 @@ use TYPO3\CMS\Core\Mail\MailerInterface;
 use TYPO3\CMS\Core\Mail\TemplatedEmailFactory;
 use TYPO3\CMS\Core\Site\Entity\Site;
 use TYPO3\CMS\Core\Site\Entity\SiteLanguage;
-use UnexpectedValueException;
 
 /**
  * Compose and send a mail from a template of an extension
@@ -87,6 +87,7 @@ final readonly class Mailer
      * @throws UnexpectedValueException If there is no such mail or example
      * @throws InvalidArgumentException If the format of mails or the contact address is invalid
      * @throws DBALException If the page of the legal notice cannot be read
+     * @throws \UnexpectedValueException If the page of the legal notice cannot be read
      */
     public function composeExample(
         ServerRequestInterface $request,
@@ -122,7 +123,7 @@ final readonly class Mailer
      *
      * @throws InvalidArgumentException If the format of mails or the contact address is invalid
      * @throws DBALException If the page of the legal notice cannot be read
-     * @throws UnexpectedValueException If the page of the legal notice cannot be read
+     * @throws \UnexpectedValueException If the page of the legal notice cannot be read
      */
     public function compose(
         ServerRequestInterface $request,
@@ -178,7 +179,7 @@ final readonly class Mailer
      * @throws TransportExceptionInterface If the mail cannot be sent
      * @throws InvalidArgumentException If the format of mails or the contact address is invalid
      * @throws DBALException If the page of the legal notice cannot be read
-     * @throws UnexpectedValueException If the page of the legal notice cannot be read
+     * @throws \UnexpectedValueException If the page of the legal notice cannot be read
      */
     public function send(
         ServerRequestInterface $request,
@@ -235,7 +236,7 @@ final readonly class Mailer
      *
      * @throws DBALException If the page of the legal notice cannot be read
      * @throws InvalidArgumentException If the address of the legal notice cannot be built
-     * @throws UnexpectedValueException If the page of the legal notice cannot be read
+     * @throws \UnexpectedValueException If the page of the legal notice cannot be read
      */
     private function footerLinks(?Site $site, ?SiteLanguage $language, string $contact): array
     {

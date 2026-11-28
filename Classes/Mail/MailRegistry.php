@@ -16,8 +16,8 @@ declare(strict_types=1);
 namespace Tollwerk\TwBase\Mail;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 use TYPO3\CMS\Core\Package\PackageManager;
-use UnexpectedValueException;
 
 /**
  * All mails the active extensions send, from their "Configuration/Mails.php"

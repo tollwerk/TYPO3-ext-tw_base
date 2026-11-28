@@ -23,6 +23,7 @@ use Random\RandomException;
 use Tollwerk\TwBase\Component\Component;
 use Tollwerk\TwBase\Component\ComponentLocator;
 use Tollwerk\TwBase\Component\Example\Examples;
+use Tollwerk\TwBase\Exception;
 use Tollwerk\TwBase\Mail\MailDefinition;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Package\PackageManager;
@@ -134,6 +135,23 @@ final class DefinitionFilesTest extends UnitTestCase
             ['twc:event.teaser' => $file],
             Examples::find($this->folder . '/Resources/Private/Components'),
         );
+    }
+
+    /**
+     * An error of tw_base can be caught as one of tw_base and as its kind of the standard library
+     *
+     * @return void
+     */
+    #[Test]
+    public function errorsAreThoseOfTwBase(): void
+    {
+        try {
+            Examples::find($this->folder . '/Missing');
+            self::fail('A missing folder is an error');
+        } catch (Exception $exception) {
+            self::assertInstanceOf(UnexpectedValueException::class, $exception);
+            self::assertSame(1795871883, $exception->getCode());
+        }
     }
 
     /**

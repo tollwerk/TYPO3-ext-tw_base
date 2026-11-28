@@ -15,8 +15,8 @@ declare(strict_types=1);
 
 namespace Tollwerk\TwBase\Component;
 
-use LogicException;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Tollwerk\TwBase\Exception\LogicException;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3Fluid\Fluid\Core\Component\ComponentTemplateResolverInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\ViewHelperResolverDelegateInterface;

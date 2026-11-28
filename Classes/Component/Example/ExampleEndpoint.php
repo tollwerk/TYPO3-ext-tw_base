@@ -20,11 +20,11 @@ use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 use Tollwerk\TwBase\Routing\PageUri;
 use TYPO3\CMS\Core\Crypto\HashAlgo;
 use TYPO3\CMS\Core\Crypto\HashService;
 use TYPO3\CMS\Core\Site\Entity\Site;
-use UnexpectedValueException;
 
 /**
  * Addresses that render a component with one of its examples
@@ -92,6 +92,7 @@ final readonly class ExampleEndpoint
      * @throws UnexpectedValueException If there is no such component or example, or the site lacks its page or language
      * @throws DBALException If the page of the example cannot be read
      * @throws InvalidArgumentException If the address cannot be built
+     * @throws \UnexpectedValueException If the page record cannot be read
      */
     public function uri(Site $site, string $component, string $example): UriInterface
     {

@@ -18,6 +18,7 @@ namespace Tollwerk\TwBase\ViewHelpers;
 use Exception;
 use Override;
 use RuntimeException;
+use Tollwerk\TwBase\Exception\ViewHelperException;
 use TYPO3\CMS\Core\Html\Srcset\SrcsetAttribute;
 use TYPO3\CMS\Core\Html\Srcset\SrcsetCandidate;
 use TYPO3\CMS\Core\Html\Srcset\WidthSrcsetCandidate;
@@ -30,7 +31,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Domain\Model\FileReference as ExtbaseFileReference;
 use TYPO3\CMS\Extbase\Service\ImageService;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
-use TYPO3Fluid\Fluid\Core\ViewHelper\Exception as ViewHelperException;
 
 /**
  * Renders a responsive image in modern formats

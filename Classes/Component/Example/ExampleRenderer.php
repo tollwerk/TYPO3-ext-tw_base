@@ -20,6 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Tollwerk\TwBase\Component\Component;
 use Tollwerk\TwBase\Component\ComponentLocator;
+use Tollwerk\TwBase\Exception\UnexpectedValueException;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\Exception\AspectNotFoundException;
 use TYPO3\CMS\Core\Context\LanguageAspect;
@@ -29,7 +30,6 @@ use TYPO3\CMS\Fluid\Core\Component\ComponentCollectionRegistry;
 use TYPO3\CMS\Fluid\Core\Component\DeclarativeComponentCollection;
 use TYPO3\CMS\Fluid\Core\Rendering\RenderingContextFactory;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
-use UnexpectedValueException;
 
 /**
  * Render a component with one of its examples, within the examples of the components it requires
